@@ -1,6 +1,2 @@
 node_modules
 .env
-.DS_Store
-public/bundles/
-var/
-vendor/

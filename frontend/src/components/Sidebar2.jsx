@@ -71,7 +71,7 @@ export default function Sidebar2() {
       {["left"].map((anchor) => (
         <React.Fragment key={anchor}>
           <Button
-            sx={{ marginLeft: -4, position: "absolute", zIndex: 100 }}
+            sx={{ marginLeft: -4}}
             onClick={toggleDrawer(anchor, !state[anchor])}
           >
             {state[anchor] ? (

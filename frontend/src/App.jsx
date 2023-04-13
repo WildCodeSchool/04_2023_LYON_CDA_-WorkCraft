@@ -1,12 +1,10 @@
-import Home from "./pages/Home";
-
+import Sidebar1 from "@components/Sidebar1";
 import "./App.css";
 
 function App() {
   return (
     <div className="App">
-      <Home />
-      <p>coucou</p>
+      <Sidebar1 />
     </div>
   );
 }

@@ -1,10 +1,18 @@
-import Sidebar1 from "@components/Sidebar1";
 import "./App.css";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import Root from "./routes/Root";
 
 function App() {
+  const router = createBrowserRouter([
+    {
+      path: "/",
+      element: <Root />,
+    },
+  ]);
+
   return (
     <div className="App">
-      <Sidebar1 />
+      <RouterProvider router={router} />
     </div>
   );
 }

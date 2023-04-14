@@ -58,7 +58,7 @@ const Drawer = styled(MuiDrawer, {
 
 export default function Sidebar1() {
   return (
-    <Box sx={{ display: "flex", position: "relative", zIndex: 1 }}>
+    <Box sx={{ display: "flex" }}>
       <CssBaseline />
 
       <Drawer variant="permanent" open={false}>
@@ -172,7 +172,7 @@ export default function Sidebar1() {
           backgroundColor: "pink",
           height: "100vh",
           width: "0px",
-          zIndex: 1,
+          zIndex: 1500,
         }}
       >
         <Sidebar2 />

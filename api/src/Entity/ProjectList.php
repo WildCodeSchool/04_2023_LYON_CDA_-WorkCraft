@@ -8,16 +8,16 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
-use App\Repository\ProjectRepository;
+use App\Repository\ProjectListRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
-#[ORM\Entity(repositoryClass: ProjectRepository::class)]
+#[ORM\Entity(repositoryClass: ProjectListRepository::class)]
 #[ApiResource(
-    description: 'Project for WorkCraft',
+    description: 'List for WorkCraft',
     operations: [
         new Get(),
         new GetCollection(),
@@ -26,13 +26,13 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Delete(),
     ],
     normalizationContext: [
-        'groups' => ['project:read']
+        'groups' => ['list:read']
     ],
     denormalizationContext: [
-        'groups' => ['project:write']
+        'groups' => ['list:write']
     ],
 )]
-class Project
+class ProjectList
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -40,22 +40,21 @@ class Project
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['project:read', 'project:write'])]
     #[Assert\NotBlank]
+    #[Groups(['list:read', 'list:write'])]
     private ?string $title = null;
 
-    #[ORM\ManyToOne(inversedBy: 'projects')]
-    #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['project:read', 'project:write', 'user:read'])]
-    private ?User $owner = null;
+    #[ORM\ManyToOne(inversedBy: 'lists')]
+    #[Groups(['list:read', 'project:read'])]
+    private ?Project $project = null;
 
-    #[ORM\OneToMany(mappedBy: 'project', targetEntity: ProjectList::class)]
-    #[Groups(['project:read', 'list:read'])]
-    private Collection $lists;
+    #[ORM\OneToMany(mappedBy: 'list', targetEntity: Task::class)]
+    #[Groups(['list:read', 'task:read'])]
+    private Collection $tasks;
 
     public function __construct()
     {
-        $this->lists = new ArrayCollection();
+        $this->tasks = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -75,42 +74,42 @@ class Project
         return $this;
     }
 
-    public function getOwner(): ?User
+    public function getProject(): ?Project
     {
-        return $this->owner;
+        return $this->project;
     }
 
-    public function setOwner(?User $owner): self
+    public function setProject(?Project $project): self
     {
-        $this->owner = $owner;
+        $this->project = $project;
 
         return $this;
     }
 
     /**
-     * @return Collection<int, ProjectList>
+     * @return Collection<int, Task>
      */
-    public function getLists(): Collection
+    public function getTasks(): Collection
     {
-        return $this->lists;
+        return $this->tasks;
     }
 
-    public function addList(ProjectList $list): self
+    public function addTask(Task $task): self
     {
-        if (!$this->lists->contains($list)) {
-            $this->lists->add($list);
-            $list->setProject($this);
+        if (!$this->tasks->contains($task)) {
+            $this->tasks->add($task);
+            $task->setList($this);
         }
 
         return $this;
     }
 
-    public function removeList(ProjectList $list): self
+    public function removeTask(Task $task): self
     {
-        if ($this->lists->removeElement($list)) {
+        if ($this->tasks->removeElement($task)) {
             // set the owning side to null (unless already changed)
-            if ($list->getProject() === $this) {
-                $list->setProject(null);
+            if ($task->getList() === $this) {
+                $task->setList(null);
             }
         }
 

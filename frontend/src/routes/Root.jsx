@@ -1,19 +1,14 @@
 import React from "react";
+import { Outlet } from "react-router-dom";
 import Sidebar1 from "../components/Sidebar1";
 
-export default function Root({ children }) {
+export default function Root() {
   return (
     <>
       <Sidebar1 />
-      <main>{children}</main>
+      <main>
+        <Outlet />
+      </main>
     </>
   );
 }
-
-Root.propTypes = {
-  children: React.ReactNode,
-};
-
-Root.defaultProps = {
-  children: "",
-};

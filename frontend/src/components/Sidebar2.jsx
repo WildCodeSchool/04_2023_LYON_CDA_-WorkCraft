@@ -34,7 +34,7 @@ export default function Sidebar2() {
 
   const handleNewProjectClick = () => {
     // Perform logic to create a new project
-    console.log("New project created!");
+    // console.log("New project created!");
   };
 
   const list = (anchor) => (

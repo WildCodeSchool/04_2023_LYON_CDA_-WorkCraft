@@ -15,19 +15,18 @@ import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArro
 import Stack from "@mui/material/Stack";
 import AddIcon from "@mui/icons-material/Add";
 import PropTypes from "prop-types";
+import Collapse from "@mui/material/Collapse";
+import ExpandLess from "@mui/icons-material/ExpandLess";
+import ExpandMore from "@mui/icons-material/ExpandMore";
+import StarBorder from "@mui/icons-material/StarBorder";
 import PrimarySearchAppBar from "./Searchbar";
 
 export default function Sidebar2({ setOpenModal, projectName }) {
   const [state, setState] = React.useState({
-    left: false,
+    left: false, // Ajout d'un nouvel état openProjectCollapse
   });
 
-  const [currentProjectName, setCurrentProjectName] =
-    React.useState(projectName);
-
-  React.useEffect(() => {
-    setCurrentProjectName(projectName);
-  }, [projectName]);
+  const [openProjectCollapse, setOpenProjectCollapse] = React.useState(false);
 
   const toggleDrawer = (anchor, open) => (event) => {
     if (
@@ -46,8 +45,6 @@ export default function Sidebar2({ setOpenModal, projectName }) {
         width: anchor === "top" ? "auto" : 250,
       }}
       role="presentation"
-      onClick={toggleDrawer(anchor, false)}
-      onKeyDown={toggleDrawer(anchor, false)}
     >
       <List>
         {/* SearchBar */}
@@ -65,10 +62,32 @@ export default function Sidebar2({ setOpenModal, projectName }) {
               <ListItemIcon>
                 {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
               </ListItemIcon>
-              <ListItemText primary={currentProjectName} />
+              <ListItemText primary={projectName} />
             </ListItemButton>
           </ListItem>
         ))}
+
+        {/* Button collapse */}
+
+        <ListItemButton
+          onClick={() => setOpenProjectCollapse(!openProjectCollapse)}
+        >
+          <ListItemIcon>
+            <InboxIcon />
+          </ListItemIcon>
+          <ListItemText primary="Inbox" />
+          {openProjectCollapse ? <ExpandLess /> : <ExpandMore />}
+        </ListItemButton>
+        <Collapse in={openProjectCollapse} timeout="auto" unmountOnExit>
+          <List component="div" disablePadding>
+            <ListItemButton sx={{ pl: 4 }}>
+              <ListItemIcon>
+                <StarBorder />
+              </ListItemIcon>
+              <ListItemText primary="Starred" />
+            </ListItemButton>
+          </List>
+        </Collapse>
       </List>
       <Divider />
       <List>
@@ -78,7 +97,7 @@ export default function Sidebar2({ setOpenModal, projectName }) {
               <ListItemIcon>
                 {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
               </ListItemIcon>
-              <ListItemText primary={currentProjectName} />
+              <ListItemText primary={projectName} />
             </ListItemButton>
           </ListItem>
         ))}

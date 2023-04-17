@@ -15,6 +15,7 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Sidebar2 from "./Sidebar2";
+import ProjectModal from "./ProjectModal";
 
 const drawerWidth = 240;
 
@@ -57,10 +58,12 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 export default function Sidebar1() {
+  const [openModal, setOpenModal] = React.useState(false);
+
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
-
+      <ProjectModal open={openModal} setOpen={setOpenModal} />
       <Drawer variant="permanent" open={false}>
         <Divider />
         <Box
@@ -175,7 +178,7 @@ export default function Sidebar1() {
           zIndex: 1500,
         }}
       >
-        <Sidebar2 />
+        <Sidebar2 openModal={openModal} setOpenModal={setOpenModal} />
       </Box>
     </Box>
   );

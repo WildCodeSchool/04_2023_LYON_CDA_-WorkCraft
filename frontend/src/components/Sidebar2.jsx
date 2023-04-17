@@ -14,12 +14,20 @@ import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrow
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import Stack from "@mui/material/Stack";
 import AddIcon from "@mui/icons-material/Add";
+import PropTypes from "prop-types";
 import PrimarySearchAppBar from "./Searchbar";
 
-export default function Sidebar2() {
+export default function Sidebar2({ setOpenModal, projectName }) {
   const [state, setState] = React.useState({
     left: false,
   });
+
+  const [currentProjectName, setCurrentProjectName] =
+    React.useState(projectName);
+
+  React.useEffect(() => {
+    setCurrentProjectName(projectName);
+  }, [projectName]);
 
   const toggleDrawer = (anchor, open) => (event) => {
     if (
@@ -30,11 +38,6 @@ export default function Sidebar2() {
     }
 
     setState({ ...state, [anchor]: open });
-  };
-
-  const handleNewProjectClick = () => {
-    // Perform logic to create a new project
-    // console.log("New project created!");
   };
 
   const list = (anchor) => (
@@ -49,19 +52,20 @@ export default function Sidebar2() {
       <List>
         {/* SearchBar */}
         <PrimarySearchAppBar />
+
         {/* New Project Button */}
         <Stack spacing={2} direction="row">
-          <Button variant="contained" onClick={handleNewProjectClick}>
+          <Button variant="contained" onClick={() => setOpenModal(true)}>
             New project <AddIcon />
           </Button>
         </Stack>
-        {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
+        {["Project 1", "Project 2"].map((text, index) => (
           <ListItem key={text} disablePadding>
             <ListItemButton>
               <ListItemIcon>
                 {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
               </ListItemIcon>
-              <ListItemText primary={text} />
+              <ListItemText primary={currentProjectName} />
             </ListItemButton>
           </ListItem>
         ))}
@@ -74,7 +78,7 @@ export default function Sidebar2() {
               <ListItemIcon>
                 {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
               </ListItemIcon>
-              <ListItemText primary={text} />
+              <ListItemText primary={currentProjectName} />
             </ListItemButton>
           </ListItem>
         ))}
@@ -108,3 +112,8 @@ export default function Sidebar2() {
     </div>
   );
 }
+
+Sidebar2.propTypes = {
+  projectName: PropTypes.string.isRequired,
+  setOpenModal: PropTypes.func.isRequired,
+};

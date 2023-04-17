@@ -12,6 +12,9 @@ import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
 import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
+import Stack from "@mui/material/Stack";
+import AddIcon from "@mui/icons-material/Add";
+import PrimarySearchAppBar from "./Searchbar";
 
 export default function Sidebar2() {
   const [state, setState] = React.useState({
@@ -29,6 +32,11 @@ export default function Sidebar2() {
     setState({ ...state, [anchor]: open });
   };
 
+  const handleNewProjectClick = () => {
+    // Perform logic to create a new project
+    console.log("New project created!");
+  };
+
   const list = (anchor) => (
     <Box
       sx={{
@@ -39,6 +47,14 @@ export default function Sidebar2() {
       onKeyDown={toggleDrawer(anchor, false)}
     >
       <List>
+        {/* SearchBar */}
+        <PrimarySearchAppBar />
+        {/* New Project Button */}
+        <Stack spacing={2} direction="row">
+          <Button variant="contained" onClick={handleNewProjectClick}>
+            New project <AddIcon />
+          </Button>
+        </Stack>
         {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
           <ListItem key={text} disablePadding>
             <ListItemButton>
@@ -71,10 +87,10 @@ export default function Sidebar2() {
       {["left"].map((anchor) => (
         <React.Fragment key={anchor}>
           <Button
-            sx={{ marginLeft: -5 }}
+            sx={{ marginLeft: state[anchor] ? 19 : -4 }}
             onClick={toggleDrawer(anchor, !state[anchor])}
           >
-            {state[anchor] ? (
+            {!state[anchor] ? (
               <KeyboardDoubleArrowRightIcon />
             ) : (
               <KeyboardDoubleArrowLeftIcon />

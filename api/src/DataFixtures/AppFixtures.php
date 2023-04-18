@@ -15,22 +15,16 @@ class AppFixtures extends Fixture
     public function load(ObjectManager $manager): void
     {
         UserFactory::createMany(5);
-        ProjectFactory::createMany(3);
-        ProjectListFactory::createMany(5, function () {
-            return [
-                'project' => ProjectFactory::random(),
-            ];
-        });
-        TaskFactory::createMany(30, function () {
-            return [
-                'list' => ProjectListFactory::random(),
-            ];
-        });
-        ModuleFactory::createMany(20, function () {
-            return [
-                'task' => TaskFactory::random(),
-            ];
-        });
+
+        ProjectFactory::createMany(
+            3,
+            ['lists' => ProjectListFactory::new(
+                ['tasks' => TaskFactory::new(
+                    ['modules' => ModuleFactory::new()->many(1, 4)]
+                )->many(5, 10)]
+            )->many(5)]
+        );
+
 
         $manager->flush();
     }

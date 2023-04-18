@@ -41,11 +41,10 @@ class ProjectList
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
-    #[Groups(['list:read', 'list:write'])]
+    #[Groups(['list:read', 'list:write', 'project:read'])]
     private ?string $title = null;
 
     #[ORM\ManyToOne(inversedBy: 'lists')]
-    #[Groups(['list:read', 'project:read'])]
     private ?Project $project = null;
 
     #[ORM\OneToMany(mappedBy: 'list', targetEntity: Task::class)]

@@ -39,15 +39,24 @@ class Module
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
-    #[Groups(['module:read', 'module:write'])]
+    #[Groups([
+        'module:read',
+        'module:write',
+        'list:read',
+        'task:read'
+    ])]
     private ?string $title = null;
 
     #[ORM\Column]
-    #[Groups(['module:read', 'module:write'])]
+    #[Groups([
+        'module:read',
+        'module:write',
+        'list:read',
+        'task:read'
+    ])]
     private ?bool $isDone = null;
 
     #[ORM\ManyToOne(inversedBy: 'modules')]
-    #[Groups(['module:read', 'task:read'])]
     private ?Task $task = null;
 
     public function getId(): ?int

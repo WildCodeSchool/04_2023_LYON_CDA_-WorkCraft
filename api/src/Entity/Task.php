@@ -42,15 +42,15 @@ class Task
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
-    #[Groups(['task:read', 'task:write'])]
+    #[Groups(['task:read', 'task:write', 'list:read'])]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups(['task:read', 'task:write'])]
+    #[Groups(['task:read', 'task:write', 'list:read'])]
     private ?string $description = null;
 
     #[ORM\ManyToOne(inversedBy: 'tasks')]
-    #[Groups(['task:read', 'list:read'])]
+    #[Groups(['task:read', 'task:write'])]
     private ?ProjectList $list = null;
 
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'tasks')]
@@ -58,7 +58,7 @@ class Task
     private Collection $users;
 
     #[ORM\OneToMany(mappedBy: 'task', targetEntity: Module::class)]
-    #[Groups(['task:read', 'module:read'])]
+    #[Groups(['task:read', 'module:read', 'list:read'])]
     private Collection $modules;
 
     public function __construct()

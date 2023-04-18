@@ -8,17 +8,23 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
 import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import Stack from "@mui/material/Stack";
 import AddIcon from "@mui/icons-material/Add";
+import PropTypes from "prop-types";
+import Collapse from "@mui/material/Collapse";
+import ExpandLess from "@mui/icons-material/ExpandLess";
+import ExpandMore from "@mui/icons-material/ExpandMore";
+import StarBorder from "@mui/icons-material/StarBorder";
+import DateRangeIcon from "@mui/icons-material/DateRange";
 import PrimarySearchAppBar from "./Searchbar";
+import data from "../data";
 
-export default function Sidebar2() {
+export default function Sidebar2({ setOpenModal }) {
   const [state, setState] = React.useState({
     left: false,
+    openProjectCollapse: {}, // new state object to keep track of project collapses
   });
 
   const toggleDrawer = (anchor, open) => (event) => {
@@ -32,9 +38,14 @@ export default function Sidebar2() {
     setState({ ...state, [anchor]: open });
   };
 
-  const handleNewProjectClick = () => {
-    // Perform logic to create a new project
-    // console.log("New project created!");
+  const handleProjectCollapse = (projectId) => {
+    setState({
+      ...state,
+      openProjectCollapse: {
+        ...state.openProjectCollapse,
+        [projectId]: !state.openProjectCollapse[projectId],
+      },
+    });
   };
 
   const list = (anchor) => (
@@ -43,38 +54,60 @@ export default function Sidebar2() {
         width: anchor === "top" ? "auto" : 250,
       }}
       role="presentation"
-      onClick={toggleDrawer(anchor, false)}
-      onKeyDown={toggleDrawer(anchor, false)}
     >
       <List>
         {/* SearchBar */}
         <PrimarySearchAppBar />
+
         {/* New Project Button */}
         <Stack spacing={2} direction="row">
-          <Button variant="contained" onClick={handleNewProjectClick}>
+          <Button variant="contained" onClick={() => setOpenModal(true)}>
             New project <AddIcon />
           </Button>
         </Stack>
-        {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
+        {data.projects.map((project) => (
+          <div key={project.id}>
+            <ListItem key={project.id} disablePadding>
+              <ListItemButton onClick={() => handleProjectCollapse(project.id)}>
+                <ListItemIcon>
+                  <DateRangeIcon />
+                </ListItemIcon>
+                <ListItemText primary={project.title} />
+                {state.openProjectCollapse[project.id] ? (
+                  <ExpandLess />
+                ) : (
+                  <ExpandMore />
+                )}
+              </ListItemButton>
+            </ListItem>
+            <Collapse
+              in={state.openProjectCollapse[project.id]}
+              timeout="auto"
+              unmountOnExit
+            >
+              <List component="div" disablePadding>
+                <ListItemButton sx={{ pl: 4 }}>
+                  <ListItemIcon>
+                    <StarBorder />
+                  </ListItemIcon>
+                  <ListItemText primary="Starred" />
+                </ListItemButton>
+              </List>
+            </Collapse>
+          </div>
         ))}
+
+        {/* Button collapse */}
       </List>
       <Divider />
       <List>
-        {["All mail", "Trash", "Spam"].map((text, index) => (
-          <ListItem key={text} disablePadding>
+        {data.projects.map((project) => (
+          <ListItem key={project.id} disablePadding>
             <ListItemButton>
               <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                <DateRangeIcon />
               </ListItemIcon>
-              <ListItemText primary={text} />
+              <ListItemText primary={project.title} />
             </ListItemButton>
           </ListItem>
         ))}
@@ -108,3 +141,7 @@ export default function Sidebar2() {
     </div>
   );
 }
+
+Sidebar2.propTypes = {
+  setOpenModal: PropTypes.func.isRequired,
+};

@@ -1,10 +1,16 @@
+import Project from "../components/Project";
 import Root from "./Root";
 
 const Routes = [
   {
     path: "/",
     element: <Root />,
-    children: [],
+    children: [
+      {
+        path: "projects/:projectId",
+        element: <Project />,
+      },
+    ],
   },
 ];
 

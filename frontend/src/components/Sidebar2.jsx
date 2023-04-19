@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useState, useEffect } from "react";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import Button from "@mui/material/Button";
@@ -23,139 +24,108 @@ import PrimarySearchAppBar from "./Searchbar";
 import data from "../data";
 
 export default function Sidebar2({ setOpenModal }) {
-  const [state, setState] = React.useState({
-    left: false,
-    openProjectCollapse: {}, // new state object to keep track of project collapses
-  });
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  function toggleDrawer() {
+    setIsDrawerOpen(!isDrawerOpen);
+  }
 
-  const toggleDrawer = (anchor, open) => (event) => {
-    if (
-      event.type === "keydown" &&
-      (event.key === "Tab" || event.key === "Shift")
-    ) {
-      return;
-    }
-
-    setState({ ...state, [anchor]: open });
-  };
-
-  const handleProjectCollapse = (projectId) => {
-    setState({
-      ...state,
-      openProjectCollapse: {
-        ...state.openProjectCollapse,
-        [projectId]: !state.openProjectCollapse[projectId],
-      },
-    });
-  };
-
-  const list = (anchor) => (
-    <Box
-      sx={{
-        width: anchor === "top" ? "auto" : 250,
-      }}
-      role="presentation"
-    >
-      <List>
-        {/* SearchBar */}
-        <PrimarySearchAppBar />
-
-        {/* New Project Button */}
-        <Stack spacing={2} direction="row">
-          <Button variant="contained" onClick={() => setOpenModal(true)}>
-            New project <AddIcon />
-          </Button>
-        </Stack>
-        {data.projects.map((project) => (
-          <div key={project.id}>
-            <ListItem
-              key={project.id}
-              sx={{ display: "flex", justifyContent: "space-between" }}
-            >
-              <Box sx={{ display: "flex", alignItems: "center" }}>
-                <ListItemIcon>
-                  <DateRangeIcon />
-                </ListItemIcon>
-                <NavLink
-                  to={`/projects/${project.id}`}
-                  style={{
-                    textDecoration: "none",
-                    color: "inherit",
-                  }}
-                >
-                  <ListItemText primary={project.title} />
-                </NavLink>
-              </Box>
-              {state.openProjectCollapse[project.id] ? (
-                <ExpandLess
-                  sx={{ cursor: "pointer" }}
-                  onClick={() => handleProjectCollapse(project.id)}
-                />
-              ) : (
-                <ExpandMore
-                  sx={{ cursor: "pointer" }}
-                  onClick={() => handleProjectCollapse(project.id)}
-                />
-              )}
-            </ListItem>
-            <Collapse
-              in={state.openProjectCollapse[project.id]}
-              timeout="auto"
-              unmountOnExit
-            >
-              <List component="div" disablePadding>
-                <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon>
-                    <StarBorder />
-                  </ListItemIcon>
-                  <ListItemText primary="Starred" />
-                </ListItemButton>
-              </List>
-            </Collapse>
-          </div>
-        ))}
-
-        {/* Button collapse */}
-      </List>
-      <Divider />
-      <List>
-        {data.projects.map((project) => (
-          <ListItem key={project.id} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                <DateRangeIcon />
-              </ListItemIcon>
-              <ListItemText primary={project.title} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-    </Box>
-  );
+  const [collapseList, setCollapseList] = useState({});
+  function toggleCollapse(id) {
+    setCollapseList({ ...collapseList, [id]: !collapseList[id] });
+  }
 
   return (
     <div>
-      {["left"].map((anchor) => (
-        <React.Fragment key={anchor}>
-          <Button
-            sx={{ marginLeft: state[anchor] ? 19 : -4 }}
-            onClick={toggleDrawer(anchor, !state[anchor])}
-          >
-            {!state[anchor] ? (
-              <KeyboardDoubleArrowRightIcon />
-            ) : (
-              <KeyboardDoubleArrowLeftIcon />
-            )}
-          </Button>
-          <Drawer
-            anchor={anchor}
-            open={state[anchor]}
-            onClose={toggleDrawer(anchor, false)}
-          >
-            {list(anchor)}
-          </Drawer>
-        </React.Fragment>
-      ))}
+      <Button
+        sx={{ marginLeft: isDrawerOpen ? 19 : -4 }}
+        onClick={() => toggleDrawer()}
+      >
+        {isDrawerOpen ? (
+          <KeyboardDoubleArrowLeftIcon />
+        ) : (
+          <KeyboardDoubleArrowRightIcon />
+        )}
+      </Button>
+      <Drawer anchor="left" open={isDrawerOpen} onClose={() => toggleDrawer()}>
+        <Box sx={{ width: 250 }} role="presentation">
+          <List>
+            {/* SearchBar */}
+            <PrimarySearchAppBar />
+
+            {/* New Project Button */}
+            <Stack spacing={2} direction="row">
+              <Button variant="contained" onClick={() => setOpenModal(true)}>
+                New project <AddIcon />
+              </Button>
+            </Stack>
+            {data.projects.map((project) => {
+              return (
+                <div key={project.id}>
+                  <ListItem
+                    key={project.id}
+                    sx={{ display: "flex", justifyContent: "space-between" }}
+                  >
+                    <Box sx={{ display: "flex", alignItems: "center" }}>
+                      <ListItemIcon>
+                        <DateRangeIcon />
+                      </ListItemIcon>
+                      <NavLink
+                        to={`/projects/${project.id}`}
+                        style={{
+                          textDecoration: "none",
+                          color: "inherit",
+                        }}
+                      >
+                        <ListItemText primary={project.title} />
+                      </NavLink>
+                    </Box>
+                    {collapseList[project.id] ? (
+                      <ExpandLess
+                        sx={{ cursor: "pointer" }}
+                        onClick={() => toggleCollapse(project.id)}
+                      />
+                    ) : (
+                      <ExpandMore
+                        sx={{ cursor: "pointer" }}
+                        onClick={() => toggleCollapse(project.id)}
+                      />
+                    )}
+                  </ListItem>
+                  <Collapse
+                    in={collapseList[project.id]}
+                    timeout="auto"
+                    unmountOnExit
+                  >
+                    <List component="div" disablePadding>
+                      <ListItemButton sx={{ pl: 4 }}>
+                        <ListItemIcon>
+                          <StarBorder />
+                        </ListItemIcon>
+                        <ListItemText primary="Starred" />
+                      </ListItemButton>
+                    </List>
+                  </Collapse>
+                </div>
+              );
+            })}
+
+            {/* Button collapse */}
+          </List>
+          <Divider />
+          <List>
+            {data.projects.map((project) => (
+              <ListItem key={project.id} disablePadding>
+                <ListItemButton>
+                  <ListItemIcon>
+                    <DateRangeIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={project.title} />
+                </ListItemButton>
+              </ListItem>
+            ))}
+          </List>
+        </Box>
+      </Drawer>
     </div>
   );
 }

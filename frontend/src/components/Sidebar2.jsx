@@ -18,6 +18,7 @@ import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import StarBorder from "@mui/icons-material/StarBorder";
 import DateRangeIcon from "@mui/icons-material/DateRange";
+import { Link } from "react-router-dom";
 import PrimarySearchAppBar from "./Searchbar";
 import data from "../data";
 
@@ -67,12 +68,29 @@ export default function Sidebar2({ setOpenModal }) {
         </Stack>
         {data.projects.map((project) => (
           <div key={project.id}>
-            <ListItem key={project.id} disablePadding>
-              <ListItemButton onClick={() => handleProjectCollapse(project.id)}>
+            <ListItem
+              key={project.id}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <Box sx={{ display: "flex", alignItems: "center" }}>
                 <ListItemIcon>
                   <DateRangeIcon />
                 </ListItemIcon>
-                <ListItemText primary={project.title} />
+                <Link
+                  to={`/projects/${project.id}`}
+                  style={{ textDecoration: "none" }}
+                >
+                  <ListItemText primary={project.title} />
+                </Link>
+              </Box>
+              <ListItemButton
+                onClick={() => handleProjectCollapse(project.id)}
+                style={{ display: "flex", justifyContent: "flex-end" }}
+              >
                 {state.openProjectCollapse[project.id] ? (
                   <ExpandLess />
                 ) : (

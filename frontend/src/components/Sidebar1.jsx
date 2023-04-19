@@ -109,6 +109,7 @@ export default function Sidebar1() {
                     mr: "auto",
                     justifyContent: "center",
                   }}
+                  onClick={() => setOpenModal(!openModal)}
                 >
                   <SearchIcon />
                 </ListItemIcon>

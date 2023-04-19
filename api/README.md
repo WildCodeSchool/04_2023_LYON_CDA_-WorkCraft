@@ -14,7 +14,11 @@ The api documentation is readable at https://localhost/api/docs you'll find all 
 If you want to run commands at the root of the project you'll have to run
 > **docker-compose exec php** yourcommand
 >
+ Create db schema 
+> 
+> docker-compose exec php-workcraft php bin/console d:m:m
+
 For example, if you want to run fixtures you have to run
->docker-compose exec php-workcarft php bin/console hautelook:fixtures:load
+>docker-compose exec php-workcarft php bin/console doctrine:fixtures:load
 
 **Don't forget to run composer install to get started**

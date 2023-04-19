@@ -19,6 +19,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
+#[ORM\Table(name: "`user`")]
 #[ApiResource(
     description: 'User for WorkCraft',
     operations: [
@@ -40,7 +41,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
+    #[ORM\GeneratedValue(strategy: "SEQUENCE")]
     #[ORM\Column]
     private ?int $id = null;
 

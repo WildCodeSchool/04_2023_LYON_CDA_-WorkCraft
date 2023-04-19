@@ -18,6 +18,7 @@ import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import StarBorder from "@mui/icons-material/StarBorder";
 import DateRangeIcon from "@mui/icons-material/DateRange";
+import { NavLink } from "react-router-dom";
 import PrimarySearchAppBar from "./Searchbar";
 import data from "../data";
 
@@ -67,18 +68,35 @@ export default function Sidebar2({ setOpenModal }) {
         </Stack>
         {data.projects.map((project) => (
           <div key={project.id}>
-            <ListItem key={project.id} disablePadding>
-              <ListItemButton onClick={() => handleProjectCollapse(project.id)}>
+            <ListItem
+              key={project.id}
+              sx={{ display: "flex", justifyContent: "space-between" }}
+            >
+              <Box sx={{ display: "flex", alignItems: "center" }}>
                 <ListItemIcon>
                   <DateRangeIcon />
                 </ListItemIcon>
-                <ListItemText primary={project.title} />
-                {state.openProjectCollapse[project.id] ? (
-                  <ExpandLess />
-                ) : (
-                  <ExpandMore />
-                )}
-              </ListItemButton>
+                <NavLink
+                  to={`/projects/${project.id}`}
+                  style={{
+                    textDecoration: "none",
+                    color: "inherit",
+                  }}
+                >
+                  <ListItemText primary={project.title} />
+                </NavLink>
+              </Box>
+              {state.openProjectCollapse[project.id] ? (
+                <ExpandLess
+                  sx={{ cursor: "pointer" }}
+                  onClick={() => handleProjectCollapse(project.id)}
+                />
+              ) : (
+                <ExpandMore
+                  sx={{ cursor: "pointer" }}
+                  onClick={() => handleProjectCollapse(project.id)}
+                />
+              )}
             </ListItem>
             <Collapse
               in={state.openProjectCollapse[project.id]}

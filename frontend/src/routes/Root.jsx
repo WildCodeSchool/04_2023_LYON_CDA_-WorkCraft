@@ -2,7 +2,6 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import { Outlet } from "react-router-dom";
 import { useState } from "react";
-
 import Sidebar1 from "../components/Sidebar1";
 
 export default function Root() {

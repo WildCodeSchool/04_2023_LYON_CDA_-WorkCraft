@@ -20,11 +20,11 @@ import ExpandMore from "@mui/icons-material/ExpandMore";
 import StarBorder from "@mui/icons-material/StarBorder";
 import DateRangeIcon from "@mui/icons-material/DateRange";
 import { NavLink } from "react-router-dom";
-import PrimarySearchAppBar from "./Searchbar";
 import axios from "axios";
+import PrimarySearchAppBar from "./Searchbar";
 
 export default function Sidebar2({ setOpenModal }) {
-  const [projects, setProjects] = useState([])
+  const [projects, setProjects] = useState([]);
   useEffect(() => {
     axios
       .get(`http://localhost/api/projects.json?owner.username=supzero`)
@@ -131,11 +131,11 @@ export default function Sidebar2({ setOpenModal }) {
                         {project.lists.map((list) => {
                           return (
                             <ListItemButton sx={{ pl: 4 }} key={list.id}>
-                            <ListItemIcon>
-                              <StarBorder />
-                            </ListItemIcon>
-                            <ListItemText primary={list.title} />
-                          </ListItemButton>
+                              <ListItemIcon>
+                                <StarBorder />
+                              </ListItemIcon>
+                              <ListItemText primary={list.title} />
+                            </ListItemButton>
                           );
                         })}
                       </List>

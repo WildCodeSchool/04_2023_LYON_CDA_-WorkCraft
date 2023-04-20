@@ -14,6 +14,7 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
+import PropTypes from "prop-types";
 import Sidebar2 from "./Sidebar2";
 import ProjectModal from "./ProjectModal";
 
@@ -57,7 +58,7 @@ const Drawer = styled(MuiDrawer, {
   }),
 }));
 
-export default function Sidebar1() {
+export default function Sidebar1({ toggleDarkMode }) {
   const [openModal, setOpenModal] = React.useState(false);
 
   return (
@@ -156,7 +157,7 @@ export default function Sidebar1() {
                     }}
                   >
                     {index % 2 === 0 ? (
-                      <DarkModeIcon />
+                      <DarkModeIcon onClick={() => toggleDarkMode()} />
                     ) : (
                       <PowerSettingsNewIcon />
                     )}
@@ -184,3 +185,7 @@ export default function Sidebar1() {
     </Box>
   );
 }
+
+Sidebar1.propTypes = {
+  toggleDarkMode: PropTypes.func.isRequired,
+};

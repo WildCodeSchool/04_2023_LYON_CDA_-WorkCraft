@@ -48,7 +48,7 @@ final class ModuleFactory extends ModelFactory
     {
         return [
             'isDone' => self::faker()->boolean(),
-            'title' => self::faker()->text(255),
+            'title' => self::faker()->words(3, true),
         ];
     }
 

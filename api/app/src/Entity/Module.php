@@ -35,6 +35,13 @@ class Module
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups([
+        'project:read',
+        'list:read',
+        'task:read',
+        'module:read',
+        'user:read',
+    ])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]

@@ -47,8 +47,8 @@ final class TaskFactory extends ModelFactory
     protected function getDefaults(): array
     {
         return [
-            'title' => self::faker()->text(50),
-            'description' => self::faker()->realText(150),
+            'title' => self::faker()->sentence(),
+            'description' => self::faker()->realTextBetween(50, 125),
         ];
     }
 

@@ -43,10 +43,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: "SEQUENCE")]
     #[ORM\Column]
+    #[Groups([
+        'project:read',
+        'list:read',
+        'task:read',
+        'module:read',
+        'user:read',
+    ])]
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
-    #[Groups(['user:read', 'user:write'])]
+    #[Groups([
+        'user:read',
+        'user:write',
+    ])]
     #[Assert\NotBlank]
     #[Assert\Email]
     private ?string $email = null;
@@ -62,12 +72,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\Column(length: 255, unique: true)]
-    #[Groups(['user:read', 'user:write'])]
+    #[Groups([
+        'user:read',
+        'user:write',
+        'project:read',
+    ])]
     #[Assert\NotBlank]
     private ?string $username = null;
 
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Project::class)]
-    #[Groups(['user:read', 'project:read'])]
+    #[Groups([
+        'user:read',
+        'project:read',
+    ])]
     private Collection $projects;
 
     #[ORM\ManyToMany(targetEntity: Task::class, mappedBy: 'users')]

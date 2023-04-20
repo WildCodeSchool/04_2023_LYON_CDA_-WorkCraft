@@ -47,7 +47,7 @@ final class ProjectListFactory extends ModelFactory
     protected function getDefaults(): array
     {
         return [
-            'title' => self::faker()->text(50),
+            'title' => self::faker()->words(3, true),
         ];
     }
 

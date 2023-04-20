@@ -48,7 +48,7 @@ final class ProjectFactory extends ModelFactory
     {
         return [
             'owner' => UserFactory::new(),
-            'title' => self::faker()->text(50),
+            'title' => self::faker()->title(),
         ];
     }
 

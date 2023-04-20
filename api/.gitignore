@@ -2,3 +2,6 @@
 /logs/
 .idea/
 /app/migrations/
+var/
+vendor/
+public/bundles/

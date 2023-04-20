@@ -37,20 +37,37 @@ class Project
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups([
+        'project:read',
+        'list:read',
+        'task:read',
+        'module:read',
+        'user:read',
+    ])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['project:read', 'project:write'])]
+    #[Groups([
+        'project:read',
+        'project:write',
+        'user:read',
+    ])]
     #[Assert\NotBlank]
     private ?string $title = null;
 
     #[ORM\ManyToOne(inversedBy: 'projects')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['project:write', 'user:read'])]
+    #[Groups([
+        'project:write',
+        'user:read',
+    ])]
     private ?User $owner = null;
 
     #[ORM\OneToMany(mappedBy: 'project', targetEntity: ProjectList::class)]
-    #[Groups(['project:read', 'list:read'])]
+    #[Groups([
+        'project:read',
+        'list:read',
+    ])]
     private Collection $lists;
 
     public function __construct()

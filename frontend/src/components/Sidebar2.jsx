@@ -25,6 +25,8 @@ import data from "../data";
 
 export default function Sidebar2({ setOpenModal }) {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
+
   function toggleDrawer() {
     setIsDrawerOpen(!isDrawerOpen);
   }
@@ -50,7 +52,10 @@ export default function Sidebar2({ setOpenModal }) {
         <Box sx={{ width: 250 }} role="presentation">
           <List>
             {/* SearchBar */}
-            <PrimarySearchAppBar />
+            <PrimarySearchAppBar
+              setSearchValue={setSearchValue}
+              searchValue={searchValue}
+            />
 
             {/* New Project Button */}
             <Stack spacing={2} direction="row">
@@ -58,71 +63,97 @@ export default function Sidebar2({ setOpenModal }) {
                 New project <AddIcon />
               </Button>
             </Stack>
-            {data.projects.map((project) => {
-              return (
-                <div key={project.id}>
-                  <ListItem
-                    key={project.id}
-                    sx={{ display: "flex", justifyContent: "space-between" }}
-                  >
-                    <Box sx={{ display: "flex", alignItems: "center" }}>
-                      <ListItemIcon>
-                        <DateRangeIcon />
-                      </ListItemIcon>
-                      <NavLink
-                        to={`/projects/${project.id}`}
-                        style={{
-                          textDecoration: "none",
-                          color: "inherit",
-                        }}
-                      >
-                        <ListItemText primary={project.title} />
-                      </NavLink>
-                    </Box>
-                    {collapseList[project.id] ? (
-                      <ExpandLess
-                        sx={{ cursor: "pointer" }}
-                        onClick={() => toggleCollapse(project.id)}
-                      />
-                    ) : (
-                      <ExpandMore
-                        sx={{ cursor: "pointer" }}
-                        onClick={() => toggleCollapse(project.id)}
-                      />
-                    )}
-                  </ListItem>
-                  <Collapse
-                    in={collapseList[project.id]}
-                    timeout="auto"
-                    unmountOnExit
-                  >
-                    <List component="div" disablePadding>
-                      <ListItemButton sx={{ pl: 4 }}>
+            {data.projects
+              .filter((project) =>
+                project.title
+                  .toLocaleLowerCase()
+                  .normalize("NFD")
+                  .replace(/[\u0300-\u036f]/g, "")
+                  .includes(
+                    searchValue
+                      .toLocaleLowerCase()
+                      .normalize("NFD")
+                      .replace(/[\u0300-\u036f]/g, "")
+                  )
+              )
+              .map((project) => {
+                return (
+                  <div key={project.id}>
+                    <ListItem
+                      key={project.id}
+                      sx={{ display: "flex", justifyContent: "space-between" }}
+                    >
+                      <Box sx={{ display: "flex", alignItems: "center" }}>
                         <ListItemIcon>
-                          <StarBorder />
+                          <DateRangeIcon />
                         </ListItemIcon>
-                        <ListItemText primary="Starred" />
-                      </ListItemButton>
-                    </List>
-                  </Collapse>
-                </div>
-              );
-            })}
+                        <NavLink
+                          to={`/projects/${project.id}`}
+                          style={{
+                            textDecoration: "none",
+                            color: "inherit",
+                          }}
+                        >
+                          <ListItemText primary={project.title} />
+                        </NavLink>
+                      </Box>
+                      {collapseList[project.id] ? (
+                        <ExpandLess
+                          sx={{ cursor: "pointer" }}
+                          onClick={() => toggleCollapse(project.id)}
+                        />
+                      ) : (
+                        <ExpandMore
+                          sx={{ cursor: "pointer" }}
+                          onClick={() => toggleCollapse(project.id)}
+                        />
+                      )}
+                    </ListItem>
+                    <Collapse
+                      in={collapseList[project.id]}
+                      timeout="auto"
+                      unmountOnExit
+                    >
+                      <List component="div" disablePadding>
+                        <ListItemButton sx={{ pl: 4 }}>
+                          <ListItemIcon>
+                            <StarBorder />
+                          </ListItemIcon>
+                          <ListItemText primary="Starred" />
+                        </ListItemButton>
+                      </List>
+                    </Collapse>
+                  </div>
+                );
+              })}
 
             {/* Button collapse */}
           </List>
           <Divider />
           <List>
-            {data.projects.map((project) => (
-              <ListItem key={project.id} disablePadding>
-                <ListItemButton>
-                  <ListItemIcon>
-                    <DateRangeIcon />
-                  </ListItemIcon>
-                  <ListItemText primary={project.title} />
-                </ListItemButton>
-              </ListItem>
-            ))}
+            {data.projects
+              .filter((project) =>
+                project.title
+                  .toLocaleLowerCase()
+                  .normalize("NFD")
+                  .replace(/[\u0300-\u036f]/g, "")
+                  .includes(
+                    searchValue
+                      .toLocaleLowerCase()
+                      .normalize("NFD")
+                      .replace(/[\u0300-\u036f]/g, "")
+                  )
+              )
+              .map((project) => (
+                <ListItem key={project.id} disablePadding>
+                  <ListItemButton>
+                    <ListItemIcon>
+                      <DateRangeIcon />
+                    </ListItemIcon>
+                    <ListItemText primary={project.title} />
+                  </ListItemButton>
+                </ListItem>
+              ))}
           </List>
         </Box>
       </Drawer>

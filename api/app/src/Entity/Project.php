@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
@@ -32,6 +34,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         'groups' => ['project:write']
     ],
 )]
+#[ApiFilter(SearchFilter::class, properties: ['owner.username' => 'partial'])]
 class Project
 {
     #[ORM\Id]

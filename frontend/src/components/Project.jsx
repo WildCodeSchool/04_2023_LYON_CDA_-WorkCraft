@@ -17,7 +17,7 @@ export default function Project() {
       .catch((err) => {
         console.error(`Axios Error : ${err.message}`);
       });
-  }, []);
+  }, [projectId]);
 
   return (
     <Box

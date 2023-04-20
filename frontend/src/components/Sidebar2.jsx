@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import Button from "@mui/material/Button";
@@ -21,9 +21,22 @@ import StarBorder from "@mui/icons-material/StarBorder";
 import DateRangeIcon from "@mui/icons-material/DateRange";
 import { NavLink } from "react-router-dom";
 import PrimarySearchAppBar from "./Searchbar";
-import data from "../data";
+import axios from "axios";
 
 export default function Sidebar2({ setOpenModal }) {
+  const [projects, setProjects] = useState([])
+  useEffect(() => {
+    axios
+      .get(`http://localhost/api/projects.json?owner.username=supzero`)
+      .then((res) => {
+        console.info(res.data);
+        setProjects(res.data);
+      })
+      .catch((err) => {
+        console.error(`Axios Error : ${err.message}`);
+      });
+  }, []);
+
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [searchValue, setSearchValue] = useState("");
 
@@ -63,7 +76,7 @@ export default function Sidebar2({ setOpenModal }) {
                 New project <AddIcon />
               </Button>
             </Stack>
-            {data.projects
+            {projects
               .filter((project) =>
                 project.title
                   .toLocaleLowerCase()
@@ -115,12 +128,16 @@ export default function Sidebar2({ setOpenModal }) {
                       unmountOnExit
                     >
                       <List component="div" disablePadding>
-                        <ListItemButton sx={{ pl: 4 }}>
-                          <ListItemIcon>
-                            <StarBorder />
-                          </ListItemIcon>
-                          <ListItemText primary="Starred" />
-                        </ListItemButton>
+                        {project.lists.map((list) => {
+                          return (
+                            <ListItemButton sx={{ pl: 4 }} key={list.id}>
+                            <ListItemIcon>
+                              <StarBorder />
+                            </ListItemIcon>
+                            <ListItemText primary={list.title} />
+                          </ListItemButton>
+                          );
+                        })}
                       </List>
                     </Collapse>
                   </div>
@@ -131,7 +148,7 @@ export default function Sidebar2({ setOpenModal }) {
           </List>
           <Divider />
           <List>
-            {data.projects
+            {projects
               .filter((project) =>
                 project.title
                   .toLocaleLowerCase()

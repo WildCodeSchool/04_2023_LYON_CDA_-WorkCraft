@@ -48,7 +48,7 @@ final class ProjectFactory extends ModelFactory
     {
         return [
             'owner' => UserFactory::new(),
-            'title' => self::faker()->title(),
+            'title' => self::faker()->randomElement(['Pantoufle', 'Desert', 'Cuisine']),
         ];
     }
 

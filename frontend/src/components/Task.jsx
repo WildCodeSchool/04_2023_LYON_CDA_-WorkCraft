@@ -1,13 +1,4 @@
-import {
-  Chip,
-  CardHeader,
-  Avatar,
-  IconButton,
-  Card,
-  Typography,
-  CardContent,
-  Skeleton,
-} from "@mui/material";
+import { Card, Typography, CardContent, Skeleton } from "@mui/material";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import axios from "axios";

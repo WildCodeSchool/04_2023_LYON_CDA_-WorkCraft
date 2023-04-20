@@ -12,10 +12,11 @@ import Divider from "@mui/material/Divider";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
+import { PropTypes } from "prop-types";
 import Sidebar2 from "./Sidebar2";
 import ProjectModal from "./ProjectModal";
 
-export default function Sidebar1() {
+export default function Sidebar1({ toggleDarkMode }) {
   const [openModal, setOpenModal] = React.useState(false);
 
   function miniButton(icon, onClick = undefined) {
@@ -76,7 +77,7 @@ export default function Sidebar1() {
           </List>
           <Divider />
           <List>
-            {miniButton(<DarkModeIcon />)}
+            {miniButton(<DarkModeIcon />, toggleDarkMode)}
             {miniButton(<PowerSettingsNewIcon />)}
           </List>
         </Box>
@@ -96,3 +97,7 @@ export default function Sidebar1() {
     </Box>
   );
 }
+
+Sidebar1.propTypes = {
+  toggleDarkMode: PropTypes.func.isRequired,
+};

@@ -71,7 +71,15 @@ export default function Sidebar2({ setOpenModal }) {
             />
 
             {/* New Project Button */}
-            <Stack spacing={2} direction="row">
+            <Stack
+              spacing={2}
+              direction="row"
+              sx={{
+                marginTop: 2,
+                marginBottom: 1,
+                ml: 2,
+              }}
+            >
               <Button variant="contained" onClick={() => setOpenModal(true)}>
                 New project <AddIcon />
               </Button>

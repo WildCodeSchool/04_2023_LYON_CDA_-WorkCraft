@@ -23,7 +23,7 @@ import { NavLink } from "react-router-dom";
 import axios from "axios";
 import PrimarySearchAppBar from "./Searchbar";
 
-export default function Sidebar2({ setOpenModal }) {
+export default function Sidebar2({ setOpenModal, toggleDrawer, isDrawerOpen }) {
   const [projects, setProjects] = useState([]);
   useEffect(() => {
     axios
@@ -37,12 +37,7 @@ export default function Sidebar2({ setOpenModal }) {
       });
   }, []);
 
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [searchValue, setSearchValue] = useState("");
-
-  function toggleDrawer() {
-    setIsDrawerOpen(!isDrawerOpen);
-  }
 
   const [collapseList, setCollapseList] = useState({});
   function toggleCollapse(id) {
@@ -188,4 +183,6 @@ export default function Sidebar2({ setOpenModal }) {
 
 Sidebar2.propTypes = {
   setOpenModal: PropTypes.func.isRequired,
+  toggleDrawer: PropTypes.func.isRequired,
+  isDrawerOpen: PropTypes.bool.isRequired,
 };

@@ -4,6 +4,7 @@ import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
 import SearchIcon from "@mui/icons-material/Search";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import * as React from "react";
+import { useState } from "react";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
@@ -17,7 +18,8 @@ import Sidebar2 from "./Sidebar2";
 import ProjectModal from "./ProjectModal";
 
 export default function Sidebar1({ toggleDarkMode }) {
-  const [openModal, setOpenModal] = React.useState(false);
+  const [openModal, setOpenModal] = useState(false);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   function miniButton(icon, onClick = undefined) {
     return (
@@ -43,6 +45,10 @@ export default function Sidebar1({ toggleDarkMode }) {
       </ListItem>
     );
   }
+
+  const toggleDrawer = () => {
+    setIsDrawerOpen(!isDrawerOpen);
+  };
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -72,7 +78,7 @@ export default function Sidebar1({ toggleDarkMode }) {
         >
           <List>
             {miniButton(<PersonIcon />)}
-            {miniButton(<SearchIcon />)}
+            {miniButton(<SearchIcon />, () => toggleDrawer())}
             {miniButton(<SettingsIcon />)}
           </List>
           <Divider />
@@ -92,7 +98,12 @@ export default function Sidebar1({ toggleDarkMode }) {
           zIndex: 1500,
         }}
       >
-        <Sidebar2 openModal={openModal} setOpenModal={setOpenModal} />
+        <Sidebar2
+          openModal={openModal}
+          setOpenModal={setOpenModal}
+          toggleDrawer={toggleDrawer}
+          isDrawerOpen={isDrawerOpen}
+        />
       </Box>
     </Box>
   );

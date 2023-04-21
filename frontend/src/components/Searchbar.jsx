@@ -48,6 +48,10 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function PrimarySearchAppBar({ searchValue, setSearchValue }) {
+  const searchInputRef = React.useRef();
+  React.useEffect(() => {
+    searchInputRef.current.focus();
+  }, []);
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
@@ -61,6 +65,7 @@ export default function PrimarySearchAppBar({ searchValue, setSearchValue }) {
               inputProps={{ "aria-label": "search" }}
               onChange={(event) => setSearchValue(event.target.value)}
               value={searchValue}
+              inputRef={searchInputRef}
             />
           </Search>
         </Toolbar>

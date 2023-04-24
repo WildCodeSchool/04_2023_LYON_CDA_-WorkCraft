@@ -7,6 +7,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import InputLabel from "@mui/material/InputLabel";
 import PropTypes from "prop-types";
+import axios from "axios";
 
 export default function ProjectModal({ open, setOpen }) {
   const [projectName, setProjectName] = React.useState("");
@@ -15,6 +16,20 @@ export default function ProjectModal({ open, setOpen }) {
   const [endDate, setEndDate] = React.useState("");
   const [isDateEmpty, setIsDateEmpty] = React.useState(false);
   const [isDatesInOrder, setIsDatesInOrder] = React.useState(true);
+
+  const addProject = () => {
+    axios
+      .post("http://localhost/api/projects", {
+        title: projectName,
+        owner: "api/users/5",
+      })
+      .then((res) => {
+        console.info(res.data);
+      })
+      .catch((err) => {
+        console.error(`Axios Error : ${err.message}`);
+      });
+  };
 
   const handleProjectNameChange = (event) => {
     setProjectName(event.target.value);
@@ -46,6 +61,7 @@ export default function ProjectModal({ open, setOpen }) {
       setIsDatesInOrder(false);
       return;
     }
+    addProject();
     setOpen(false);
   };
 

@@ -25,6 +25,7 @@ import PrimarySearchAppBar from "./Searchbar";
 
 export default function Sidebar2({ setOpenModal, toggleDrawer, isDrawerOpen }) {
   const [projects, setProjects] = useState([]);
+
   useEffect(() => {
     axios
       .get(`http://localhost/api/projects.json?owner.username=supzero`)

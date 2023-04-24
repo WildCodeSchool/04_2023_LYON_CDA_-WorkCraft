@@ -64,7 +64,7 @@ class Task
     #[Groups(['task:read', 'user:read'])]
     private Collection $users;
 
-    #[ORM\OneToMany(mappedBy: 'task', targetEntity: Module::class)]
+    #[ORM\OneToMany(mappedBy: 'task', targetEntity: Module::class, orphanRemoval: true)]
     #[Groups(['task:read', 'module:read', 'list:read'])]
     private Collection $modules;
 

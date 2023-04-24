@@ -25,6 +25,20 @@ import PrimarySearchAppBar from "./Searchbar";
 
 export default function Sidebar2({ setOpenModal, toggleDrawer, isDrawerOpen }) {
   const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const toggleDelete = (id) => {
+    axios
+      .delete(`http://localhost/api/projects/${id}`)
+      .then(response => {
+        console.info('Delete successful'),
+          setLoading(!loading);
+      })
+      .catch((err) => {
+        console.error(`Axios Error : ${err.message}`)
+      })
+  }
+
   useEffect(() => {
     axios
       .get(`http://localhost/api/projects.json?owner.username=supzero`)
@@ -35,7 +49,7 @@ export default function Sidebar2({ setOpenModal, toggleDrawer, isDrawerOpen }) {
       .catch((err) => {
         console.error(`Axios Error : ${err.message}`);
       });
-  }, []);
+  }, [loading]);
 
   const [searchValue, setSearchValue] = useState("");
 
@@ -112,6 +126,7 @@ export default function Sidebar2({ setOpenModal, toggleDrawer, isDrawerOpen }) {
                         >
                           <ListItemText primary={project.title} />
                         </NavLink>
+                        <button onClick={() => toggleDelete(project.id)} >Delete</button>
                       </Box>
                       {collapseList[project.id] ? (
                         <ExpandLess

@@ -20,7 +20,6 @@ export default function Sidebar1({
   openModal,
   setOpenModal,
   toggleDrawer,
-  loading,
   setLoading,
 }) {
   function miniButton(icon, onClick = undefined) {
@@ -54,7 +53,6 @@ export default function Sidebar1({
       <ProjectModal
         open={openModal}
         setOpen={setOpenModal}
-        loading={loading}
         setLoading={setLoading}
       />
       <Drawer
@@ -100,6 +98,5 @@ Sidebar1.propTypes = {
   openModal: PropTypes.bool.isRequired,
   setOpenModal: PropTypes.func.isRequired,
   toggleDrawer: PropTypes.func.isRequired,
-  loading: PropTypes.bool.isRequired,
   setLoading: PropTypes.func.isRequired,
 };

@@ -43,7 +43,6 @@ export default function Root() {
         openModal={openModal}
         setOpenModal={setOpenModal}
         toggleDrawer={toggleDrawer}
-        loading={loading}
         setLoading={setLoading}
       />
       <main

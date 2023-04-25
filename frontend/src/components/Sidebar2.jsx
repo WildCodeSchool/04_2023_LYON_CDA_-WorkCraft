@@ -46,7 +46,7 @@ export default function Sidebar2({
 
   useEffect(() => {
     axios
-      .get(`http://localhost/api/projects.json?owner.username=supzero`)
+      .get(`http://localhost/api/projects.json`)
       .then((res) => {
         console.info(res.data);
         setProjects(res.data);

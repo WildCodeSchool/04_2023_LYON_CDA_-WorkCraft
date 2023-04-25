@@ -59,9 +59,7 @@ class Project
     private ?string $title = null;
 
     #[ORM\ManyToOne(inversedBy: 'projects')]
-    #[ORM\JoinColumn(nullable: false)]
     #[Groups([
-        'project:write',
         'user:read',
     ])]
     private ?User $owner = null;

@@ -17,7 +17,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Task from "./Task";
 
-export default function TasksList({ listId, setLoadingLists }) {
+export default function TasksList({ listId, loadLists }) {
   const [list, setList] = useState({});
   const [anchorMenuElement, setAnchorMenuElement] = useState(null);
   const isMenuOpen = Boolean(anchorMenuElement);
@@ -31,7 +31,7 @@ export default function TasksList({ listId, setLoadingLists }) {
     handleClose();
     axios
       .delete(`http://localhost/api/project_lists/${listId}.json`)
-      .then(() => setLoadingLists((prev) => !prev));
+      .then(loadLists);
   };
 
   useEffect(() => {
@@ -89,5 +89,5 @@ export default function TasksList({ listId, setLoadingLists }) {
 
 TasksList.propTypes = {
   listId: PropTypes.number.isRequired,
-  setLoadingLists: PropTypes.func.isRequired,
+  loadLists: PropTypes.func.isRequired,
 };

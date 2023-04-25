@@ -32,11 +32,12 @@ export default function Task({ taskId }) {
               {task.description}
             </Typography>
             <Typography sx={{ fontSize: 10 }} color="initial">
-              {`Modules : ${task.modules
-                .map((module) => (module.isDone ? 1 : 0))
-                .reduce((accumulator, current) => accumulator + current)} / ${
-                task.modules.length
-              }`}
+              {task.modules.length > 0 &&
+                `Modules : ${task.modules
+                  .map((module) => (module.isDone ? 1 : 0))
+                  .reduce((accumulator, current) => accumulator + current)} / ${
+                  task.modules.length
+                }`}
             </Typography>
           </CardContent>
         </Card>

@@ -9,6 +9,8 @@ import {
   Menu,
   ListItemIcon,
   ListItemText,
+  Button,
+  CardActions,
 } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -46,6 +48,14 @@ export default function TasksList({ listId, loadLists }) {
       });
   }, []);
 
+  const handleCreateTask = () => {
+    axios.post(`http://localhost/api/tasks`, {
+      title: "MonSuperTitre",
+      description: "",
+      list: `api/project_lists/${listId}`,
+    });
+  };
+
   return (
     <Card sx={{ minWidth: 275 }}>
       <CardHeader
@@ -67,6 +77,11 @@ export default function TasksList({ listId, loadLists }) {
             ))}
         </List>
       </CardContent>
+      <CardActions>
+        <Button onClick={handleCreateTask} variant="contained">
+          My button
+        </Button>
+      </CardActions>
       <Menu
         id="basic-menu"
         anchorEl={anchorMenuElement}

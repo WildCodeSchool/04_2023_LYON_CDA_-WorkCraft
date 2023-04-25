@@ -79,6 +79,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         'user:read',
         'user:write',
         'project:read',
+        'project:write',
     ])]
     #[Assert\NotBlank]
     private ?string $username = null;

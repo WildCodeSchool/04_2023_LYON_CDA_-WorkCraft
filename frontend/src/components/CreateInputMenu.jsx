@@ -10,33 +10,37 @@ import {
 import PropTypes from "prop-types";
 import { useState } from "react";
 
-export default function CreateListMenu({ createList }) {
-  const [isShowingListMenu, setIsShowingListMenu] = useState(false);
-  const [listNameInput, setListNameInput] = useState("");
+export default function CreateInputMenu({
+  createFunction,
+  submitText,
+  labelInput,
+}) {
+  const [isShowingMenu, setIsShowingMenu] = useState(false);
+  const [nameInput, setNameInput] = useState("");
 
   const handleCloseListMenu = () => {
-    setIsShowingListMenu(false);
-    setListNameInput("");
+    setIsShowingMenu(false);
+    setNameInput("");
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     handleCloseListMenu();
-    createList(listNameInput);
+    createFunction(nameInput);
   };
 
   return (
     <div>
-      {isShowingListMenu ? (
+      {isShowingMenu ? (
         <ClickAwayListener onClickAway={handleCloseListMenu}>
           <Form onSubmit={handleSubmit}>
             <Card sx={{ minWidth: 275, padding: "10px 5px" }}>
               <CardContent>
                 <TextField
                   sx={{ width: "100%" }}
-                  label="List Name"
-                  value={listNameInput}
-                  onChange={(e) => setListNameInput(e.target.value)}
+                  label={labelInput}
+                  value={nameInput}
+                  onChange={(e) => setNameInput(e.target.value)}
                   inputRef={(input) => input && input.focus()}
                 />
               </CardContent>
@@ -46,17 +50,17 @@ export default function CreateListMenu({ createList }) {
                 </Button>
                 <Button
                   variant="contained"
-                  disabled={listNameInput.length <= 0}
+                  disabled={nameInput.length <= 0}
                   type="submit"
                 >
-                  Create
+                  {submitText}
                 </Button>
               </CardActions>
             </Card>
           </Form>
         </ClickAwayListener>
       ) : (
-        <Button variant="contained" onClick={() => setIsShowingListMenu(true)}>
+        <Button variant="contained" onClick={() => setIsShowingMenu(true)}>
           New List
         </Button>
       )}
@@ -64,6 +68,13 @@ export default function CreateListMenu({ createList }) {
   );
 }
 
-CreateListMenu.propTypes = {
-  createList: PropTypes.func.isRequired,
+CreateInputMenu.propTypes = {
+  createFunction: PropTypes.func.isRequired,
+  submitText: PropTypes.string,
+  labelInput: PropTypes.string,
+};
+
+CreateInputMenu.defaultProps = {
+  submitText: "Submit",
+  labelInput: "Name",
 };

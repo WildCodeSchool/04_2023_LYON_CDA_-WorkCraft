@@ -3,7 +3,7 @@ import { Box, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import TasksList from "./TasksList";
-import CreateListMenu from "./CreateListMenu";
+import CreateInputMenu from "./CreateInputMenu";
 
 export default function Project() {
   const { projectId } = useParams();
@@ -60,7 +60,11 @@ export default function Project() {
           project.lists.map((list) => (
             <TasksList key={list.id} listId={list.id} loadLists={loadLists} />
           ))}
-        <CreateListMenu createList={createList} />
+        <CreateInputMenu
+          createFunction={createList}
+          submitText="Create"
+          labelInput="List Name"
+        />
       </Box>
     </Box>
   );

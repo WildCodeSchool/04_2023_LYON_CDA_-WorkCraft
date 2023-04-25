@@ -8,7 +8,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import InputLabel from "@mui/material/InputLabel";
 import PropTypes from "prop-types";
 
-export default function ProjectModal({ open, setOpen }) {
+export default function ProjectModal({ open, setOpen, loading, setLoading }) {
   const [projectName, setProjectName] = React.useState("");
   const [isProjectEmpty, setIsProjectEmpty] = React.useState(false);
   const [startDate, setStartDate] = React.useState("");
@@ -46,6 +46,7 @@ export default function ProjectModal({ open, setOpen }) {
       setIsDatesInOrder(false);
       return;
     }
+    setLoading(!loading);
     setOpen(false);
   };
 
@@ -117,4 +118,6 @@ export default function ProjectModal({ open, setOpen }) {
 ProjectModal.propTypes = {
   open: PropTypes.bool.isRequired,
   setOpen: PropTypes.func.isRequired,
+  loading: PropTypes.bool.isRequired,
+  setLoading: PropTypes.func.isRequired,
 };

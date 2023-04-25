@@ -9,7 +9,7 @@ import InputLabel from "@mui/material/InputLabel";
 import PropTypes from "prop-types";
 import axios from "axios";
 
-export default function ProjectModal({ open, setOpen }) {
+export default function ProjectModal({ open, setOpen, loading, setLoading }) {
   const [projectName, setProjectName] = React.useState("");
   const [isProjectEmpty, setIsProjectEmpty] = React.useState(false);
   const [startDate, setStartDate] = React.useState("");
@@ -25,6 +25,7 @@ export default function ProjectModal({ open, setOpen }) {
       })
       .then((res) => {
         console.info(res.data);
+        setLoading(!loading);
       })
       .catch((err) => {
         console.error(`Axios Error : ${err.message}`);
@@ -61,6 +62,7 @@ export default function ProjectModal({ open, setOpen }) {
       setIsDatesInOrder(false);
       return;
     }
+    setLoading(!loading);
     addProject();
     setOpen(false);
   };
@@ -133,4 +135,6 @@ export default function ProjectModal({ open, setOpen }) {
 ProjectModal.propTypes = {
   open: PropTypes.bool.isRequired,
   setOpen: PropTypes.func.isRequired,
+  loading: PropTypes.bool.isRequired,
+  setLoading: PropTypes.func.isRequired,
 };

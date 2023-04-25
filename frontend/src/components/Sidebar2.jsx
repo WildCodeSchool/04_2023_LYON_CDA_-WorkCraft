@@ -23,9 +23,14 @@ import { NavLink } from "react-router-dom";
 import axios from "axios";
 import PrimarySearchAppBar from "./Searchbar";
 
-export default function Sidebar2({ setOpenModal, toggleDrawer, isDrawerOpen }) {
+export default function Sidebar2({
+  setOpenModal,
+  toggleDrawer,
+  isDrawerOpen,
+  loading,
+  setLoading,
+}) {
   const [projects, setProjects] = useState([]);
-  const [loading, setLoading] = useState(true);
 
   const toggleDelete = (id) => {
     axios
@@ -205,4 +210,6 @@ Sidebar2.propTypes = {
   setOpenModal: PropTypes.func.isRequired,
   toggleDrawer: PropTypes.func.isRequired,
   isDrawerOpen: PropTypes.bool.isRequired,
+  loading: PropTypes.bool.isRequired,
+  setLoading: PropTypes.func.isRequired,
 };

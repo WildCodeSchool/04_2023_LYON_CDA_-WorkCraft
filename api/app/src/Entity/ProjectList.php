@@ -56,6 +56,9 @@ class ProjectList
     private ?string $title = null;
 
     #[ORM\ManyToOne(inversedBy: 'lists')]
+    #[Groups([
+        'list:write',
+    ])]
     private ?Project $project = null;
 
     #[ORM\OneToMany(mappedBy: 'list', targetEntity: Task::class, orphanRemoval: true)]

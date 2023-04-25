@@ -14,14 +14,10 @@ import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArro
 import Stack from "@mui/material/Stack";
 import AddIcon from "@mui/icons-material/Add";
 import PropTypes from "prop-types";
-import Collapse from "@mui/material/Collapse";
-import ExpandLess from "@mui/icons-material/ExpandLess";
-import ExpandMore from "@mui/icons-material/ExpandMore";
-import StarBorder from "@mui/icons-material/StarBorder";
 import DateRangeIcon from "@mui/icons-material/DateRange";
-import { NavLink } from "react-router-dom";
 import axios from "axios";
 import PrimarySearchAppBar from "./Searchbar";
+import ProjectItem from "./ProjectItem";
 
 export default function Sidebar2({
   setOpenModal,
@@ -32,16 +28,11 @@ export default function Sidebar2({
 }) {
   const [projects, setProjects] = useState([]);
 
-  const toggleDelete = (id) => {
-    axios
-      .delete(`http://localhost/api/projects/${id}`)
-      .then(() => {
-        console.info("Delete successful");
-        setLoading(!loading);
-      })
-      .catch((err) => {
-        console.error(`Axios Error : ${err.message}`);
-      });
+  const [searchValue, setSearchValue] = useState("");
+
+  const [collapseList, setCollapseList] = useState({});
+  const toggleCollapse = (id) => {
+    setCollapseList({ ...collapseList, [id]: !collapseList[id] });
   };
 
   useEffect(() => {
@@ -55,13 +46,6 @@ export default function Sidebar2({
         console.error(`Axios Error : ${err.message}`);
       });
   }, [loading]);
-
-  const [searchValue, setSearchValue] = useState("");
-
-  const [collapseList, setCollapseList] = useState({});
-  function toggleCollapse(id) {
-    setCollapseList({ ...collapseList, [id]: !collapseList[id] });
-  }
 
   return (
     <div>
@@ -113,62 +97,14 @@ export default function Sidebar2({
               )
               .map((project) => {
                 return (
-                  <div key={project.id}>
-                    <ListItem
-                      key={project.id}
-                      sx={{ display: "flex", justifyContent: "space-between" }}
-                    >
-                      <Box sx={{ display: "flex", alignItems: "center" }}>
-                        <ListItemIcon>
-                          <DateRangeIcon />
-                        </ListItemIcon>
-                        <NavLink
-                          to={`/projects/${project.id}`}
-                          style={{
-                            textDecoration: "none",
-                            color: "inherit",
-                          }}
-                        >
-                          <ListItemText primary={project.title} />
-                        </NavLink>
-                        <Button
-                          variant="contained"
-                          onClick={() => toggleDelete(project.id)}
-                        >
-                          Delete
-                        </Button>
-                      </Box>
-                      {collapseList[project.id] ? (
-                        <ExpandLess
-                          sx={{ cursor: "pointer" }}
-                          onClick={() => toggleCollapse(project.id)}
-                        />
-                      ) : (
-                        <ExpandMore
-                          sx={{ cursor: "pointer" }}
-                          onClick={() => toggleCollapse(project.id)}
-                        />
-                      )}
-                    </ListItem>
-                    <Collapse
-                      in={collapseList[project.id]}
-                      timeout="auto"
-                      unmountOnExit
-                    >
-                      <List component="div" disablePadding>
-                        {project.lists.map((list) => {
-                          return (
-                            <ListItemButton sx={{ pl: 4 }} key={list.id}>
-                              <ListItemIcon>
-                                <StarBorder />
-                              </ListItemIcon>
-                              <ListItemText primary={list.title} />
-                            </ListItemButton>
-                          );
-                        })}
-                      </List>
-                    </Collapse>
-                  </div>
+                  <ProjectItem
+                    toggleCollapse={toggleCollapse}
+                    collapseList={collapseList}
+                    project={project}
+                    loading={loading}
+                    setLoading={setLoading}
+                    key={project.id}
+                  />
                 );
               })}
 

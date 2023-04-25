@@ -23,8 +23,27 @@ import { NavLink } from "react-router-dom";
 import axios from "axios";
 import PrimarySearchAppBar from "./Searchbar";
 
-export default function Sidebar2({ setOpenModal, toggleDrawer, isDrawerOpen }) {
+export default function Sidebar2({
+  setOpenModal,
+  toggleDrawer,
+  isDrawerOpen,
+  loading,
+  setLoading,
+}) {
   const [projects, setProjects] = useState([]);
+
+  const toggleDelete = (id) => {
+    axios
+      .delete(`http://localhost/api/projects/${id}`)
+      .then(() => {
+        console.info("Delete successful");
+        setLoading(!loading);
+      })
+      .catch((err) => {
+        console.error(`Axios Error : ${err.message}`);
+      });
+  };
+
   useEffect(() => {
     axios
       .get(`http://localhost/api/projects.json?owner.username=supzero`)
@@ -35,7 +54,7 @@ export default function Sidebar2({ setOpenModal, toggleDrawer, isDrawerOpen }) {
       .catch((err) => {
         console.error(`Axios Error : ${err.message}`);
       });
-  }, []);
+  }, [loading]);
 
   const [searchValue, setSearchValue] = useState("");
 
@@ -112,6 +131,12 @@ export default function Sidebar2({ setOpenModal, toggleDrawer, isDrawerOpen }) {
                         >
                           <ListItemText primary={project.title} />
                         </NavLink>
+                        <Button
+                          variant="contained"
+                          onClick={() => toggleDelete(project.id)}
+                        >
+                          Delete
+                        </Button>
                       </Box>
                       {collapseList[project.id] ? (
                         <ExpandLess
@@ -185,4 +210,6 @@ Sidebar2.propTypes = {
   setOpenModal: PropTypes.func.isRequired,
   toggleDrawer: PropTypes.func.isRequired,
   isDrawerOpen: PropTypes.bool.isRequired,
+  loading: PropTypes.bool.isRequired,
+  setLoading: PropTypes.func.isRequired,
 };

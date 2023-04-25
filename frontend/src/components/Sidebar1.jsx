@@ -4,7 +4,6 @@ import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
 import SearchIcon from "@mui/icons-material/Search";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import * as React from "react";
-import { useState } from "react";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
@@ -14,13 +13,15 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import { PropTypes } from "prop-types";
-import Sidebar2 from "./Sidebar2";
 import ProjectModal from "./ProjectModal";
 
-export default function Sidebar1({ toggleDarkMode }) {
-  const [openModal, setOpenModal] = useState(false);
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-
+export default function Sidebar1({
+  toggleDarkMode,
+  openModal,
+  setOpenModal,
+  toggleDrawer,
+  setLoading,
+}) {
   function miniButton(icon, onClick = undefined) {
     return (
       <ListItem disablePadding sx={{ display: "block" }}>
@@ -46,14 +47,14 @@ export default function Sidebar1({ toggleDarkMode }) {
     );
   }
 
-  const toggleDrawer = () => {
-    setIsDrawerOpen(!isDrawerOpen);
-  };
-
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
-      <ProjectModal open={openModal} setOpen={setOpenModal} />
+      <ProjectModal
+        open={openModal}
+        setOpen={setOpenModal}
+        setLoading={setLoading}
+      />
       <Drawer
         variant="permanent"
         sx={{
@@ -88,27 +89,14 @@ export default function Sidebar1({ toggleDarkMode }) {
           </List>
         </Box>
       </Drawer>
-      <Box
-        component="main"
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          height: "100vh",
-          width: "0px",
-          zIndex: 1500,
-        }}
-      >
-        <Sidebar2
-          openModal={openModal}
-          setOpenModal={setOpenModal}
-          toggleDrawer={toggleDrawer}
-          isDrawerOpen={isDrawerOpen}
-        />
-      </Box>
     </Box>
   );
 }
 
 Sidebar1.propTypes = {
   toggleDarkMode: PropTypes.func.isRequired,
+  openModal: PropTypes.bool.isRequired,
+  setOpenModal: PropTypes.func.isRequired,
+  toggleDrawer: PropTypes.func.isRequired,
+  setLoading: PropTypes.func.isRequired,
 };

@@ -7,14 +7,30 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import InputLabel from "@mui/material/InputLabel";
 import PropTypes from "prop-types";
+import axios from "axios";
 
-export default function ProjectModal({ open, setOpen }) {
+export default function ProjectModal({ open, setOpen, loading, setLoading }) {
   const [projectName, setProjectName] = React.useState("");
   const [isProjectEmpty, setIsProjectEmpty] = React.useState(false);
   const [startDate, setStartDate] = React.useState("");
   const [endDate, setEndDate] = React.useState("");
   const [isDateEmpty, setIsDateEmpty] = React.useState(false);
   const [isDatesInOrder, setIsDatesInOrder] = React.useState(true);
+
+  const addProject = () => {
+    axios
+      .post("http://localhost/api/projects", {
+        title: projectName,
+        owner: "api/users/5",
+      })
+      .then((res) => {
+        console.info(res.data);
+        setLoading(!loading);
+      })
+      .catch((err) => {
+        console.error(`Axios Error : ${err.message}`);
+      });
+  };
 
   const handleProjectNameChange = (event) => {
     setProjectName(event.target.value);
@@ -46,6 +62,8 @@ export default function ProjectModal({ open, setOpen }) {
       setIsDatesInOrder(false);
       return;
     }
+    setLoading(!loading);
+    addProject();
     setOpen(false);
   };
 
@@ -117,4 +135,6 @@ export default function ProjectModal({ open, setOpen }) {
 ProjectModal.propTypes = {
   open: PropTypes.bool.isRequired,
   setOpen: PropTypes.func.isRequired,
+  loading: PropTypes.bool.isRequired,
+  setLoading: PropTypes.func.isRequired,
 };

@@ -50,9 +50,7 @@ export default function Root() {
           backgroundImage: `url(${bgImage})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
-          display: "flex",
-          alignItems: "center",
-          height: "100vh",
+          height: "100%",
           width: "100%",
         }}
       >

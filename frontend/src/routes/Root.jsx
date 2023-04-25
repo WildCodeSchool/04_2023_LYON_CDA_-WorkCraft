@@ -45,23 +45,21 @@ export default function Root() {
         toggleDrawer={toggleDrawer}
         setLoading={setLoading}
       />
+      <Sidebar2
+        openModal={openModal}
+        setOpenModal={setOpenModal}
+        toggleDrawer={toggleDrawer}
+        isDrawerOpen={isDrawerOpen}
+        loading={loading}
+        setLoading={setLoading}
+      />
       <main
         style={{
           backgroundImage: `url(${bgImage})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
-          height: "100%",
-          width: "100%",
         }}
       >
-        <Sidebar2
-          openModal={openModal}
-          setOpenModal={setOpenModal}
-          toggleDrawer={toggleDrawer}
-          isDrawerOpen={isDrawerOpen}
-          loading={loading}
-          setLoading={setLoading}
-        />
         <Outlet />
       </main>
     </ThemeProvider>

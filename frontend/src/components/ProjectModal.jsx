@@ -21,7 +21,6 @@ export default function ProjectModal({ open, setOpen, setLoading }) {
     axios
       .post("http://localhost/api/projects", {
         title: projectName,
-        owner: "api/users/5",
       })
       .then((res) => {
         console.info(res.data);

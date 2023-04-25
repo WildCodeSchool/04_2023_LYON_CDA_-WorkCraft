@@ -14,7 +14,7 @@ class AppFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-        UserFactory::createMany(4);
+        UserFactory::createMany(5);
 
         ProjectFactory::createMany(
             3,
@@ -23,11 +23,9 @@ class AppFixtures extends Fixture
                     ['tasks' => TaskFactory::new(
                         ['modules' => ModuleFactory::new()->many(1, 4)]
                     )->many(5, 10)]
-                )->many(5),
-                'owner' => UserFactory::findOrCreate(['username' => 'supzero']),
+                )->many(5)
             ]
         );
-
 
         $manager->flush();
     }

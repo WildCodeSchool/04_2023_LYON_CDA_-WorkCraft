@@ -14,7 +14,7 @@ import TasksList from "./TasksList";
 export default function Project() {
   const { projectId } = useParams();
 
-  const [loading, setLoading] = useState(false);
+  const [loadingLists, setLoadingLists] = useState(false);
   const [isShowingListMenu, setIsShowingListMenu] = useState(false);
   const [listNameInput, setListNameInput] = useState("");
 
@@ -24,12 +24,13 @@ export default function Project() {
   };
 
   const handleCreateList = () => {
-    axios.post("http://localhost/api/project_lists", {
-      title: listNameInput,
-      project: `api/projects/${projectId}`,
-    });
+    axios
+      .post("http://localhost/api/project_lists", {
+        title: listNameInput,
+        project: `api/projects/${projectId}`,
+      })
+      .then(() => setLoadingLists((prev) => !prev));
     handleClickAwayListMenu();
-    setLoading((prev) => !prev);
   };
 
   const [project, setProject] = useState({});
@@ -37,13 +38,14 @@ export default function Project() {
     axios
       .get(`http://localhost/api/projects/${projectId}.json`)
       .then((res) => {
+        console.info("ReloadingLists list...");
         console.info(res.data);
         setProject(res.data);
       })
       .catch((err) => {
         console.error(`Axios Error : ${err.message}`);
       });
-  }, [projectId, loading]);
+  }, [projectId, loadingLists]);
 
   return (
     <Box
@@ -70,7 +72,11 @@ export default function Project() {
       >
         {project.lists &&
           project.lists.map((list) => (
-            <TasksList key={list.id} listId={list.id} setLoading={setLoading} />
+            <TasksList
+              key={list.id}
+              listId={list.id}
+              setLoadingLists={setLoadingLists}
+            />
           ))}
         {isShowingListMenu ? (
           <ClickAwayListener onClickAway={handleClickAwayListMenu}>

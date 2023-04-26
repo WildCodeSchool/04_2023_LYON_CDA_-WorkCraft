@@ -9,6 +9,7 @@ import {
   Menu,
   ListItemIcon,
   ListItemText,
+  CardActions,
 } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -16,8 +17,9 @@ import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Task from "./Task";
+import CreateInputMenu from "./CreateInputMenu";
 
-export default function TasksList({ listId, setLoading }) {
+export default function TasksList({ listId, loadLists }) {
   const [list, setList] = useState({});
   const [anchorMenuElement, setAnchorMenuElement] = useState(null);
   const isMenuOpen = Boolean(anchorMenuElement);
@@ -29,8 +31,9 @@ export default function TasksList({ listId, setLoading }) {
   };
   const handleDeleteList = () => {
     handleClose();
-    axios.delete(`http://localhost/api/project_lists/${listId}.json`);
-    setLoading((prev) => !prev);
+    axios
+      .delete(`http://localhost/api/project_lists/${listId}.json`)
+      .then(loadLists);
   };
 
   useEffect(() => {
@@ -44,6 +47,14 @@ export default function TasksList({ listId, setLoading }) {
         console.error(`Axios Error : ${err.message}`);
       });
   }, []);
+
+  const createTask = (titleTask) => {
+    axios.post(`http://localhost/api/tasks`, {
+      title: titleTask,
+      description: "",
+      list: `api/project_lists/${listId}`,
+    });
+  };
 
   return (
     <Card sx={{ minWidth: 275 }}>
@@ -66,6 +77,13 @@ export default function TasksList({ listId, setLoading }) {
             ))}
         </List>
       </CardContent>
+      <CardActions>
+        <CreateInputMenu
+          createFunction={createTask}
+          submitText="Create"
+          labelInput="Task Name"
+        />
+      </CardActions>
       <Menu
         id="basic-menu"
         anchorEl={anchorMenuElement}
@@ -88,5 +106,5 @@ export default function TasksList({ listId, setLoading }) {
 
 TasksList.propTypes = {
   listId: PropTypes.number.isRequired,
-  setLoading: PropTypes.func.isRequired,
+  loadLists: PropTypes.func.isRequired,
 };

@@ -8,14 +8,11 @@ import img6 from "../assets/backgroundImg/img6.jpg";
 import img2 from "../assets/backgroundImg/img2.jpg";
 
 export default function Root() {
-  const [openModal, setOpenModal] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const toggleDrawer = () => {
     setIsDrawerOpen(!isDrawerOpen);
   };
-
-  const [loading, setLoading] = useState(true);
 
   const [darkMode, setDarkMode] = useState(false);
   const [bgImage, setBgImage] = useState(img6);
@@ -38,21 +35,8 @@ export default function Root() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Sidebar1
-        toggleDarkMode={toggleDarkMode}
-        openModal={openModal}
-        setOpenModal={setOpenModal}
-        toggleDrawer={toggleDrawer}
-        setLoading={setLoading}
-      />
-      <Sidebar2
-        openModal={openModal}
-        setOpenModal={setOpenModal}
-        toggleDrawer={toggleDrawer}
-        isDrawerOpen={isDrawerOpen}
-        loading={loading}
-        setLoading={setLoading}
-      />
+      <Sidebar1 toggleDarkMode={toggleDarkMode} toggleDrawer={toggleDrawer} />
+      <Sidebar2 toggleDrawer={toggleDrawer} isDrawerOpen={isDrawerOpen} />
       <main
         style={{
           backgroundImage: `url(${bgImage})`,

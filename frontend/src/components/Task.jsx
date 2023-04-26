@@ -1,7 +1,14 @@
-import { Card, Typography, CardContent, Skeleton } from "@mui/material";
+import {
+  Card,
+  Typography,
+  CardContent,
+  Skeleton,
+  CardActionArea,
+} from "@mui/material";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import TaskModal from "./TaskModal";
 
 export default function Task({ taskId }) {
   const [task, setTask] = useState({});
@@ -17,28 +24,42 @@ export default function Task({ taskId }) {
         console.error(`Axios Error : ${err.message}`);
       });
   }, []);
+
+  const [open, setOpen] = useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>
       {Object.keys(task).length > 0 ? ( // check if task is filled or empty
         <Card>
-          <CardContent>
-            <Typography
-              sx={{ fontSize: 16, fontWeight: "bold" }}
-              color="primary"
-            >
-              {task.title}
-            </Typography>
-            <Typography sx={{ fontSize: 14 }} color="initial">
-              {task.description}
-            </Typography>
-            <Typography sx={{ fontSize: 10 }} color="initial">
-              {`Modules : ${task.modules
-                .map((module) => (module.isDone ? 1 : 0))
-                .reduce((accumulator, current) => accumulator + current)} / ${
-                task.modules.length
-              }`}
-            </Typography>
-          </CardContent>
+          <TaskModal open={open} handleClose={handleClose} task={task} />
+          <CardActionArea onClick={handleClickOpen}>
+            <CardContent>
+              <Typography
+                sx={{ fontSize: 16, fontWeight: "bold" }}
+                color="primary"
+              >
+                {task.title}
+              </Typography>
+              <Typography sx={{ fontSize: 14 }} color="initial">
+                {task.description}
+              </Typography>
+              <Typography sx={{ fontSize: 10 }} color="initial">
+                {`Modules : ${task.modules
+                  .map((module) => (module.isDone ? 1 : 0))
+                  .reduce((accumulator, current) => accumulator + current)} / ${
+                  task.modules.length
+                }`}
+              </Typography>
+            </CardContent>
+          </CardActionArea>
         </Card>
       ) : (
         <Skeleton

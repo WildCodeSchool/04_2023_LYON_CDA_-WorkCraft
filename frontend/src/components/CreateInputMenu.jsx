@@ -10,11 +10,7 @@ import {
 import PropTypes from "prop-types";
 import { useState } from "react";
 
-export default function CreateInputMenu({
-  createFunction,
-  submitText,
-  labelInput,
-}) {
+export default function CreateInputMenu({ onSubmit, submitTextButton, label }) {
   const [isShowingMenu, setIsShowingMenu] = useState(false);
   const [nameInput, setNameInput] = useState("");
 
@@ -26,7 +22,7 @@ export default function CreateInputMenu({
   const handleSubmit = (e) => {
     e.preventDefault();
     handleCloseListMenu();
-    createFunction(nameInput);
+    onSubmit(nameInput);
   };
 
   return (
@@ -38,7 +34,7 @@ export default function CreateInputMenu({
               <CardContent>
                 <TextField
                   sx={{ width: "100%" }}
-                  label={labelInput}
+                  label={`${label} Name`}
                   value={nameInput}
                   onChange={(e) => setNameInput(e.target.value)}
                   inputRef={(input) => input && input.focus()}
@@ -53,7 +49,7 @@ export default function CreateInputMenu({
                   disabled={nameInput.length <= 0}
                   type="submit"
                 >
-                  {submitText}
+                  {submitTextButton}
                 </Button>
               </CardActions>
             </Card>
@@ -61,7 +57,7 @@ export default function CreateInputMenu({
         </ClickAwayListener>
       ) : (
         <Button variant="contained" onClick={() => setIsShowingMenu(true)}>
-          New List
+          {`New ${label}`}
         </Button>
       )}
     </div>
@@ -69,12 +65,11 @@ export default function CreateInputMenu({
 }
 
 CreateInputMenu.propTypes = {
-  createFunction: PropTypes.func.isRequired,
-  submitText: PropTypes.string,
-  labelInput: PropTypes.string,
+  onSubmit: PropTypes.func.isRequired,
+  submitTextButton: PropTypes.string,
+  label: PropTypes.string.isRequired,
 };
 
 CreateInputMenu.defaultProps = {
-  submitText: "Submit",
-  labelInput: "Name",
+  submitTextButton: "Submit",
 };

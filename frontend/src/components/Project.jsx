@@ -61,9 +61,9 @@ export default function Project() {
             <TasksList key={list.id} listId={list.id} loadLists={loadLists} />
           ))}
         <CreateInputMenu
-          createFunction={createList}
-          submitText="Create"
-          labelInput="List Name"
+          onSubmit={createList}
+          submitTextButton="Create"
+          label="List"
         />
       </Box>
     </Box>

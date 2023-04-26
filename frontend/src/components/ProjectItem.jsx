@@ -24,8 +24,7 @@ export default function ProjectItem({
   toggleCollapse,
   collapseList,
   project,
-  loading,
-  setLoading,
+  loadProjects,
 }) {
   const [anchorMenuElement, setAnchorMenuElement] = useState(null);
   const isMenuOpen = Boolean(anchorMenuElement);
@@ -51,7 +50,6 @@ export default function ProjectItem({
     )
       .then(() => {
         console.info("Update successful");
-        setLoading(!loading);
       })
       .catch((err) => {
         console.error(`Axios Error : ${err.message}`);
@@ -64,7 +62,7 @@ export default function ProjectItem({
       .delete(`http://localhost/api/projects/${id}`)
       .then(() => {
         console.info("Delete successful");
-        setLoading(!loading);
+        loadProjects();
       })
       .catch((err) => {
         console.error(`Axios Error : ${err.message}`);
@@ -158,6 +156,5 @@ ProjectItem.propTypes = {
       })
     ).isRequired,
   }).isRequired,
-  loading: PropTypes.bool.isRequired,
-  setLoading: PropTypes.func.isRequired,
+  loadProjects: PropTypes.func.isRequired,
 };

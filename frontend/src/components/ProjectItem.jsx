@@ -11,7 +11,7 @@ import ExpandMore from "@mui/icons-material/ExpandMore";
 import StarBorder from "@mui/icons-material/StarBorder";
 import DateRangeIcon from "@mui/icons-material/DateRange";
 import { NavLink } from "react-router-dom";
-import { IconButton, Menu, MenuItem } from "@mui/material";
+import { IconButton, Menu, MenuItem, ClickAwayListener } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -24,22 +24,42 @@ export default function ProjectItem({
   toggleCollapse,
   collapseList,
   project,
-  loading,
-  setLoading,
+  loadProjects,
 }) {
   const [anchorMenuElement, setAnchorMenuElement] = useState(null);
   const isMenuOpen = Boolean(anchorMenuElement);
+  const [isEditing, setIsEditing] = useState(false);
+  const [newName, setNewName] = useState(project.title);
   const handleClick = (event) => {
     setAnchorMenuElement(event.currentTarget);
   };
-  const newName = "new project name";
-  //   const [newName, setNewName] = useState("");
 
   const handleClose = () => {
     setAnchorMenuElement(null);
   };
 
-  const handleEdit = (id) => {
+  const handleEdit = () => {
+    handleClose();
+    setIsEditing(true); // Reset the editing state variable
+  };
+
+  const toggleDelete = (id) => {
+    console.info(`Deleting project : ${id}`);
+    axios
+      .delete(`http://localhost/api/projects/${id}`)
+      .then(() => {
+        console.info("Delete successful");
+        loadProjects();
+      })
+      .catch((err) => {
+        console.error(`Axios Error : ${err.message}`);
+      });
+  };
+
+  const handleInputChange = (event) => {
+    setNewName(event.target.value); // Update the new title when the input changes
+  };
+  const handleCloseEditProject = (id) => {
     console.info(`edit id : ${id}`);
     ApiHelper(
       `projects/${id}`,
@@ -51,20 +71,9 @@ export default function ProjectItem({
     )
       .then(() => {
         console.info("Update successful");
-        setLoading(!loading);
-      })
-      .catch((err) => {
-        console.error(`Axios Error : ${err.message}`);
-      });
-  };
-
-  const toggleDelete = (id) => {
-    console.info(`Deleting project : ${id}`);
-    axios
-      .delete(`http://localhost/api/projects/${id}`)
-      .then(() => {
-        console.info("Delete successful");
-        setLoading(!loading);
+        loadProjects();
+        setIsEditing(false);
+        setNewName("");
       })
       .catch((err) => {
         console.error(`Axios Error : ${err.message}`);
@@ -85,9 +94,15 @@ export default function ProjectItem({
               color: "inherit",
             }}
           >
-            <ListItemText primary={project.title} />
-            {/* Créer un teraire, lors du click sur Edit, qu'il m'ouvre un 
-            inputfield à la place de <ListItemText primary={project.title} /> */}
+            {isEditing ? (
+              <ClickAwayListener
+                onClickAway={() => handleCloseEditProject(project.id)}
+              >
+                <input value={newName} onChange={handleInputChange} />
+              </ClickAwayListener>
+            ) : (
+              <ListItemText primary={project.title} />
+            )}
           </NavLink>
           <IconButton aria-label="settings" onClick={handleClick}>
             <MoreVertIcon />
@@ -158,6 +173,5 @@ ProjectItem.propTypes = {
       })
     ).isRequired,
   }).isRequired,
-  loading: PropTypes.bool.isRequired,
-  setLoading: PropTypes.func.isRequired,
+  loadProjects: PropTypes.func.isRequired,
 };

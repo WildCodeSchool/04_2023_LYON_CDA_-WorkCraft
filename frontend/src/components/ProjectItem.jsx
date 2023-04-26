@@ -11,7 +11,7 @@ import ExpandMore from "@mui/icons-material/ExpandMore";
 import StarBorder from "@mui/icons-material/StarBorder";
 import DateRangeIcon from "@mui/icons-material/DateRange";
 import { NavLink } from "react-router-dom";
-import { IconButton, Menu, MenuItem } from "@mui/material";
+import { IconButton, Menu, MenuItem, ClickAwayListener } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -34,33 +34,14 @@ export default function ProjectItem({
   const handleClick = (event) => {
     setAnchorMenuElement(event.currentTarget);
   };
-  // const newName = "new project name";
-  //   A la place d'une constante qui envoie les données en
-  // dur mettre un state newName qui va stoquer le nom et qui va l'actualiser (voir ligne en dessous)
-  // const [newName, setNewName] = useState("");
 
   const handleClose = () => {
     setAnchorMenuElement(null);
   };
 
-  const handleEdit = (id) => {
-    console.info(`edit id : ${id}`);
-    ApiHelper(
-      `projects/${id}`,
-      "patch",
-      {
-        title: newName,
-      },
-      "application/merge-patch+json"
-    )
-      .then(() => {
-        console.info("Update successful");
-        setLoading(!loading);
-        setIsEditing(true); // Reset the editing state variable
-      })
-      .catch((err) => {
-        console.error(`Axios Error : ${err.message}`);
-      });
+  const handleEdit = () => {
+    handleClose();
+    setIsEditing(true); // Reset the editing state variable
   };
 
   const toggleDelete = (id) => {
@@ -79,6 +60,26 @@ export default function ProjectItem({
   const handleInputChange = (event) => {
     setNewName(event.target.value); // Update the new title when the input changes
   };
+  const handleCloseEditProject = (id) => {
+    console.info(`edit id : ${id}`);
+    ApiHelper(
+      `projects/${id}`,
+      "patch",
+      {
+        title: newName,
+      },
+      "application/merge-patch+json"
+    )
+      .then(() => {
+        console.info("Update successful");
+        setLoading(!loading);
+        setIsEditing(false);
+        setNewName("");
+      })
+      .catch((err) => {
+        console.error(`Axios Error : ${err.message}`);
+      });
+  };
 
   return (
     <div>
@@ -95,7 +96,11 @@ export default function ProjectItem({
             }}
           >
             {isEditing ? (
-              <input value={newName} onChange={handleInputChange} />
+              <ClickAwayListener
+                onClickAway={() => handleCloseEditProject(project.id)}
+              >
+                <input value={newName} onChange={handleInputChange} />
+              </ClickAwayListener>
             ) : (
               <ListItemText primary={project.title} />
             )}

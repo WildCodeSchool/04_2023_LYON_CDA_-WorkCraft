@@ -16,16 +16,12 @@ import AddIcon from "@mui/icons-material/Add";
 import PropTypes from "prop-types";
 import DateRangeIcon from "@mui/icons-material/DateRange";
 import axios from "axios";
+import { Fab } from "@mui/material";
 import PrimarySearchAppBar from "./Searchbar";
 import ProjectItem from "./ProjectItem";
+import ProjectModal from "./ProjectModal";
 
-export default function Sidebar2({
-  setOpenModal,
-  toggleDrawer,
-  isDrawerOpen,
-  loading,
-  setLoading,
-}) {
+export default function Sidebar2({ toggleDrawer, isDrawerOpen }) {
   const [projects, setProjects] = useState([]);
 
   const [searchValue, setSearchValue] = useState("");
@@ -35,7 +31,9 @@ export default function Sidebar2({
     setCollapseList({ ...collapseList, [id]: !collapseList[id] });
   };
 
-  useEffect(() => {
+  const [openCreateProjectModal, setOpenCreateProjectModal] = useState(false);
+
+  const loadProjects = () => {
     axios
       .get(`http://localhost/api/projects.json`)
       .then((res) => {
@@ -45,12 +43,21 @@ export default function Sidebar2({
       .catch((err) => {
         console.error(`Axios Error : ${err.message}`);
       });
-  }, [loading]);
+  };
+
+  useEffect(loadProjects, []);
 
   return (
     <div>
-      <Button
-        sx={{ marginLeft: isDrawerOpen ? 19 : -4 }}
+      <Fab
+        color="primary"
+        aria-label="edit"
+        size="small"
+        sx={{
+          marginLeft: isDrawerOpen ? 19 : -4,
+          zIndex: 3000,
+          transition: "all 0.1s",
+        }}
         onClick={() => toggleDrawer()}
       >
         {isDrawerOpen ? (
@@ -58,7 +65,7 @@ export default function Sidebar2({
         ) : (
           <KeyboardDoubleArrowRightIcon />
         )}
-      </Button>
+      </Fab>
       <Drawer anchor="left" open={isDrawerOpen} onClose={() => toggleDrawer()}>
         <Box sx={{ width: 250 }} role="presentation">
           <List>
@@ -78,7 +85,10 @@ export default function Sidebar2({
                 ml: 2,
               }}
             >
-              <Button variant="contained" onClick={() => setOpenModal(true)}>
+              <Button
+                variant="contained"
+                onClick={() => setOpenCreateProjectModal(true)}
+              >
                 New project <AddIcon />
               </Button>
             </Stack>
@@ -100,9 +110,8 @@ export default function Sidebar2({
                   <ProjectItem
                     toggleCollapse={toggleCollapse}
                     collapseList={collapseList}
+                    loadProjects={loadProjects}
                     project={project}
-                    loading={loading}
-                    setLoading={setLoading}
                     key={project.id}
                   />
                 );
@@ -138,14 +147,16 @@ export default function Sidebar2({
           </List>
         </Box>
       </Drawer>
+      <ProjectModal
+        open={openCreateProjectModal}
+        setOpen={setOpenCreateProjectModal}
+        loadProjects={loadProjects}
+      />
     </div>
   );
 }
 
 Sidebar2.propTypes = {
-  setOpenModal: PropTypes.func.isRequired,
   toggleDrawer: PropTypes.func.isRequired,
   isDrawerOpen: PropTypes.bool.isRequired,
-  loading: PropTypes.bool.isRequired,
-  setLoading: PropTypes.func.isRequired,
 };

@@ -13,15 +13,8 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import { PropTypes } from "prop-types";
-import ProjectModal from "./ProjectModal";
 
-export default function Sidebar1({
-  toggleDarkMode,
-  openModal,
-  setOpenModal,
-  toggleDrawer,
-  setLoading,
-}) {
+export default function Sidebar1({ toggleDarkMode, toggleDrawer }) {
   function miniButton(icon, onClick = undefined) {
     return (
       <ListItem disablePadding sx={{ display: "block" }}>
@@ -50,11 +43,6 @@ export default function Sidebar1({
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
-      <ProjectModal
-        open={openModal}
-        setOpen={setOpenModal}
-        setLoading={setLoading}
-      />
       <Drawer
         variant="permanent"
         sx={{
@@ -95,8 +83,5 @@ export default function Sidebar1({
 
 Sidebar1.propTypes = {
   toggleDarkMode: PropTypes.func.isRequired,
-  openModal: PropTypes.bool.isRequired,
-  setOpenModal: PropTypes.func.isRequired,
   toggleDrawer: PropTypes.func.isRequired,
-  setLoading: PropTypes.func.isRequired,
 };

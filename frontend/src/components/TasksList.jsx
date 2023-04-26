@@ -9,7 +9,6 @@ import {
   Menu,
   ListItemIcon,
   ListItemText,
-  Button,
   CardActions,
 } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -18,6 +17,7 @@ import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Task from "./Task";
+import CreateInputMenu from "./CreateInputMenu";
 
 export default function TasksList({ listId, loadLists }) {
   const [list, setList] = useState({});
@@ -48,9 +48,9 @@ export default function TasksList({ listId, loadLists }) {
       });
   }, []);
 
-  const handleCreateTask = () => {
+  const createTask = (titleTask) => {
     axios.post(`http://localhost/api/tasks`, {
-      title: "MonSuperTitre",
+      title: titleTask,
       description: "",
       list: `api/project_lists/${listId}`,
     });
@@ -78,9 +78,11 @@ export default function TasksList({ listId, loadLists }) {
         </List>
       </CardContent>
       <CardActions>
-        <Button onClick={handleCreateTask} variant="contained">
-          My button
-        </Button>
+        <CreateInputMenu
+          createFunction={createTask}
+          submitText="Create"
+          labelInput="Task Name"
+        />
       </CardActions>
       <Menu
         id="basic-menu"

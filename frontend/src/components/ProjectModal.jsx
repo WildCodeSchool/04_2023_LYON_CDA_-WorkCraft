@@ -27,7 +27,7 @@ export default function ProjectModal({ open, setOpen, setLoading }) {
       })
       .then((res) => {
         console.info(res.data);
-        setLoading((prev) => !prev);
+        loadProjects();
       })
       .catch((err) => {
         console.error(`Axios Error : ${err.message}`);
@@ -137,5 +137,5 @@ export default function ProjectModal({ open, setOpen, setLoading }) {
 ProjectModal.propTypes = {
   open: PropTypes.bool.isRequired,
   setOpen: PropTypes.func.isRequired,
-  setLoading: PropTypes.func.isRequired,
+  loadProjects: PropTypes.func.isRequired,
 };

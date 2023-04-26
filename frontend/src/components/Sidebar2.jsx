@@ -55,6 +55,7 @@ export default function Sidebar2({ toggleDrawer, isDrawerOpen }) {
         size="small"
         sx={{
           marginLeft: isDrawerOpen ? 19 : -4,
+          marginTop: "50vh",
           zIndex: 3000,
           transition: "all 0.1s",
         }}

@@ -29,11 +29,15 @@ export default function ProjectItem({
 }) {
   const [anchorMenuElement, setAnchorMenuElement] = useState(null);
   const isMenuOpen = Boolean(anchorMenuElement);
+  const [isEditing, setIsEditing] = useState(false);
+  const [newName, setNewName] = useState(project.title);
   const handleClick = (event) => {
     setAnchorMenuElement(event.currentTarget);
   };
-  const newName = "new project name";
-  //   const [newName, setNewName] = useState("");
+  // const newName = "new project name";
+  //   A la place d'une constante qui envoie les données en
+  // dur mettre un state newName qui va stoquer le nom et qui va l'actualiser (voir ligne en dessous)
+  // const [newName, setNewName] = useState("");
 
   const handleClose = () => {
     setAnchorMenuElement(null);
@@ -52,6 +56,7 @@ export default function ProjectItem({
       .then(() => {
         console.info("Update successful");
         setLoading(!loading);
+        setIsEditing(true); // Reset the editing state variable
       })
       .catch((err) => {
         console.error(`Axios Error : ${err.message}`);
@@ -71,6 +76,10 @@ export default function ProjectItem({
       });
   };
 
+  const handleInputChange = (event) => {
+    setNewName(event.target.value); // Update the new title when the input changes
+  };
+
   return (
     <div>
       <ListItem sx={{ display: "flex", justifyContent: "space-between" }}>
@@ -85,9 +94,11 @@ export default function ProjectItem({
               color: "inherit",
             }}
           >
-            <ListItemText primary={project.title} />
-            {/* Créer un teraire, lors du click sur Edit, qu'il m'ouvre un 
-            inputfield à la place de <ListItemText primary={project.title} /> */}
+            {isEditing ? (
+              <input value={newName} onChange={handleInputChange} />
+            ) : (
+              <ListItemText primary={project.title} />
+            )}
           </NavLink>
           <IconButton aria-label="settings" onClick={handleClick}>
             <MoreVertIcon />

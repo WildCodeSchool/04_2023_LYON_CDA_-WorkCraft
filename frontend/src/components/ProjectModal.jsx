@@ -1,4 +1,4 @@
-import * as React from "react";
+import { useState } from "react";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
@@ -8,19 +8,22 @@ import DialogTitle from "@mui/material/DialogTitle";
 import InputLabel from "@mui/material/InputLabel";
 import PropTypes from "prop-types";
 import axios from "axios";
+import UserList from "./UserList";
 
 export default function ProjectModal({ open, setOpen, setLoading }) {
-  const [projectName, setProjectName] = React.useState("");
-  const [isProjectEmpty, setIsProjectEmpty] = React.useState(false);
-  const [startDate, setStartDate] = React.useState("");
-  const [endDate, setEndDate] = React.useState("");
-  const [isDateEmpty, setIsDateEmpty] = React.useState(false);
-  const [isDatesInOrder, setIsDatesInOrder] = React.useState(true);
+  const [projectName, setProjectName] = useState("");
+  const [isProjectEmpty, setIsProjectEmpty] = useState(false);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [isDateEmpty, setIsDateEmpty] = useState(false);
+  const [isDatesInOrder, setIsDatesInOrder] = useState(true);
+  const [selectedUser, setSelectedUser] = useState(1);
 
   const addProject = () => {
     axios
       .post("http://localhost/api/projects", {
         title: projectName,
+        owner: `api/users/${selectedUser}`,
       })
       .then((res) => {
         console.info(res.data);
@@ -88,6 +91,7 @@ export default function ProjectModal({ open, setOpen, setLoading }) {
           {isProjectEmpty && (
             <p style={{ color: "red" }}>Please fill the project name</p>
           )}
+          <UserList setSelectedUser={setSelectedUser} />
           <InputLabel>Starting date</InputLabel>
           <TextField
             autoFocus

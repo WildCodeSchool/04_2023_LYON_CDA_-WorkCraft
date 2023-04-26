@@ -61,6 +61,8 @@ class Project
     #[ORM\ManyToOne(inversedBy: 'projects')]
     #[Groups([
         'user:read',
+        'project:read',
+        'project:write',
     ])]
     private ?User $owner = null;
 

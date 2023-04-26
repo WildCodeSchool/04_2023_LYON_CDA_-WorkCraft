@@ -1,49 +1,37 @@
 import { useParams } from "react-router-dom";
-import {
-  Box,
-  Button,
-  ClickAwayListener,
-  Typography,
-  TextField,
-  Card,
-} from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import TasksList from "./TasksList";
+import CreateInputMenu from "./CreateInputMenu";
 
 export default function Project() {
   const { projectId } = useParams();
-
-  const [loading, setLoading] = useState(false);
-  const [isShowingListMenu, setIsShowingListMenu] = useState(false);
-  const [listNameInput, setListNameInput] = useState("");
-
-  const handleClickAwayListMenu = () => {
-    setIsShowingListMenu(false);
-    setListNameInput("");
-  };
-
-  const handleCreateList = () => {
-    axios.post("http://localhost/api/project_lists", {
-      title: listNameInput,
-      project: `api/projects/${projectId}`,
-    });
-    handleClickAwayListMenu();
-    setLoading((prev) => !prev);
-  };
-
   const [project, setProject] = useState({});
-  useEffect(() => {
+
+  const loadLists = () => {
     axios
       .get(`http://localhost/api/projects/${projectId}.json`)
       .then((res) => {
+        console.info("ReloadingLists list...");
         console.info(res.data);
         setProject(res.data);
       })
       .catch((err) => {
         console.error(`Axios Error : ${err.message}`);
       });
-  }, [projectId, loading]);
+  };
+
+  const createList = (listName) => {
+    axios
+      .post("http://localhost/api/project_lists", {
+        title: listName,
+        project: `api/projects/${projectId}`,
+      })
+      .then(loadLists);
+  };
+
+  useEffect(loadLists, [projectId]);
 
   return (
     <Box
@@ -70,31 +58,13 @@ export default function Project() {
       >
         {project.lists &&
           project.lists.map((list) => (
-            <TasksList key={list.id} listId={list.id} setLoading={setLoading} />
+            <TasksList key={list.id} listId={list.id} loadLists={loadLists} />
           ))}
-        {isShowingListMenu ? (
-          <ClickAwayListener onClickAway={handleClickAwayListMenu}>
-            <Card sx={{ minWidth: 275 }}>
-              <TextField
-                sx={{ width: "100%" }}
-                label="List Name"
-                value={listNameInput}
-                onChange={(e) => setListNameInput(e.target.value)}
-                inputRef={(input) => input && input.focus()}
-              />
-              <Button variant="contained" onClick={handleCreateList}>
-                Create
-              </Button>
-            </Card>
-          </ClickAwayListener>
-        ) : (
-          <Button
-            variant="contained"
-            onClick={() => setIsShowingListMenu(true)}
-          >
-            New List
-          </Button>
-        )}
+        <CreateInputMenu
+          createFunction={createList}
+          submitText="Create"
+          labelInput="List Name"
+        />
       </Box>
     </Box>
   );

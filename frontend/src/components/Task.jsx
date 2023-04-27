@@ -3,17 +3,25 @@ import {
   Typography,
   CardContent,
   Skeleton,
+  CardHeader,
   CardActionArea,
+  IconButton,
 } from "@mui/material";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
+import DeleteIcon from "@mui/icons-material/Delete";
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogTitle from "@mui/material/DialogTitle";
 import TaskModal from "./TaskModal";
 import ApiHelper from "../helpers/apiHelper";
 
-export default function Task({ taskId }) {
+export default function Task({ taskId, loadTasks }) {
   const [task, setTask] = useState({});
+  const [openAlertDeleteDialog, setOpenAlertDeleteDialog] = useState(false);
 
-  const loadTasks = () => {
+  const loadTask = () => {
     ApiHelper(`tasks/${taskId}`, "get")
       .then((res) => {
         setTask(res.data);
@@ -23,31 +31,56 @@ export default function Task({ taskId }) {
       });
   };
 
-  useEffect(loadTasks, []);
+  useEffect(loadTask, []);
 
-  const [open, setOpen] = useState(false);
-
-  const handleClickOpen = () => {
-    setOpen(true);
+  const handleClickOpenTaskDelete = (e) => {
+    e.stopPropagation();
+    setOpenAlertDeleteDialog(true);
   };
 
-  const handleClose = () => {
-    setOpen(false);
+  const handleCloseTaskDelete = () => {
+    setOpenAlertDeleteDialog(false);
+  };
+
+  const [openTask, setOpenTask] = useState(false);
+
+  const handleClickOpenTask = () => {
+    setOpenTask(true);
+  };
+
+  const handleCloseTask = () => {
+    setOpenTask(false);
+  };
+
+  const handleDeleteTask = () => {
+    handleCloseTask();
+    ApiHelper(`tasks/${taskId}`, "delete").then(() => {
+      loadTasks();
+    });
   };
 
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>
       {Object.keys(task).length > 0 ? ( // check if task is filled or empty
         <Card>
-          <TaskModal open={open} handleClose={handleClose} task={task} />
-          <CardActionArea onClick={handleClickOpen}>
+          <TaskModal
+            open={openTask}
+            handleClose={handleCloseTask}
+            task={task}
+          />
+          <CardActionArea onClick={handleClickOpenTask}>
+            <CardHeader
+              action={
+                <IconButton onClick={handleClickOpenTaskDelete}>
+                  <DeleteIcon />
+                </IconButton>
+              }
+              title={task.title}
+              titleTypographyProps={{
+                color: "primary",
+              }}
+            />
             <CardContent>
-              <Typography
-                sx={{ fontSize: 16, fontWeight: "bold" }}
-                color="primary"
-              >
-                {task.title}
-              </Typography>
               <Typography sx={{ fontSize: 14 }} color="initial">
                 {task.description}
               </Typography>
@@ -70,10 +103,27 @@ export default function Task({ taskId }) {
           height={Math.floor(Math.random() * 80) + 20}
         />
       )}
+      <Dialog
+        open={openAlertDeleteDialog}
+        onClose={handleCloseTask}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          Would you like to delete this task?
+        </DialogTitle>
+        <DialogActions>
+          <Button onClick={handleCloseTaskDelete}>Disagree</Button>
+          <Button onClick={handleDeleteTask} autoFocus>
+            Agree
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }
 
 Task.propTypes = {
   taskId: PropTypes.number.isRequired,
+  loadTasks: PropTypes.func.isRequired,
 };

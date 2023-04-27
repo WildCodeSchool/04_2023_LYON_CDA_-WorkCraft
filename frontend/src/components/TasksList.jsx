@@ -30,15 +30,7 @@ export default function TasksList({ listId, loadLists }) {
     setAnchorMenuElement(null);
   };
 
-  const createTask = (titleTask) => {
-    ApiHelper(`tasks`, "post", {
-      title: titleTask,
-      description: "",
-      list: `api/project_lists/${listId}`,
-    });
-  };
-
-  const loadList = () => {
+  const loadTasks = () => {
     ApiHelper(`project_lists/${listId}`, "get")
       .then((res) => {
         setList(res.data);
@@ -48,11 +40,19 @@ export default function TasksList({ listId, loadLists }) {
       });
   };
 
-  useEffect(loadList, []);
+  useEffect(loadTasks, []);
 
   const handleDeleteList = () => {
     handleClose();
     ApiHelper(`project_lists/${listId}`, "delete").then(loadLists);
+  };
+
+  const createTask = (titleTask) => {
+    ApiHelper(`tasks`, "post", {
+      title: titleTask,
+      description: "",
+      list: `api/project_lists/${listId}`,
+    }).then(loadTasks);
   };
 
   return (
@@ -71,16 +71,16 @@ export default function TasksList({ listId, loadLists }) {
           {list.tasks &&
             list.tasks.map((task) => (
               <ListItem key={task.id}>
-                <Task taskId={task.id} />
+                <Task loadTasks={loadTasks} taskId={task.id} />
               </ListItem>
             ))}
         </List>
       </CardContent>
       <CardActions>
         <CreateInputMenu
-          createFunction={createTask}
-          submitText="Create"
-          labelInput="Task Name"
+          onSubmit={createTask}
+          submitTextButton="Create"
+          label="Task"
         />
       </CardActions>
       <Menu

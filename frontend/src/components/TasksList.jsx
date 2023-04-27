@@ -36,7 +36,7 @@ export default function TasksList({ listId, loadLists }) {
       .then(loadLists);
   };
 
-  useEffect(() => {
+  const loadTasks = () => {
     axios
       .get(`http://localhost/api/project_lists/${listId}.json`)
       .then((res) => {
@@ -46,14 +46,20 @@ export default function TasksList({ listId, loadLists }) {
       .catch((err) => {
         console.error(`Axios Error : ${err.message}`);
       });
-  }, []);
+  };
+
+  useEffect(loadTasks, []);
 
   const createTask = (titleTask) => {
-    axios.post(`http://localhost/api/tasks`, {
-      title: titleTask,
-      description: "",
-      list: `api/project_lists/${listId}`,
-    });
+    axios
+      .post(`http://localhost/api/tasks`, {
+        title: titleTask,
+        description: "",
+        list: `api/project_lists/${listId}`,
+      })
+      .then(() => {
+        loadTasks();
+      });
   };
 
   return (
@@ -72,16 +78,16 @@ export default function TasksList({ listId, loadLists }) {
           {list.tasks &&
             list.tasks.map((task) => (
               <ListItem key={task.id}>
-                <Task taskId={task.id} />
+                <Task loadTasks={loadTasks} taskId={task.id} />
               </ListItem>
             ))}
         </List>
       </CardContent>
       <CardActions>
         <CreateInputMenu
-          createFunction={createTask}
-          submitText="Create"
-          labelInput="Task Name"
+          onSubmit={createTask}
+          submitTextButton="Create"
+          label="Task"
         />
       </CardActions>
       <Menu

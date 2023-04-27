@@ -17,7 +17,6 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import PropTypes from "prop-types";
 import { useState } from "react";
-import axios from "axios";
 import ApiHelper from "../helpers/apiHelper";
 
 export default function ProjectItem({
@@ -45,8 +44,7 @@ export default function ProjectItem({
 
   const toggleDelete = (id) => {
     console.info(`Deleting project : ${id}`);
-    axios
-      .delete(`http://localhost/api/projects/${id}`)
+    ApiHelper(`projects/${id}`, "delete")
       .then(() => {
         console.info("Delete successful");
         loadProjects();
@@ -59,6 +57,7 @@ export default function ProjectItem({
   const handleInputChange = (event) => {
     setNewName(event.target.value); // Update the new title when the input changes
   };
+
   const handleCloseEditProject = (id) => {
     console.info(`edit id : ${id}`);
     ApiHelper(

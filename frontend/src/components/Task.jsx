@@ -9,29 +9,29 @@ import {
 } from "@mui/material";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
 import TaskModal from "./TaskModal";
+import ApiHelper from "../helpers/apiHelper";
 
 export default function Task({ taskId, loadTasks }) {
   const [task, setTask] = useState({});
   const [openAlertDeleteDialog, setOpenAlertDeleteDialog] = useState(false);
 
-  useEffect(() => {
-    axios
-      .get(`http://localhost/api/tasks/${taskId}.json`)
+  const loadTask = () => {
+    ApiHelper(`tasks/${taskId}`, "get")
       .then((res) => {
-        console.info(res.data);
         setTask(res.data);
       })
       .catch((err) => {
         console.error(`Axios Error : ${err.message}`);
       });
-  }, []);
+  };
+
+  useEffect(loadTask, []);
 
   const handleClickOpenTaskDelete = (e) => {
     e.stopPropagation();
@@ -54,7 +54,7 @@ export default function Task({ taskId, loadTasks }) {
 
   const handleDeleteTask = () => {
     handleCloseTask();
-    axios.delete(`http://localhost/api/tasks/${taskId}.json`).then(() => {
+    ApiHelper(`tasks/${taskId}`, "delete").then(() => {
       loadTasks();
     });
   };

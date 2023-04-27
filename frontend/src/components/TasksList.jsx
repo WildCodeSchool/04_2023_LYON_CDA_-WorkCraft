@@ -15,9 +15,9 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import DeleteIcon from "@mui/icons-material/Delete";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import Task from "./Task";
 import CreateInputMenu from "./CreateInputMenu";
+import ApiHelper from "../helpers/apiHelper";
 
 export default function TasksList({ listId, loadLists }) {
   const [list, setList] = useState({});
@@ -29,18 +29,10 @@ export default function TasksList({ listId, loadLists }) {
   const handleClose = () => {
     setAnchorMenuElement(null);
   };
-  const handleDeleteList = () => {
-    handleClose();
-    axios
-      .delete(`http://localhost/api/project_lists/${listId}.json`)
-      .then(loadLists);
-  };
 
   const loadTasks = () => {
-    axios
-      .get(`http://localhost/api/project_lists/${listId}.json`)
+    ApiHelper(`project_lists/${listId}`, "get")
       .then((res) => {
-        console.info(res.data);
         setList(res.data);
       })
       .catch((err) => {
@@ -50,16 +42,17 @@ export default function TasksList({ listId, loadLists }) {
 
   useEffect(loadTasks, []);
 
+  const handleDeleteList = () => {
+    handleClose();
+    ApiHelper(`project_lists/${listId}`, "delete").then(loadLists);
+  };
+
   const createTask = (titleTask) => {
-    axios
-      .post(`http://localhost/api/tasks`, {
-        title: titleTask,
-        description: "",
-        list: `api/project_lists/${listId}`,
-      })
-      .then(() => {
-        loadTasks();
-      });
+    ApiHelper(`tasks`, "post", {
+      title: titleTask,
+      description: "",
+      list: `api/project_lists/${listId}`,
+    }).then(loadTasks);
   };
 
   return (

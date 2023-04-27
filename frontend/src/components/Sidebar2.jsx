@@ -15,11 +15,11 @@ import Stack from "@mui/material/Stack";
 import AddIcon from "@mui/icons-material/Add";
 import PropTypes from "prop-types";
 import DateRangeIcon from "@mui/icons-material/DateRange";
-import axios from "axios";
 import { Fab } from "@mui/material";
 import PrimarySearchAppBar from "./Searchbar";
 import ProjectItem from "./ProjectItem";
 import ProjectModal from "./ProjectModal";
+import ApiHelper from "../helpers/apiHelper";
 
 export default function Sidebar2({ toggleDrawer, isDrawerOpen }) {
   const [projects, setProjects] = useState([]);
@@ -34,10 +34,8 @@ export default function Sidebar2({ toggleDrawer, isDrawerOpen }) {
   const [openCreateProjectModal, setOpenCreateProjectModal] = useState(false);
 
   const loadProjects = () => {
-    axios
-      .get(`http://localhost/api/projects.json`)
+    ApiHelper("projects", "get")
       .then((res) => {
-        console.info(res.data);
         setProjects(res.data);
       })
       .catch((err) => {

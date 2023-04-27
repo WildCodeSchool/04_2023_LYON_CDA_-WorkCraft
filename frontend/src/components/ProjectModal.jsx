@@ -35,6 +35,16 @@ export default function ProjectModal({ open, setOpen, createProject }) {
     setIsDatesInOrder(true);
   };
 
+  const resetForm = () => {
+    setProjectName("");
+    setIsProjectEmpty(false);
+    setStartDate("");
+    setEndDate("");
+    setIsDateEmpty(false);
+    setIsDatesInOrder(true);
+    setSelectedUser(0);
+  };
+
   const handleSubscribe = () => {
     if (!projectName) {
       setIsProjectEmpty(true);
@@ -49,10 +59,12 @@ export default function ProjectModal({ open, setOpen, createProject }) {
       return;
     }
     createProject(projectName, selectedUser);
+    resetForm();
     setOpen(false);
   };
 
   const handleCancel = () => {
+    resetForm();
     setOpen(false);
   };
 

@@ -7,8 +7,8 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import InputLabel from "@mui/material/InputLabel";
 import PropTypes from "prop-types";
-import axios from "axios";
 import UserList from "./UserList";
+import ApiHelper from "../helpers/apiHelper";
 
 export default function ProjectModal({ open, setOpen, loadProjects }) {
   const [projectName, setProjectName] = useState("");
@@ -17,16 +17,14 @@ export default function ProjectModal({ open, setOpen, loadProjects }) {
   const [endDate, setEndDate] = useState("");
   const [isDateEmpty, setIsDateEmpty] = useState(false);
   const [isDatesInOrder, setIsDatesInOrder] = useState(true);
-  const [selectedUser, setSelectedUser] = useState(1);
+  const [selectedUser, setSelectedUser] = useState(0);
 
   const addProject = () => {
-    axios
-      .post("http://localhost/api/projects", {
-        title: projectName,
-        owner: `api/users/${selectedUser}`,
-      })
-      .then((res) => {
-        console.info(res.data);
+    ApiHelper("projects", "post", {
+      title: projectName,
+      owner: `api/users/${selectedUser}`,
+    })
+      .then(() => {
         loadProjects();
       })
       .catch((err) => {

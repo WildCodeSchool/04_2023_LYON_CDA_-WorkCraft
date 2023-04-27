@@ -15,9 +15,9 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import DeleteIcon from "@mui/icons-material/Delete";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import Task from "./Task";
 import CreateInputMenu from "./CreateInputMenu";
+import ApiHelper from "../helpers/apiHelper";
 
 export default function TasksList({ listId, loadLists }) {
   const [list, setList] = useState({});
@@ -29,31 +29,30 @@ export default function TasksList({ listId, loadLists }) {
   const handleClose = () => {
     setAnchorMenuElement(null);
   };
-  const handleDeleteList = () => {
-    handleClose();
-    axios
-      .delete(`http://localhost/api/project_lists/${listId}.json`)
-      .then(loadLists);
-  };
 
-  useEffect(() => {
-    axios
-      .get(`http://localhost/api/project_lists/${listId}.json`)
+  const loadTasks = () => {
+    ApiHelper(`project_lists/${listId}`, "get")
       .then((res) => {
-        console.info(res.data);
         setList(res.data);
       })
       .catch((err) => {
         console.error(`Axios Error : ${err.message}`);
       });
-  }, []);
+  };
+
+  useEffect(loadTasks, []);
+
+  const handleDeleteList = () => {
+    handleClose();
+    ApiHelper(`project_lists/${listId}`, "delete").then(loadLists);
+  };
 
   const createTask = (titleTask) => {
-    axios.post(`http://localhost/api/tasks`, {
+    ApiHelper(`tasks`, "post", {
       title: titleTask,
       description: "",
       list: `api/project_lists/${listId}`,
-    });
+    }).then(loadTasks);
   };
 
   return (
@@ -72,16 +71,16 @@ export default function TasksList({ listId, loadLists }) {
           {list.tasks &&
             list.tasks.map((task) => (
               <ListItem key={task.id}>
-                <Task taskId={task.id} />
+                <Task loadTasks={loadTasks} taskId={task.id} />
               </ListItem>
             ))}
         </List>
       </CardContent>
       <CardActions>
         <CreateInputMenu
-          createFunction={createTask}
-          submitText="Create"
-          labelInput="Task Name"
+          onSubmit={createTask}
+          submitTextButton="Create"
+          label="Task"
         />
       </CardActions>
       <Menu

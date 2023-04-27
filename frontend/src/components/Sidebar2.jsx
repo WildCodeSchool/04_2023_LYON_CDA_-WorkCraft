@@ -14,20 +14,28 @@ import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArro
 import Stack from "@mui/material/Stack";
 import AddIcon from "@mui/icons-material/Add";
 import PropTypes from "prop-types";
-import Collapse from "@mui/material/Collapse";
-import ExpandLess from "@mui/icons-material/ExpandLess";
-import ExpandMore from "@mui/icons-material/ExpandMore";
-import StarBorder from "@mui/icons-material/StarBorder";
 import DateRangeIcon from "@mui/icons-material/DateRange";
-import { NavLink } from "react-router-dom";
 import axios from "axios";
+import { Fab } from "@mui/material";
 import PrimarySearchAppBar from "./Searchbar";
+import ProjectItem from "./ProjectItem";
+import ProjectModal from "./ProjectModal";
 
-export default function Sidebar2({ setOpenModal, toggleDrawer, isDrawerOpen }) {
+export default function Sidebar2({ toggleDrawer, isDrawerOpen }) {
   const [projects, setProjects] = useState([]);
-  useEffect(() => {
+
+  const [searchValue, setSearchValue] = useState("");
+
+  const [collapseList, setCollapseList] = useState({});
+  const toggleCollapse = (id) => {
+    setCollapseList({ ...collapseList, [id]: !collapseList[id] });
+  };
+
+  const [openCreateProjectModal, setOpenCreateProjectModal] = useState(false);
+
+  const loadProjects = () => {
     axios
-      .get(`http://localhost/api/projects.json?owner.username=supzero`)
+      .get(`http://localhost/api/projects.json`)
       .then((res) => {
         console.info(res.data);
         setProjects(res.data);
@@ -35,19 +43,21 @@ export default function Sidebar2({ setOpenModal, toggleDrawer, isDrawerOpen }) {
       .catch((err) => {
         console.error(`Axios Error : ${err.message}`);
       });
-  }, []);
+  };
 
-  const [searchValue, setSearchValue] = useState("");
-
-  const [collapseList, setCollapseList] = useState({});
-  function toggleCollapse(id) {
-    setCollapseList({ ...collapseList, [id]: !collapseList[id] });
-  }
+  useEffect(loadProjects, []);
 
   return (
     <div>
-      <Button
-        sx={{ marginLeft: isDrawerOpen ? 19 : -4 }}
+      <Fab
+        color="primary"
+        aria-label="edit"
+        size="small"
+        sx={{
+          marginLeft: isDrawerOpen ? 19 : -4,
+          zIndex: 3000,
+          transition: "all 0.1s",
+        }}
         onClick={() => toggleDrawer()}
       >
         {isDrawerOpen ? (
@@ -55,7 +65,7 @@ export default function Sidebar2({ setOpenModal, toggleDrawer, isDrawerOpen }) {
         ) : (
           <KeyboardDoubleArrowRightIcon />
         )}
-      </Button>
+      </Fab>
       <Drawer anchor="left" open={isDrawerOpen} onClose={() => toggleDrawer()}>
         <Box sx={{ width: 250 }} role="presentation">
           <List>
@@ -75,7 +85,10 @@ export default function Sidebar2({ setOpenModal, toggleDrawer, isDrawerOpen }) {
                 ml: 2,
               }}
             >
-              <Button variant="contained" onClick={() => setOpenModal(true)}>
+              <Button
+                variant="contained"
+                onClick={() => setOpenCreateProjectModal(true)}
+              >
                 New project <AddIcon />
               </Button>
             </Stack>
@@ -94,56 +107,13 @@ export default function Sidebar2({ setOpenModal, toggleDrawer, isDrawerOpen }) {
               )
               .map((project) => {
                 return (
-                  <div key={project.id}>
-                    <ListItem
-                      key={project.id}
-                      sx={{ display: "flex", justifyContent: "space-between" }}
-                    >
-                      <Box sx={{ display: "flex", alignItems: "center" }}>
-                        <ListItemIcon>
-                          <DateRangeIcon />
-                        </ListItemIcon>
-                        <NavLink
-                          to={`/projects/${project.id}`}
-                          style={{
-                            textDecoration: "none",
-                            color: "inherit",
-                          }}
-                        >
-                          <ListItemText primary={project.title} />
-                        </NavLink>
-                      </Box>
-                      {collapseList[project.id] ? (
-                        <ExpandLess
-                          sx={{ cursor: "pointer" }}
-                          onClick={() => toggleCollapse(project.id)}
-                        />
-                      ) : (
-                        <ExpandMore
-                          sx={{ cursor: "pointer" }}
-                          onClick={() => toggleCollapse(project.id)}
-                        />
-                      )}
-                    </ListItem>
-                    <Collapse
-                      in={collapseList[project.id]}
-                      timeout="auto"
-                      unmountOnExit
-                    >
-                      <List component="div" disablePadding>
-                        {project.lists.map((list) => {
-                          return (
-                            <ListItemButton sx={{ pl: 4 }} key={list.id}>
-                              <ListItemIcon>
-                                <StarBorder />
-                              </ListItemIcon>
-                              <ListItemText primary={list.title} />
-                            </ListItemButton>
-                          );
-                        })}
-                      </List>
-                    </Collapse>
-                  </div>
+                  <ProjectItem
+                    toggleCollapse={toggleCollapse}
+                    collapseList={collapseList}
+                    loadProjects={loadProjects}
+                    project={project}
+                    key={project.id}
+                  />
                 );
               })}
 
@@ -177,12 +147,16 @@ export default function Sidebar2({ setOpenModal, toggleDrawer, isDrawerOpen }) {
           </List>
         </Box>
       </Drawer>
+      <ProjectModal
+        open={openCreateProjectModal}
+        setOpen={setOpenCreateProjectModal}
+        loadProjects={loadProjects}
+      />
     </div>
   );
 }
 
 Sidebar2.propTypes = {
-  setOpenModal: PropTypes.func.isRequired,
   toggleDrawer: PropTypes.func.isRequired,
   isDrawerOpen: PropTypes.bool.isRequired,
 };

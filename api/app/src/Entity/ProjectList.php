@@ -61,10 +61,9 @@ class ProjectList
     ])]
     private ?Project $project = null;
 
-    #[ORM\OneToMany(mappedBy: 'list', targetEntity: Task::class)]
+    #[ORM\OneToMany(mappedBy: 'list', targetEntity: Task::class, orphanRemoval: true)]
     #[Groups([
         'list:read',
-        'task:read',
     ])]
     private Collection $tasks;
 

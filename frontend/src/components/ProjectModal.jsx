@@ -1,4 +1,4 @@
-import * as React from "react";
+import { useState } from "react";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
@@ -7,14 +7,32 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import InputLabel from "@mui/material/InputLabel";
 import PropTypes from "prop-types";
+import axios from "axios";
+import UserList from "./UserList";
 
-export default function ProjectModal({ open, setOpen }) {
-  const [projectName, setProjectName] = React.useState("");
-  const [isProjectEmpty, setIsProjectEmpty] = React.useState(false);
-  const [startDate, setStartDate] = React.useState("");
-  const [endDate, setEndDate] = React.useState("");
-  const [isDateEmpty, setIsDateEmpty] = React.useState(false);
-  const [isDatesInOrder, setIsDatesInOrder] = React.useState(true);
+export default function ProjectModal({ open, setOpen, loadProjects }) {
+  const [projectName, setProjectName] = useState("");
+  const [isProjectEmpty, setIsProjectEmpty] = useState(false);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [isDateEmpty, setIsDateEmpty] = useState(false);
+  const [isDatesInOrder, setIsDatesInOrder] = useState(true);
+  const [selectedUser, setSelectedUser] = useState(1);
+
+  const addProject = () => {
+    axios
+      .post("http://localhost/api/projects", {
+        title: projectName,
+        owner: `api/users/${selectedUser}`,
+      })
+      .then((res) => {
+        console.info(res.data);
+        loadProjects();
+      })
+      .catch((err) => {
+        console.error(`Axios Error : ${err.message}`);
+      });
+  };
 
   const handleProjectNameChange = (event) => {
     setProjectName(event.target.value);
@@ -46,6 +64,7 @@ export default function ProjectModal({ open, setOpen }) {
       setIsDatesInOrder(false);
       return;
     }
+    addProject();
     setOpen(false);
   };
 
@@ -72,6 +91,7 @@ export default function ProjectModal({ open, setOpen }) {
           {isProjectEmpty && (
             <p style={{ color: "red" }}>Please fill the project name</p>
           )}
+          <UserList setSelectedUser={setSelectedUser} />
           <InputLabel>Starting date</InputLabel>
           <TextField
             autoFocus
@@ -117,4 +137,5 @@ export default function ProjectModal({ open, setOpen }) {
 ProjectModal.propTypes = {
   open: PropTypes.bool.isRequired,
   setOpen: PropTypes.func.isRequired,
+  loadProjects: PropTypes.func.isRequired,
 };

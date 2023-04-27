@@ -59,14 +59,14 @@ class Project
     private ?string $title = null;
 
     #[ORM\ManyToOne(inversedBy: 'projects')]
-    #[ORM\JoinColumn(nullable: false)]
     #[Groups([
-        'project:write',
         'user:read',
+        'project:read',
+        'project:write',
     ])]
     private ?User $owner = null;
 
-    #[ORM\OneToMany(mappedBy: 'project', targetEntity: ProjectList::class)]
+    #[ORM\OneToMany(mappedBy: 'project', targetEntity: ProjectList::class, orphanRemoval: true)]
     #[Groups([
         'project:read',
         'list:read',

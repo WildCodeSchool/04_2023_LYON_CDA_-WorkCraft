@@ -1,38 +1,39 @@
-import { useParams } from "react-router-dom";
-import { Box, Typography } from "@mui/material";
+import { useOutletContext, useParams } from "react-router-dom";
+import { Box, Button, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
+import loadData from "../helpers/loadData";
 import TasksList from "./TasksList";
 import CreateInputMenu from "./CreateInputMenu";
 import ApiHelper from "../helpers/apiHelper";
 
 export default function Project() {
   const { projectId } = useParams();
-  const [project, setProject] = useState({});
+  const [selectedProject, setSelectedProject] = useOutletContext();
+  const [isCreateInputActive, setIsCreateInputActive] = useState(false);
 
-  const loadLists = () => {
-    ApiHelper(`projects/${projectId}`, "get")
-      .then((res) => {
-        console.info("ReloadingLists list...");
-        setProject(res.data);
+  useEffect(
+    () => loadData("projects", setSelectedProject, projectId),
+    [projectId]
+  );
+
+  const createList = (listName) => {
+    setIsCreateInputActive(false);
+    ApiHelper("project_lists", "post", {
+      title: listName,
+      project: `api/projects/${projectId}`,
+    })
+      .then(() => {
+        loadData("projects", setSelectedProject, projectId);
       })
       .catch((err) => {
         console.error(`Axios Error : ${err.message}`);
       });
   };
 
-  useEffect(loadLists, [projectId]);
-
-  const createList = (listName) => {
-    ApiHelper("project_lists", "post", {
-      title: listName,
-      project: `api/projects/${projectId}`,
-    })
-      .then(() => {
-        loadLists();
-      })
-      .catch((err) => {
-        console.error(`Axios Error : ${err.message}`);
-      });
+  const deleteList = (listId) => {
+    ApiHelper(`project_lists/${listId}`, "delete").then(() =>
+      loadData("projects", setSelectedProject, projectId)
+    );
   };
 
   return (
@@ -47,7 +48,7 @@ export default function Project() {
         }}
       >
         <Typography variant="h3" color="primary.contrastText" align="center">
-          {project && project.title}
+          {selectedProject && selectedProject.title}
         </Typography>
       </Box>
       <Box
@@ -58,15 +59,25 @@ export default function Project() {
           gap: 20,
         }}
       >
-        {project.lists &&
-          project.lists.map((list) => (
-            <TasksList key={list.id} listId={list.id} loadLists={loadLists} />
+        {selectedProject.lists &&
+          selectedProject.lists.map((list) => (
+            <TasksList key={list.id} listId={list.id} deleteList={deleteList} />
           ))}
-        <CreateInputMenu
-          onSubmit={createList}
-          submitTextButton="Create"
-          label="List"
-        />
+        {isCreateInputActive ? (
+          <CreateInputMenu
+            onSubmit={createList}
+            onClose={() => setIsCreateInputActive(false)}
+            submitTextButton="Create"
+            label="List"
+          />
+        ) : (
+          <Button
+            variant="contained"
+            onClick={() => setIsCreateInputActive(true)}
+          >
+            New List
+          </Button>
+        )}
       </Box>
     </Box>
   );

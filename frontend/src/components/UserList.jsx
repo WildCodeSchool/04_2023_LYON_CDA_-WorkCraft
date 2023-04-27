@@ -5,7 +5,7 @@ import ListItemText from "@mui/material/ListItemText";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import PropTypes from "prop-types";
-import ApiHelper from "../helpers/apiHelper";
+import loadData from "../helpers/loadData";
 
 export default function UserList({ setSelectedUser }) {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -27,18 +27,7 @@ export default function UserList({ setSelectedUser }) {
 
   const [users, setUsers] = useState([]);
 
-  const loadUsers = () => {
-    ApiHelper(`users`, "get")
-      .then((res) => {
-        console.info("ReloadingLists users...");
-        setUsers(res.data);
-      })
-      .catch((err) => {
-        console.error(`Axios Error : ${err.message}`);
-      });
-  };
-
-  useEffect(loadUsers, []);
+  useEffect(() => loadData("users", setUsers), []);
 
   return (
     <div>

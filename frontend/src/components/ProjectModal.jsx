@@ -8,9 +8,8 @@ import DialogTitle from "@mui/material/DialogTitle";
 import InputLabel from "@mui/material/InputLabel";
 import PropTypes from "prop-types";
 import UserList from "./UserList";
-import ApiHelper from "../helpers/apiHelper";
 
-export default function ProjectModal({ open, setOpen, loadProjects }) {
+export default function ProjectModal({ open, setOpen, createProject }) {
   const [projectName, setProjectName] = useState("");
   const [isProjectEmpty, setIsProjectEmpty] = useState(false);
   const [startDate, setStartDate] = useState("");
@@ -18,19 +17,6 @@ export default function ProjectModal({ open, setOpen, loadProjects }) {
   const [isDateEmpty, setIsDateEmpty] = useState(false);
   const [isDatesInOrder, setIsDatesInOrder] = useState(true);
   const [selectedUser, setSelectedUser] = useState(0);
-
-  const addProject = () => {
-    ApiHelper("projects", "post", {
-      title: projectName,
-      owner: `api/users/${selectedUser}`,
-    })
-      .then(() => {
-        loadProjects();
-      })
-      .catch((err) => {
-        console.error(`Axios Error : ${err.message}`);
-      });
-  };
 
   const handleProjectNameChange = (event) => {
     setProjectName(event.target.value);
@@ -62,7 +48,7 @@ export default function ProjectModal({ open, setOpen, loadProjects }) {
       setIsDatesInOrder(false);
       return;
     }
-    addProject();
+    createProject(projectName, selectedUser);
     setOpen(false);
   };
 
@@ -135,5 +121,5 @@ export default function ProjectModal({ open, setOpen, loadProjects }) {
 ProjectModal.propTypes = {
   open: PropTypes.bool.isRequired,
   setOpen: PropTypes.func.isRequired,
-  loadProjects: PropTypes.func.isRequired,
+  createProject: PropTypes.func.isRequired,
 };

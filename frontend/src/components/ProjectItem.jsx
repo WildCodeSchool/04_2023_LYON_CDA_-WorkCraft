@@ -11,24 +11,27 @@ import ExpandMore from "@mui/icons-material/ExpandMore";
 import StarBorder from "@mui/icons-material/StarBorder";
 import DateRangeIcon from "@mui/icons-material/DateRange";
 import { NavLink } from "react-router-dom";
-import { IconButton, Menu, MenuItem, ClickAwayListener } from "@mui/material";
+import { IconButton, Menu, MenuItem } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import PropTypes from "prop-types";
 import { useState } from "react";
-import ApiHelper from "../helpers/apiHelper";
+import CreateInputMenu from "./CreateInputMenu";
 
 export default function ProjectItem({
   toggleCollapse,
   collapseList,
   project,
-  loadProjects,
+  deleteProject,
+  editProject,
 }) {
   const [anchorMenuElement, setAnchorMenuElement] = useState(null);
   const isMenuOpen = Boolean(anchorMenuElement);
-  const [isEditing, setIsEditing] = useState(false);
-  const [newName, setNewName] = useState(project.title);
+  // const [isEditing, setIsEditing] = useState(false);
+  // const [newName, setNewName] = useState(project.title);
+  const [isEditActive, setIsEditActive] = useState(false);
+
   const handleClick = (event) => {
     setAnchorMenuElement(event.currentTarget);
   };
@@ -39,49 +42,38 @@ export default function ProjectItem({
 
   const handleEdit = () => {
     handleClose();
-    setIsEditing(true); // Reset the editing state variable
+    setIsEditActive(true); // Reset the editing state variable
   };
 
-  const toggleDelete = (id) => {
-    console.info(`Deleting project : ${id}`);
-    ApiHelper(`projects/${id}`, "delete")
-      .then(() => {
-        console.info("Delete successful");
-        loadProjects();
-      })
-      .catch((err) => {
-        console.error(`Axios Error : ${err.message}`);
-      });
+  const handleClickDeleteButton = () => {
+    deleteProject(project.id);
   };
 
-  const handleInputChange = (event) => {
-    setNewName(event.target.value); // Update the new title when the input changes
-  };
+  // const handleInputChange = (event) => {
+  //   setNewName(event.target.value); // Update the new title when the input changes
+  // };
 
-  const handleCloseEditProject = (id) => {
-    console.info(`edit id : ${id}`);
-    ApiHelper(
-      `projects/${id}`,
-      "patch",
-      {
-        title: newName,
-      },
-      "application/merge-patch+json"
-    )
-      .then(() => {
-        console.info("Update successful");
-        loadProjects();
-        setIsEditing(false);
-        setNewName("");
-      })
-      .catch((err) => {
-        console.error(`Axios Error : ${err.message}`);
-      });
+  // const handleCloseEditProject = () => {
+  //   setIsEditing(false);
+  //   setNewName("");
+  //   editProject(newName, project.id);
+  // };
+
+  const handleEditSubmit = (newName) => {
+    editProject(newName, project.id);
   };
 
   return (
-    <div>
-      <ListItem sx={{ display: "flex", justifyContent: "space-between" }}>
+    <ListItem sx={{ display: "flex", justifyContent: "space-between" }}>
+      {isEditActive ? (
+        <CreateInputMenu
+          onSubmit={handleEditSubmit}
+          onClose={() => setIsEditActive(false)}
+          submitTextButton="Edit"
+          label="Project"
+          initialValue={project.title}
+        />
+      ) : (
         <Box sx={{ display: "flex", alignItems: "center" }}>
           <ListItemIcon>
             <DateRangeIcon />
@@ -93,15 +85,7 @@ export default function ProjectItem({
               color: "inherit",
             }}
           >
-            {isEditing ? (
-              <ClickAwayListener
-                onClickAway={() => handleCloseEditProject(project.id)}
-              >
-                <input value={newName} onChange={handleInputChange} />
-              </ClickAwayListener>
-            ) : (
-              <ListItemText primary={project.title} />
-            )}
+            <ListItemText primary={project.title} />
           </NavLink>
           <IconButton aria-label="settings" onClick={handleClick}>
             <MoreVertIcon />
@@ -115,32 +99,33 @@ export default function ProjectItem({
               "aria-labelledby": "basic-button",
             }}
           >
-            <MenuItem onClick={() => toggleDelete(project.id)}>
-              <ListItemIcon>
-                <DeleteIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>Delete</ListItemText>
-            </MenuItem>
             <MenuItem onClick={() => handleEdit(project.id)}>
               <ListItemIcon>
                 <EditIcon fontSize="small" />
               </ListItemIcon>
               <ListItemText>Edit</ListItemText>
             </MenuItem>
+            <MenuItem onClick={() => handleClickDeleteButton()}>
+              <ListItemIcon>
+                <DeleteIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Delete</ListItemText>
+            </MenuItem>
           </Menu>
         </Box>
-        {collapseList[project.id] ? (
-          <ExpandLess
-            sx={{ cursor: "pointer" }}
-            onClick={() => toggleCollapse(project.id)}
-          />
-        ) : (
-          <ExpandMore
-            sx={{ cursor: "pointer" }}
-            onClick={() => toggleCollapse(project.id)}
-          />
-        )}
-      </ListItem>
+      )}
+      {collapseList[project.id] ? (
+        <ExpandLess
+          sx={{ cursor: "pointer" }}
+          onClick={() => toggleCollapse(project.id)}
+        />
+      ) : (
+        <ExpandMore
+          sx={{ cursor: "pointer" }}
+          onClick={() => toggleCollapse(project.id)}
+        />
+      )}
+
       <Collapse in={collapseList[project.id]} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
           {project.lists.map((list) => {
@@ -155,7 +140,7 @@ export default function ProjectItem({
           })}
         </List>
       </Collapse>
-    </div>
+    </ListItem>
   );
 }
 
@@ -172,5 +157,6 @@ ProjectItem.propTypes = {
       })
     ).isRequired,
   }).isRequired,
-  loadProjects: PropTypes.func.isRequired,
+  deleteProject: PropTypes.func.isRequired,
+  editProject: PropTypes.func.isRequired,
 };

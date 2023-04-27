@@ -1,4 +1,3 @@
-import { Form } from "react-router-dom";
 import {
   Button,
   ClickAwayListener,
@@ -33,7 +32,7 @@ export default function CreateInputMenu({
   return (
     <div>
       <ClickAwayListener onClickAway={handleCloseListMenu}>
-        <Form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit}>
           <Card sx={{ minWidth: 275, padding: "10px 5px" }}>
             <CardContent>
               <TextField
@@ -57,7 +56,7 @@ export default function CreateInputMenu({
               </Button>
             </CardActions>
           </Card>
-        </Form>
+        </form>
       </ClickAwayListener>
     </div>
   );

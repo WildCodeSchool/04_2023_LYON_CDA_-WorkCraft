@@ -45,7 +45,8 @@ export default function ProjectModal({ open, setOpen, createProject }) {
     setSelectedUser(0);
   };
 
-  const handleSubscribe = () => {
+  const handleSubscribe = (e) => {
+    e.preventDefault();
     if (!projectName) {
       setIsProjectEmpty(true);
       return;
@@ -70,62 +71,64 @@ export default function ProjectModal({ open, setOpen, createProject }) {
 
   return (
     <div>
-      <Dialog open={open} onClose={handleCancel}>
-        <DialogTitle>Add a new project</DialogTitle>
-        <DialogContent>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="name"
-            label="Project Name"
-            type="text"
-            fullWidth
-            variant="standard"
-            value={projectName}
-            onChange={handleProjectNameChange}
-          />
-          {isProjectEmpty && (
-            <p style={{ color: "red" }}>Please fill the project name</p>
-          )}
-          <UserList setSelectedUser={setSelectedUser} />
-          <InputLabel>Starting date</InputLabel>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="name"
-            label=""
-            type="date"
-            fullWidth
-            variant="standard"
-            value={startDate}
-            onChange={handleStartDateChange}
-          />
-          <InputLabel>Ending date</InputLabel>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="name"
-            label=""
-            type="date"
-            fullWidth
-            variant="standard"
-            value={endDate}
-            onChange={handleEndDateChange}
-          />
-          {isDateEmpty && (
-            <p style={{ color: "red" }}>Please fill the date field</p>
-          )}
-          {!isDatesInOrder && (
-            <p style={{ color: "red" }}>
-              Please fill the dates in the correct order
-            </p>
-          )}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCancel}>Cancel</Button>
-          <Button onClick={handleSubscribe}>Subscribe</Button>
-        </DialogActions>
-      </Dialog>
+      <form onSubmit={handleSubscribe}>
+        <Dialog open={open} onClose={handleCancel}>
+          <DialogTitle>Add a new project</DialogTitle>
+          <DialogContent>
+            <TextField
+              autoFocus
+              margin="dense"
+              id="name"
+              label="Project Name"
+              type="text"
+              fullWidth
+              variant="standard"
+              value={projectName}
+              onChange={handleProjectNameChange}
+            />
+            {isProjectEmpty && (
+              <p style={{ color: "red" }}>Please fill the project name</p>
+            )}
+            <UserList setSelectedUser={setSelectedUser} />
+            <InputLabel>Starting date</InputLabel>
+            <TextField
+              autoFocus
+              margin="dense"
+              id="name"
+              label=""
+              type="date"
+              fullWidth
+              variant="standard"
+              value={startDate}
+              onChange={handleStartDateChange}
+            />
+            <InputLabel>Ending date</InputLabel>
+            <TextField
+              autoFocus
+              margin="dense"
+              id="name"
+              label=""
+              type="date"
+              fullWidth
+              variant="standard"
+              value={endDate}
+              onChange={handleEndDateChange}
+            />
+            {isDateEmpty && (
+              <p style={{ color: "red" }}>Please fill the date field</p>
+            )}
+            {!isDatesInOrder && (
+              <p style={{ color: "red" }}>
+                Please fill the dates in the correct order
+              </p>
+            )}
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCancel}>Cancel</Button>
+            <Button type="submit">Subscribe</Button>
+          </DialogActions>
+        </Dialog>
+      </form>
     </div>
   );
 }

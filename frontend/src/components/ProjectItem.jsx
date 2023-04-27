@@ -64,68 +64,69 @@ export default function ProjectItem({
   };
 
   return (
-    <ListItem sx={{ display: "flex", justifyContent: "space-between" }}>
-      {isEditActive ? (
-        <CreateInputMenu
-          onSubmit={handleEditSubmit}
-          onClose={() => setIsEditActive(false)}
-          submitTextButton="Edit"
-          label="Project"
-          initialValue={project.title}
-        />
-      ) : (
-        <Box sx={{ display: "flex", alignItems: "center" }}>
-          <ListItemIcon>
-            <DateRangeIcon />
-          </ListItemIcon>
-          <NavLink
-            to={`/projects/${project.id}`}
-            style={{
-              textDecoration: "none",
-              color: "inherit",
-            }}
-          >
-            <ListItemText primary={project.title} />
-          </NavLink>
-          <IconButton aria-label="settings" onClick={handleClick}>
-            <MoreVertIcon />
-          </IconButton>
-          <Menu
-            id="basic-menu"
-            anchorEl={anchorMenuElement}
-            open={isMenuOpen}
-            onClose={handleClose}
-            MenuListProps={{
-              "aria-labelledby": "basic-button",
-            }}
-          >
-            <MenuItem onClick={() => handleEdit(project.id)}>
-              <ListItemIcon>
-                <EditIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>Edit</ListItemText>
-            </MenuItem>
-            <MenuItem onClick={() => handleClickDeleteButton()}>
-              <ListItemIcon>
-                <DeleteIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>Delete</ListItemText>
-            </MenuItem>
-          </Menu>
-        </Box>
-      )}
-      {collapseList[project.id] ? (
-        <ExpandLess
-          sx={{ cursor: "pointer" }}
-          onClick={() => toggleCollapse(project.id)}
-        />
-      ) : (
-        <ExpandMore
-          sx={{ cursor: "pointer" }}
-          onClick={() => toggleCollapse(project.id)}
-        />
-      )}
-
+    <div>
+      <ListItem sx={{ display: "flex", justifyContent: "space-between" }}>
+        {isEditActive ? (
+          <CreateInputMenu
+            onSubmit={handleEditSubmit}
+            onClose={() => setIsEditActive(false)}
+            submitTextButton="Edit"
+            label="Project"
+            initialValue={project.title}
+          />
+        ) : (
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            <ListItemIcon>
+              <DateRangeIcon />
+            </ListItemIcon>
+            <NavLink
+              to={`/projects/${project.id}`}
+              style={{
+                textDecoration: "none",
+                color: "inherit",
+              }}
+            >
+              <ListItemText primary={project.title} />
+            </NavLink>
+            <IconButton aria-label="settings" onClick={handleClick}>
+              <MoreVertIcon />
+            </IconButton>
+            <Menu
+              id="basic-menu"
+              anchorEl={anchorMenuElement}
+              open={isMenuOpen}
+              onClose={handleClose}
+              MenuListProps={{
+                "aria-labelledby": "basic-button",
+              }}
+            >
+              <MenuItem onClick={() => handleEdit(project.id)}>
+                <ListItemIcon>
+                  <EditIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>Edit</ListItemText>
+              </MenuItem>
+              <MenuItem onClick={() => handleClickDeleteButton()}>
+                <ListItemIcon>
+                  <DeleteIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>Delete</ListItemText>
+              </MenuItem>
+            </Menu>
+          </Box>
+        )}
+        {collapseList[project.id] ? (
+          <ExpandLess
+            sx={{ cursor: "pointer" }}
+            onClick={() => toggleCollapse(project.id)}
+          />
+        ) : (
+          <ExpandMore
+            sx={{ cursor: "pointer" }}
+            onClick={() => toggleCollapse(project.id)}
+          />
+        )}
+      </ListItem>
       <Collapse in={collapseList[project.id]} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
           {project.lists.map((list) => {
@@ -140,7 +141,7 @@ export default function ProjectItem({
           })}
         </List>
       </Collapse>
-    </ListItem>
+    </div>
   );
 }
 

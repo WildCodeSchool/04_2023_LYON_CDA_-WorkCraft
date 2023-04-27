@@ -98,7 +98,11 @@ export default function ProjectItem({
               <ClickAwayListener
                 onClickAway={() => handleCloseEditProject(project.id)}
               >
-                <input value={newName} onChange={handleInputChange} />
+                <input
+                  value={newName}
+                  onChange={handleInputChange}
+                  style={{ width: "120px" }}
+                />
               </ClickAwayListener>
             ) : (
               <ListItemText primary={project.title} />

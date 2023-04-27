@@ -45,7 +45,7 @@ export default function Project() {
         }}
       >
         <Typography variant="h3" color="primary.contrastText" align="center">
-          {project && project.title}
+          {project.title}
         </Typography>
       </Box>
       <Box

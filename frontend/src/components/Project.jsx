@@ -1,20 +1,18 @@
 import { useParams } from "react-router-dom";
 import { Box, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import TasksList from "./TasksList";
 import CreateInputMenu from "./CreateInputMenu";
+import ApiHelper from "../helpers/apiHelper";
 
 export default function Project() {
   const { projectId } = useParams();
   const [project, setProject] = useState({});
 
   const loadLists = () => {
-    axios
-      .get(`http://localhost/api/projects/${projectId}.json`)
+    ApiHelper(`projects/${projectId}`, "get")
       .then((res) => {
         console.info("ReloadingLists list...");
-        console.info(res.data);
         setProject(res.data);
       })
       .catch((err) => {
@@ -22,16 +20,20 @@ export default function Project() {
       });
   };
 
-  const createList = (listName) => {
-    axios
-      .post("http://localhost/api/project_lists", {
-        title: listName,
-        project: `api/projects/${projectId}`,
-      })
-      .then(loadLists);
-  };
-
   useEffect(loadLists, [projectId]);
+
+  const createList = (listName) => {
+    ApiHelper("project_lists", "post", {
+      title: listName,
+      project: `api/projects/${projectId}`,
+    })
+      .then(() => {
+        loadLists();
+      })
+      .catch((err) => {
+        console.error(`Axios Error : ${err.message}`);
+      });
+  };
 
   return (
     <Box

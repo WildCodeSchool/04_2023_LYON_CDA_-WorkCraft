@@ -7,23 +7,23 @@ import {
 } from "@mui/material";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import TaskModal from "./TaskModal";
+import ApiHelper from "../helpers/apiHelper";
 
 export default function Task({ taskId }) {
   const [task, setTask] = useState({});
 
-  useEffect(() => {
-    axios
-      .get(`http://localhost/api/tasks/${taskId}.json`)
+  const loadTasks = () => {
+    ApiHelper(`tasks/${taskId}`, "get")
       .then((res) => {
-        console.info(res.data);
         setTask(res.data);
       })
       .catch((err) => {
         console.error(`Axios Error : ${err.message}`);
       });
-  }, []);
+  };
+
+  useEffect(loadTasks, []);
 
   const [open, setOpen] = useState(false);
 

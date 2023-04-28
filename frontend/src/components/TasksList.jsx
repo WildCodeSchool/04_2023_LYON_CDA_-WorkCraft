@@ -89,7 +89,7 @@ export default function TasksList({ listId, deleteList }) {
             variant="contained"
             onClick={() => setIsCreateInputActive(true)}
           >
-            New List
+            New Task
           </Button>
         )}
       </CardActions>

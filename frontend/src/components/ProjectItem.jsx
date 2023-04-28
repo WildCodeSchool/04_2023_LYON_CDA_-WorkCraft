@@ -11,24 +11,31 @@ import ExpandMore from "@mui/icons-material/ExpandMore";
 import StarBorder from "@mui/icons-material/StarBorder";
 import DateRangeIcon from "@mui/icons-material/DateRange";
 import { NavLink } from "react-router-dom";
-import { IconButton, Menu, MenuItem, ClickAwayListener } from "@mui/material";
+import {
+  ClickAwayListener,
+  IconButton,
+  Menu,
+  MenuItem,
+  TextField,
+} from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import PropTypes from "prop-types";
 import { useState } from "react";
-import ApiHelper from "../helpers/apiHelper";
 
 export default function ProjectItem({
   toggleCollapse,
   collapseList,
   project,
-  loadProjects,
+  deleteProject,
+  editProject,
 }) {
   const [anchorMenuElement, setAnchorMenuElement] = useState(null);
   const isMenuOpen = Boolean(anchorMenuElement);
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditActive, setIsEditActive] = useState(false);
   const [newName, setNewName] = useState(project.title);
+
   const handleClick = (event) => {
     setAnchorMenuElement(event.currentTarget);
   };
@@ -39,44 +46,18 @@ export default function ProjectItem({
 
   const handleEdit = () => {
     handleClose();
-    setIsEditing(true); // Reset the editing state variable
+    setNewName(project.title);
+    setIsEditActive(true); // Reset the editing state variable
   };
 
-  const toggleDelete = (id) => {
-    console.info(`Deleting project : ${id}`);
-    ApiHelper(`projects/${id}`, "delete")
-      .then(() => {
-        console.info("Delete successful");
-        loadProjects();
-      })
-      .catch((err) => {
-        console.error(`Axios Error : ${err.message}`);
-      });
+  const handleClickDeleteButton = () => {
+    deleteProject(project.id);
   };
 
-  const handleInputChange = (event) => {
-    setNewName(event.target.value); // Update the new title when the input changes
-  };
-
-  const handleCloseEditProject = (id) => {
-    console.info(`edit id : ${id}`);
-    ApiHelper(
-      `projects/${id}`,
-      "patch",
-      {
-        title: newName,
-      },
-      "application/merge-patch+json"
-    )
-      .then(() => {
-        console.info("Update successful");
-        loadProjects();
-        setIsEditing(false);
-        setNewName("");
-      })
-      .catch((err) => {
-        console.error(`Axios Error : ${err.message}`);
-      });
+  const handleCloseEditProject = () => {
+    setIsEditActive(false);
+    setNewName("");
+    editProject(newName, project.id);
   };
 
   return (
@@ -86,23 +67,29 @@ export default function ProjectItem({
           <ListItemIcon>
             <DateRangeIcon />
           </ListItemIcon>
-          <NavLink
-            to={`/projects/${project.id}`}
-            style={{
-              textDecoration: "none",
-              color: "inherit",
-            }}
-          >
-            {isEditing ? (
-              <ClickAwayListener
-                onClickAway={() => handleCloseEditProject(project.id)}
-              >
-                <input value={newName} onChange={handleInputChange} />
-              </ClickAwayListener>
-            ) : (
+          {isEditActive ? (
+            <ClickAwayListener
+              onClickAway={() => handleCloseEditProject(project.id)}
+            >
+              <TextField
+                variant="standard"
+                sx={{ width: "100%" }}
+                value={newName}
+                onChange={(e) => setNewName(e.target.value)}
+                ref={(input) => input && input.focus()}
+              />
+            </ClickAwayListener>
+          ) : (
+            <NavLink
+              to={`/projects/${project.id}`}
+              style={{
+                textDecoration: "none",
+                color: "inherit",
+              }}
+            >
               <ListItemText primary={project.title} />
-            )}
-          </NavLink>
+            </NavLink>
+          )}
           <IconButton aria-label="settings" onClick={handleClick}>
             <MoreVertIcon />
           </IconButton>
@@ -115,20 +102,21 @@ export default function ProjectItem({
               "aria-labelledby": "basic-button",
             }}
           >
-            <MenuItem onClick={() => toggleDelete(project.id)}>
-              <ListItemIcon>
-                <DeleteIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>Delete</ListItemText>
-            </MenuItem>
             <MenuItem onClick={() => handleEdit(project.id)}>
               <ListItemIcon>
                 <EditIcon fontSize="small" />
               </ListItemIcon>
               <ListItemText>Edit</ListItemText>
             </MenuItem>
+            <MenuItem onClick={() => handleClickDeleteButton()}>
+              <ListItemIcon>
+                <DeleteIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Delete</ListItemText>
+            </MenuItem>
           </Menu>
         </Box>
+        {/* )} */}
         {collapseList[project.id] ? (
           <ExpandLess
             sx={{ cursor: "pointer" }}
@@ -172,5 +160,6 @@ ProjectItem.propTypes = {
       })
     ).isRequired,
   }).isRequired,
-  loadProjects: PropTypes.func.isRequired,
+  deleteProject: PropTypes.func.isRequired,
+  editProject: PropTypes.func.isRequired,
 };

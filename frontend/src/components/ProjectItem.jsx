@@ -11,13 +11,18 @@ import ExpandMore from "@mui/icons-material/ExpandMore";
 import StarBorder from "@mui/icons-material/StarBorder";
 import DateRangeIcon from "@mui/icons-material/DateRange";
 import { NavLink } from "react-router-dom";
-import { IconButton, Menu, MenuItem } from "@mui/material";
+import {
+  ClickAwayListener,
+  IconButton,
+  Menu,
+  MenuItem,
+  TextField,
+} from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import PropTypes from "prop-types";
 import { useState } from "react";
-import CreateInputMenu from "./CreateInputMenu";
 
 export default function ProjectItem({
   toggleCollapse,
@@ -28,9 +33,8 @@ export default function ProjectItem({
 }) {
   const [anchorMenuElement, setAnchorMenuElement] = useState(null);
   const isMenuOpen = Boolean(anchorMenuElement);
-  // const [isEditing, setIsEditing] = useState(false);
-  // const [newName, setNewName] = useState(project.title);
   const [isEditActive, setIsEditActive] = useState(false);
+  const [newName, setNewName] = useState(project.title);
 
   const handleClick = (event) => {
     setAnchorMenuElement(event.currentTarget);
@@ -42,6 +46,7 @@ export default function ProjectItem({
 
   const handleEdit = () => {
     handleClose();
+    setNewName(project.title);
     setIsEditActive(true); // Reset the editing state variable
   };
 
@@ -49,36 +54,32 @@ export default function ProjectItem({
     deleteProject(project.id);
   };
 
-  // const handleInputChange = (event) => {
-  //   setNewName(event.target.value); // Update the new title when the input changes
-  // };
-
-  // const handleCloseEditProject = () => {
-  //   setIsEditing(false);
-  //   setNewName("");
-  //   editProject(newName, project.id);
-  // };
-
-  const handleEditSubmit = (newName) => {
+  const handleCloseEditProject = () => {
+    setIsEditActive(false);
+    setNewName("");
     editProject(newName, project.id);
   };
 
   return (
     <div>
       <ListItem sx={{ display: "flex", justifyContent: "space-between" }}>
-        {isEditActive ? (
-          <CreateInputMenu
-            onSubmit={handleEditSubmit}
-            onClose={() => setIsEditActive(false)}
-            submitTextButton="Edit"
-            label="Project"
-            initialValue={project.title}
-          />
-        ) : (
-          <Box sx={{ display: "flex", alignItems: "center" }}>
-            <ListItemIcon>
-              <DateRangeIcon />
-            </ListItemIcon>
+        <Box sx={{ display: "flex", alignItems: "center" }}>
+          <ListItemIcon>
+            <DateRangeIcon />
+          </ListItemIcon>
+          {isEditActive ? (
+            <ClickAwayListener
+              onClickAway={() => handleCloseEditProject(project.id)}
+            >
+              <TextField
+                variant="standard"
+                sx={{ width: "100%" }}
+                value={newName}
+                onChange={(e) => setNewName(e.target.value)}
+                ref={(input) => input && input.focus()}
+              />
+            </ClickAwayListener>
+          ) : (
             <NavLink
               to={`/projects/${project.id}`}
               style={{
@@ -88,33 +89,34 @@ export default function ProjectItem({
             >
               <ListItemText primary={project.title} />
             </NavLink>
-            <IconButton aria-label="settings" onClick={handleClick}>
-              <MoreVertIcon />
-            </IconButton>
-            <Menu
-              id="basic-menu"
-              anchorEl={anchorMenuElement}
-              open={isMenuOpen}
-              onClose={handleClose}
-              MenuListProps={{
-                "aria-labelledby": "basic-button",
-              }}
-            >
-              <MenuItem onClick={() => handleEdit(project.id)}>
-                <ListItemIcon>
-                  <EditIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>Edit</ListItemText>
-              </MenuItem>
-              <MenuItem onClick={() => handleClickDeleteButton()}>
-                <ListItemIcon>
-                  <DeleteIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>Delete</ListItemText>
-              </MenuItem>
-            </Menu>
-          </Box>
-        )}
+          )}
+          <IconButton aria-label="settings" onClick={handleClick}>
+            <MoreVertIcon />
+          </IconButton>
+          <Menu
+            id="basic-menu"
+            anchorEl={anchorMenuElement}
+            open={isMenuOpen}
+            onClose={handleClose}
+            MenuListProps={{
+              "aria-labelledby": "basic-button",
+            }}
+          >
+            <MenuItem onClick={() => handleEdit(project.id)}>
+              <ListItemIcon>
+                <EditIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Edit</ListItemText>
+            </MenuItem>
+            <MenuItem onClick={() => handleClickDeleteButton()}>
+              <ListItemIcon>
+                <DeleteIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Delete</ListItemText>
+            </MenuItem>
+          </Menu>
+        </Box>
+        {/* )} */}
         {collapseList[project.id] ? (
           <ExpandLess
             sx={{ cursor: "pointer" }}

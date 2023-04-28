@@ -42,6 +42,7 @@ export default function Sidebar2({
   useEffect(() => loadData("projects", setProjects), []);
 
   const createProject = (projectName, selectedUser) => {
+    console.info("TEST");
     ApiHelper("projects", "post", {
       title: projectName,
       owner: `api/users/${selectedUser}`,
@@ -95,7 +96,8 @@ export default function Sidebar2({
         size="small"
         sx={{
           marginLeft: isDrawerOpen ? 19 : -4,
-          zIndex: 3000,
+          marginTop: "50vh",
+          zIndex: 1300,
           transition: "all 0.1s",
         }}
         onClick={() => toggleDrawer()}

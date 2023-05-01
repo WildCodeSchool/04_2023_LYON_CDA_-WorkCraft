@@ -20,8 +20,9 @@ import loadData from "../helpers/loadData";
 
 export default function Task({ taskId, deleteTask, editTask }) {
   const [task, setTask] = useState({});
+  const [newTaskName, setNewTaskName] = useState(task.title);
+  const [isEditActive, setIsEditActive] = useState(false);
   const [openAlertDeleteDialog, setOpenAlertDeleteDialog] = useState(false);
-  const [openAlertEditDialog, setOpenAlertEditDialog] = useState(false);
 
   useEffect(() => loadData("tasks", setTask, taskId), []);
 
@@ -32,16 +33,14 @@ export default function Task({ taskId, deleteTask, editTask }) {
 
   const handleClickOpenTaskEdit = (e) => {
     e.stopPropagation();
-    setOpenAlertEditDialog(true);
+    setIsEditActive(true);
+    setNewTaskName(task.title);
   };
 
   const handleCloseTaskDelete = () => {
     setOpenAlertDeleteDialog(false);
   };
 
-  const handleCloseTaskEdit = () => {
-    setOpenAlertDeleteDialog(false);
-  };
   const [openTask, setOpenTask] = useState(false);
 
   const handleClickOpenTask = () => {
@@ -82,10 +81,17 @@ export default function Task({ taskId, deleteTask, editTask }) {
                   </IconButton>
                 </div>
               }
-              title={task.title}
-              titleTypographyProps={{
-                color: "primary",
-              }}
+              title={
+                isEditActive ? (
+                  <input
+                    type="text"
+                    value={newTaskName}
+                    onChange={() => handleEditTaskButton()}
+                  />
+                ) : (
+                  <span style={{ color: "primary" }}>{task.title}</span>
+                )
+              }
             />
             <CardContent>
               <Typography sx={{ fontSize: 14 }} color="initial">
@@ -122,22 +128,6 @@ export default function Task({ taskId, deleteTask, editTask }) {
         <DialogActions>
           <Button onClick={handleCloseTaskDelete}>Disagree</Button>
           <Button onClick={handleDeleteTaskButton} autoFocus>
-            Agree
-          </Button>
-        </DialogActions>
-      </Dialog>
-      <Dialog
-        open={openAlertEditDialog}
-        onClose={handleCloseTask}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">
-          Would you like to edit this task?
-        </DialogTitle>
-        <DialogActions>
-          <Button onClick={handleCloseTaskEdit}>Disagree</Button>
-          <Button onClick={handleEditTaskButton} autoFocus>
             Agree
           </Button>
         </DialogActions>

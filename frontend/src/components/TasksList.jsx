@@ -19,7 +19,6 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
-
 import Task from "./Task";
 import CreateInputMenu from "./CreateInputMenu";
 import ApiHelper from "../helpers/apiHelper";
@@ -42,7 +41,6 @@ export default function TasksList({ listId, deleteList, editList }) {
     handleClose();
     setNewListName(list.title);
     setIsEditActive(true); // Reset the editing state variable
-    editList(newListName, listId);
   };
 
   const handleCloseEditList = () => {
@@ -73,12 +71,12 @@ export default function TasksList({ listId, deleteList, editList }) {
     handleClose();
     deleteList(listId);
   };
-  // //Edit task - to be continued
-  // const editTask = (taskId) => {
-  //   ApiHelper(`tasks/${taskId}`, "patch").then(() =>
-  //     loadData("project_lists", setList, listId)
-  //   );
-  // };
+
+  const editTask = (taskId) => {
+    ApiHelper(`tasks/${taskId}`, "patch").then(() =>
+      loadData("project_lists", setList, listId)
+    );
+  };
 
   return (
     <Card sx={{ minWidth: 275 }}>
@@ -108,7 +106,11 @@ export default function TasksList({ listId, deleteList, editList }) {
           {list.tasks &&
             list.tasks.map((task) => (
               <ListItem key={task.id}>
-                <Task deleteTask={deleteTask} taskId={task.id} />
+                <Task
+                  deleteTask={deleteTask}
+                  taskId={task.id}
+                  editTask={editTask}
+                />
               </ListItem>
             ))}
         </List>
@@ -126,7 +128,7 @@ export default function TasksList({ listId, deleteList, editList }) {
             variant="contained"
             onClick={() => setIsCreateInputActive(true)}
           >
-            New List
+            New Task
           </Button>
         )}
       </CardActions>

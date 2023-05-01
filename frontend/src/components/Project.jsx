@@ -36,6 +36,12 @@ export default function Project() {
     );
   };
 
+  // Edit List
+  const editList = (listId) => {
+    ApiHelper(`project_lists/${listId}`, "patch").then(() =>
+      loadData("projects", setSelectedProject, projectId)
+    );
+  };
   return (
     <Box
       sx={{
@@ -61,7 +67,12 @@ export default function Project() {
       >
         {selectedProject.lists &&
           selectedProject.lists.map((list) => (
-            <TasksList key={list.id} listId={list.id} deleteList={deleteList} />
+            <TasksList
+              key={list.id}
+              listId={list.id}
+              deleteList={deleteList}
+              editList={editList}
+            />
           ))}
         {isCreateInputActive ? (
           <CreateInputMenu

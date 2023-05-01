@@ -11,18 +11,24 @@ import {
   ListItemText,
   CardActions,
   Button,
+  ClickAwayListener,
+  TextField,
 } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import DeleteIcon from "@mui/icons-material/Delete";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
+import EditIcon from "@mui/icons-material/Edit";
+
 import Task from "./Task";
 import CreateInputMenu from "./CreateInputMenu";
 import ApiHelper from "../helpers/apiHelper";
 import loadData from "../helpers/loadData";
 
-export default function TasksList({ listId, deleteList }) {
+export default function TasksList({ listId, deleteList, editList }) {
   const [list, setList] = useState({});
+  const [newListName, setNewListName] = useState(list.title);
+  const [isEditActive, setIsEditActive] = useState(false);
   const [anchorMenuElement, setAnchorMenuElement] = useState(null);
   const isMenuOpen = Boolean(anchorMenuElement);
   const handleClick = (event) => {
@@ -30,6 +36,19 @@ export default function TasksList({ listId, deleteList }) {
   };
   const handleClose = () => {
     setAnchorMenuElement(null);
+  };
+
+  const handleEditList = () => {
+    handleClose();
+    setNewListName(list.title);
+    setIsEditActive(true); // Reset the editing state variable
+    editList(newListName, listId);
+  };
+
+  const handleCloseEditList = () => {
+    setIsEditActive(false);
+    setNewListName("");
+    editList(newListName, listId);
   };
 
   const [isCreateInputActive, setIsCreateInputActive] = useState(false);
@@ -54,18 +73,36 @@ export default function TasksList({ listId, deleteList }) {
     handleClose();
     deleteList(listId);
   };
+  // //Edit task - to be continued
+  // const editTask = (taskId) => {
+  //   ApiHelper(`tasks/${taskId}`, "patch").then(() =>
+  //     loadData("project_lists", setList, listId)
+  //   );
+  // };
 
   return (
     <Card sx={{ minWidth: 275 }}>
-      <CardHeader
-        title={list.title}
-        align="center"
-        action={
-          <IconButton aria-label="settings" onClick={handleClick}>
-            <MoreVertIcon />
-          </IconButton>
-        }
-      />
+      {isEditActive ? (
+        <ClickAwayListener onClickAway={() => handleCloseEditList(list.id)}>
+          <TextField
+            variant="standard"
+            sx={{ width: "100%" }}
+            value={newListName}
+            onChange={(e) => setNewListName(e.target.value)}
+            ref={(input) => input && input.focus()}
+          />
+        </ClickAwayListener>
+      ) : (
+        <CardHeader
+          title={list.title}
+          align="center"
+          action={
+            <IconButton aria-label="settings" onClick={handleClick}>
+              <MoreVertIcon />
+            </IconButton>
+          }
+        />
+      )}
       <CardContent>
         <List>
           {list.tasks &&
@@ -102,6 +139,12 @@ export default function TasksList({ listId, deleteList }) {
           "aria-labelledby": "basic-button",
         }}
       >
+        <MenuItem onClick={() => handleEditList()}>
+          <ListItemIcon>
+            <EditIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>Edit</ListItemText>
+        </MenuItem>
         <MenuItem onClick={handleDeleteListButton}>
           <ListItemIcon>
             <DeleteIcon fontSize="small" />
@@ -116,4 +159,5 @@ export default function TasksList({ listId, deleteList }) {
 TasksList.propTypes = {
   listId: PropTypes.number.isRequired,
   deleteList: PropTypes.func.isRequired,
+  editList: PropTypes.func.isRequired,
 };

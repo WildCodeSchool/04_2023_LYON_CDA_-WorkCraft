@@ -23,6 +23,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import PropTypes from "prop-types";
 import { useState } from "react";
+import TasksList from "./TasksList";
 
 export default function ProjectItem({
   toggleCollapse,
@@ -143,6 +144,7 @@ export default function ProjectItem({
           })}
         </List>
       </Collapse>
+      <TasksList handleEdit={handleEdit} />
     </div>
   );
 }

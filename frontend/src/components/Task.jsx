@@ -10,6 +10,7 @@ import {
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -17,9 +18,10 @@ import DialogTitle from "@mui/material/DialogTitle";
 import TaskModal from "./TaskModal";
 import loadData from "../helpers/loadData";
 
-export default function Task({ taskId, deleteTask }) {
+export default function Task({ taskId, deleteTask, editTask }) {
   const [task, setTask] = useState({});
   const [openAlertDeleteDialog, setOpenAlertDeleteDialog] = useState(false);
+  const [openAlertEditDialog, setOpenAlertEditDialog] = useState(false);
 
   useEffect(() => loadData("tasks", setTask, taskId), []);
 
@@ -28,10 +30,18 @@ export default function Task({ taskId, deleteTask }) {
     setOpenAlertDeleteDialog(true);
   };
 
+  const handleClickOpenTaskEdit = (e) => {
+    e.stopPropagation();
+    setOpenAlertEditDialog(true);
+  };
+
   const handleCloseTaskDelete = () => {
     setOpenAlertDeleteDialog(false);
   };
 
+  const handleCloseTaskEdit = () => {
+    setOpenAlertDeleteDialog(false);
+  };
   const [openTask, setOpenTask] = useState(false);
 
   const handleClickOpenTask = () => {
@@ -46,6 +56,10 @@ export default function Task({ taskId, deleteTask }) {
     handleCloseTask();
     deleteTask(taskId);
   };
+  const handleEditTaskButton = () => {
+    handleCloseTask();
+    editTask(taskId);
+  };
 
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>
@@ -59,9 +73,14 @@ export default function Task({ taskId, deleteTask }) {
           <CardActionArea onClick={handleClickOpenTask}>
             <CardHeader
               action={
-                <IconButton onClick={handleClickOpenTaskDelete}>
-                  <DeleteIcon />
-                </IconButton>
+                <div>
+                  <IconButton onClick={handleClickOpenTaskDelete}>
+                    <DeleteIcon />
+                  </IconButton>
+                  <IconButton onClick={handleClickOpenTaskEdit}>
+                    <EditIcon />
+                  </IconButton>
+                </div>
               }
               title={task.title}
               titleTypographyProps={{
@@ -107,6 +126,22 @@ export default function Task({ taskId, deleteTask }) {
           </Button>
         </DialogActions>
       </Dialog>
+      <Dialog
+        open={openAlertEditDialog}
+        onClose={handleCloseTask}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          Would you like to edit this task?
+        </DialogTitle>
+        <DialogActions>
+          <Button onClick={handleCloseTaskEdit}>Disagree</Button>
+          <Button onClick={handleEditTaskButton} autoFocus>
+            Agree
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }
@@ -114,4 +149,5 @@ export default function Task({ taskId, deleteTask }) {
 Task.propTypes = {
   taskId: PropTypes.number.isRequired,
   deleteTask: PropTypes.func.isRequired,
+  editTask: PropTypes.func.isRequired,
 };

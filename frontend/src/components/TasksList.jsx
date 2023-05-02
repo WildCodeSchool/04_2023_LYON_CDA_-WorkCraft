@@ -67,7 +67,7 @@ export default function TasksList({ listId, loadLists }) {
         }
       />
       <CardContent>
-        <List>
+        <List sx={{ maxHeight: "70vh", overflow: "auto" }}>
           {list.tasks &&
             list.tasks.map((task) => (
               <ListItem key={task.id}>

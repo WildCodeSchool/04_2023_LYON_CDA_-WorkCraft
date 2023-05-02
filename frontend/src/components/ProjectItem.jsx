@@ -43,10 +43,8 @@ export default function ProjectItem({
   };
 
   const toggleDelete = (id) => {
-    console.info(`Deleting project : ${id}`);
     ApiHelper(`projects/${id}`, "delete")
       .then(() => {
-        console.info("Delete successful");
         loadProjects();
       })
       .catch((err) => {
@@ -59,7 +57,6 @@ export default function ProjectItem({
   };
 
   const handleCloseEditProject = (id) => {
-    console.info(`edit id : ${id}`);
     ApiHelper(
       `projects/${id}`,
       "patch",
@@ -69,7 +66,6 @@ export default function ProjectItem({
       "application/merge-patch+json"
     )
       .then(() => {
-        console.info("Update successful");
         loadProjects();
         setIsEditing(false);
         setNewName("");

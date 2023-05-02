@@ -42,8 +42,8 @@ export default function Root() {
           backgroundImage: `url(${bgImage})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
-          height: "100vh",
-          width: "100vw",
+          height: "98vh",
+          width: "300vh",
         }}
       >
         <Outlet />

@@ -95,10 +95,11 @@ export default function Sidebar2({
         aria-label="edit"
         size="small"
         sx={{
-          marginLeft: isDrawerOpen ? 19 : -4,
-          marginTop: "50vh",
+          position: "fixed",
+          left: isDrawerOpen ? 230 : 45,
+          top: "50vh",
           zIndex: 1300,
-          transition: "all 0.1s",
+          transition: "all 0.25s",
         }}
         onClick={() => toggleDrawer()}
       >

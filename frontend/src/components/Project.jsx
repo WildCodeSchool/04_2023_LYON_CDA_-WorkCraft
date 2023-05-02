@@ -40,11 +40,14 @@ export default function Project() {
     <Box
       sx={{
         width: "100%",
+        height: "100%",
+        overflow: "auto",
       }}
     >
       <Box
         sx={{
           backgroundColor: "primary.main",
+          width: "100%",
         }}
       >
         <Typography variant="h3" color="primary.contrastText" align="center">
@@ -52,11 +55,11 @@ export default function Project() {
         </Typography>
       </Box>
       <Box
-        style={{
+        sx={{
           display: "flex",
           alignItems: "flex-start",
           justifyContent: "left",
-          gap: 20,
+          gap: 5,
         }}
       >
         {selectedProject.lists &&

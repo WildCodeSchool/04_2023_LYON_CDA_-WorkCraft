@@ -10,6 +10,7 @@ import {
   ListItemIcon,
   ListItemText,
   CardActions,
+  Button,
 } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -18,8 +19,9 @@ import { useEffect, useState } from "react";
 import Task from "./Task";
 import CreateInputMenu from "./CreateInputMenu";
 import ApiHelper from "../helpers/apiHelper";
+import loadData from "../helpers/loadData";
 
-export default function TasksList({ listId, loadLists }) {
+export default function TasksList({ listId, deleteList }) {
   const [list, setList] = useState({});
   const [anchorMenuElement, setAnchorMenuElement] = useState(null);
   const isMenuOpen = Boolean(anchorMenuElement);
@@ -30,29 +32,27 @@ export default function TasksList({ listId, loadLists }) {
     setAnchorMenuElement(null);
   };
 
-  const loadTasks = () => {
-    ApiHelper(`project_lists/${listId}`, "get")
-      .then((res) => {
-        setList(res.data);
-      })
-      .catch((err) => {
-        console.error(`Axios Error : ${err.message}`);
-      });
-  };
+  const [isCreateInputActive, setIsCreateInputActive] = useState(false);
 
-  useEffect(loadTasks, []);
-
-  const handleDeleteList = () => {
-    handleClose();
-    ApiHelper(`project_lists/${listId}`, "delete").then(loadLists);
-  };
+  useEffect(() => loadData("project_lists", setList, listId), []);
 
   const createTask = (titleTask) => {
     ApiHelper(`tasks`, "post", {
       title: titleTask,
       description: "",
       list: `api/project_lists/${listId}`,
-    }).then(loadTasks);
+    }).then(() => loadData("project_lists", setList, listId));
+  };
+
+  const deleteTask = (taskId) => {
+    ApiHelper(`tasks/${taskId}`, "delete").then(() =>
+      loadData("project_lists", setList, listId)
+    );
+  };
+
+  const handleDeleteListButton = () => {
+    handleClose();
+    deleteList(listId);
   };
 
   return (
@@ -71,17 +71,27 @@ export default function TasksList({ listId, loadLists }) {
           {list.tasks &&
             list.tasks.map((task) => (
               <ListItem key={task.id}>
-                <Task loadTasks={loadTasks} taskId={task.id} />
+                <Task deleteTask={deleteTask} taskId={task.id} />
               </ListItem>
             ))}
         </List>
       </CardContent>
       <CardActions>
-        <CreateInputMenu
-          onSubmit={createTask}
-          submitTextButton="Create"
-          label="Task"
-        />
+        {isCreateInputActive ? (
+          <CreateInputMenu
+            onSubmit={createTask}
+            onClose={() => setIsCreateInputActive(false)}
+            submitTextButton="Create"
+            label="Task"
+          />
+        ) : (
+          <Button
+            variant="contained"
+            onClick={() => setIsCreateInputActive(true)}
+          >
+            New List
+          </Button>
+        )}
       </CardActions>
       <Menu
         id="basic-menu"
@@ -92,7 +102,7 @@ export default function TasksList({ listId, loadLists }) {
           "aria-labelledby": "basic-button",
         }}
       >
-        <MenuItem onClick={handleDeleteList}>
+        <MenuItem onClick={handleDeleteListButton}>
           <ListItemIcon>
             <DeleteIcon fontSize="small" />
           </ListItemIcon>
@@ -105,5 +115,5 @@ export default function TasksList({ listId, loadLists }) {
 
 TasksList.propTypes = {
   listId: PropTypes.number.isRequired,
-  loadLists: PropTypes.func.isRequired,
+  deleteList: PropTypes.func.isRequired,
 };

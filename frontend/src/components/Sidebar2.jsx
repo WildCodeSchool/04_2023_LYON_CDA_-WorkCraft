@@ -16,12 +16,18 @@ import AddIcon from "@mui/icons-material/Add";
 import PropTypes from "prop-types";
 import DateRangeIcon from "@mui/icons-material/DateRange";
 import { Fab } from "@mui/material";
+import ApiHelper from "../helpers/apiHelper";
+import loadData from "../helpers/loadData";
 import PrimarySearchAppBar from "./Searchbar";
 import ProjectItem from "./ProjectItem";
 import ProjectModal from "./ProjectModal";
-import ApiHelper from "../helpers/apiHelper";
 
-export default function Sidebar2({ toggleDrawer, isDrawerOpen }) {
+export default function Sidebar2({
+  toggleDrawer,
+  isDrawerOpen,
+  setSelectedProject,
+  selectedProject,
+}) {
   const [projects, setProjects] = useState([]);
 
   const [searchValue, setSearchValue] = useState("");
@@ -33,17 +39,54 @@ export default function Sidebar2({ toggleDrawer, isDrawerOpen }) {
 
   const [openCreateProjectModal, setOpenCreateProjectModal] = useState(false);
 
-  const loadProjects = () => {
-    ApiHelper("projects", "get")
-      .then((res) => {
-        setProjects(res.data);
+  useEffect(() => loadData("projects", setProjects), []);
+
+  const createProject = (projectName, selectedUser) => {
+    console.info("TEST");
+    ApiHelper("projects", "post", {
+      title: projectName,
+      owner: `api/users/${selectedUser}`,
+    })
+      .then(() => {
+        loadData("projects", setProjects);
       })
       .catch((err) => {
         console.error(`Axios Error : ${err.message}`);
       });
   };
 
-  useEffect(loadProjects, []);
+  const editProject = (newProjectName, projectId) => {
+    console.info(`edit id : ${projectId}`);
+    ApiHelper(
+      `projects/${projectId}`,
+      "patch",
+      {
+        title: newProjectName,
+      },
+      "application/merge-patch+json"
+    )
+      .then(() => {
+        console.info("Update successful");
+        loadData("projects", setProjects);
+        if (selectedProject?.id === projectId)
+          loadData("projects", setSelectedProject, projectId);
+      })
+      .catch((err) => {
+        console.error(`Axios Error : ${err.message}`);
+      });
+  };
+
+  const deleteProject = (projectId) => {
+    console.info(`Deleting project : ${projectId}`);
+    ApiHelper(`projects/${projectId}`, "delete")
+      .then(() => {
+        console.info("Delete successful");
+        loadData("projects", setProjects);
+      })
+      .catch((err) => {
+        console.error(`Axios Error : ${err.message}`);
+      });
+  };
 
   return (
     <div>
@@ -52,9 +95,11 @@ export default function Sidebar2({ toggleDrawer, isDrawerOpen }) {
         aria-label="edit"
         size="small"
         sx={{
-          marginLeft: isDrawerOpen ? 19 : -4,
-          zIndex: 3000,
-          transition: "all 0.1s",
+          position: "fixed",
+          left: isDrawerOpen ? 230 : 45,
+          top: "50vh",
+          zIndex: 1300,
+          transition: "all 0.25s",
         }}
         onClick={() => toggleDrawer()}
       >
@@ -108,7 +153,8 @@ export default function Sidebar2({ toggleDrawer, isDrawerOpen }) {
                   <ProjectItem
                     toggleCollapse={toggleCollapse}
                     collapseList={collapseList}
-                    loadProjects={loadProjects}
+                    deleteProject={deleteProject}
+                    editProject={editProject}
                     project={project}
                     key={project.id}
                   />
@@ -148,7 +194,7 @@ export default function Sidebar2({ toggleDrawer, isDrawerOpen }) {
       <ProjectModal
         open={openCreateProjectModal}
         setOpen={setOpenCreateProjectModal}
-        loadProjects={loadProjects}
+        createProject={createProject}
       />
     </div>
   );
@@ -157,4 +203,19 @@ export default function Sidebar2({ toggleDrawer, isDrawerOpen }) {
 Sidebar2.propTypes = {
   toggleDrawer: PropTypes.func.isRequired,
   isDrawerOpen: PropTypes.bool.isRequired,
+  setSelectedProject: PropTypes.func.isRequired,
+  selectedProject: PropTypes.shape({
+    id: PropTypes.number,
+    title: PropTypes.string,
+    lists: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.number,
+        title: PropTypes.string,
+      })
+    ),
+  }),
+};
+
+Sidebar2.defaultProps = {
+  selectedProject: null,
 };

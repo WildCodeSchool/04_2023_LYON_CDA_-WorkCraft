@@ -15,23 +15,13 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
 import TaskModal from "./TaskModal";
-import ApiHelper from "../helpers/apiHelper";
+import loadData from "../helpers/loadData";
 
-export default function Task({ taskId, loadTasks }) {
+export default function Task({ taskId, deleteTask }) {
   const [task, setTask] = useState({});
   const [openAlertDeleteDialog, setOpenAlertDeleteDialog] = useState(false);
 
-  const loadTask = () => {
-    ApiHelper(`tasks/${taskId}`, "get")
-      .then((res) => {
-        setTask(res.data);
-      })
-      .catch((err) => {
-        console.error(`Axios Error : ${err.message}`);
-      });
-  };
-
-  useEffect(loadTask, []);
+  useEffect(() => loadData("tasks", setTask, taskId), []);
 
   const handleClickOpenTaskDelete = (e) => {
     e.stopPropagation();
@@ -52,11 +42,9 @@ export default function Task({ taskId, loadTasks }) {
     setOpenTask(false);
   };
 
-  const handleDeleteTask = () => {
+  const handleDeleteTaskButton = () => {
     handleCloseTask();
-    ApiHelper(`tasks/${taskId}`, "delete").then(() => {
-      loadTasks();
-    });
+    deleteTask(taskId);
   };
 
   return (
@@ -114,7 +102,7 @@ export default function Task({ taskId, loadTasks }) {
         </DialogTitle>
         <DialogActions>
           <Button onClick={handleCloseTaskDelete}>Disagree</Button>
-          <Button onClick={handleDeleteTask} autoFocus>
+          <Button onClick={handleDeleteTaskButton} autoFocus>
             Agree
           </Button>
         </DialogActions>
@@ -125,5 +113,5 @@ export default function Task({ taskId, loadTasks }) {
 
 Task.propTypes = {
   taskId: PropTypes.number.isRequired,
-  loadTasks: PropTypes.func.isRequired,
+  deleteTask: PropTypes.func.isRequired,
 };

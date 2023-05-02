@@ -32,11 +32,18 @@ export default function Root() {
     },
   });
 
+  const [selectedProject, setSelectedProject] = useState({});
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Sidebar1 toggleDarkMode={toggleDarkMode} toggleDrawer={toggleDrawer} />
-      <Sidebar2 toggleDrawer={toggleDrawer} isDrawerOpen={isDrawerOpen} />
+      <Sidebar2
+        toggleDrawer={toggleDrawer}
+        isDrawerOpen={isDrawerOpen}
+        setSelectedProject={setSelectedProject}
+        selectedProject={selectedProject}
+      />
       <main
         style={{
           backgroundImage: `url(${bgImage})`,
@@ -46,7 +53,7 @@ export default function Root() {
           width: "300vh",
         }}
       >
-        <Outlet />
+        <Outlet context={[selectedProject, setSelectedProject]} />
       </main>
     </ThemeProvider>
   );

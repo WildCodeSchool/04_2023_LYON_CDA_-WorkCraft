@@ -1,11 +1,11 @@
 import { useOutletContext, useParams } from "react-router-dom";
 import { Box, Button, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
+import { useSnackbar } from "notistack";
 import loadData from "../helpers/loadData";
 import TasksList from "./TasksList";
 import CreateInputMenu from "./CreateInputMenu";
 import ApiHelper from "../helpers/apiHelper";
-import { useSnackbar } from "notistack";
 
 export default function Project() {
   const { projectId } = useParams();

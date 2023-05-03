@@ -16,12 +16,12 @@ import AddIcon from "@mui/icons-material/Add";
 import PropTypes from "prop-types";
 import DateRangeIcon from "@mui/icons-material/DateRange";
 import { Fab } from "@mui/material";
+import { useSnackbar } from "notistack";
 import ApiHelper from "../helpers/apiHelper";
 import loadData from "../helpers/loadData";
 import PrimarySearchAppBar from "./Searchbar";
 import ProjectItem from "./ProjectItem";
 import ProjectModal from "./ProjectModal";
-import { useSnackbar } from "notistack";
 
 export default function Sidebar2({
   toggleDrawer,

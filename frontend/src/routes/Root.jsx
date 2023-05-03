@@ -3,11 +3,11 @@ import CssBaseline from "@mui/material/CssBaseline";
 import { Outlet } from "react-router-dom";
 import { useState } from "react";
 import { Grow } from "@mui/material";
+import { SnackbarProvider } from "notistack";
 import Sidebar1 from "../components/Sidebar1";
 import Sidebar2 from "../components/Sidebar2";
 import img6 from "../assets/backgroundImg/img6.jpg";
 import img2 from "../assets/backgroundImg/img2.jpg";
-import { SnackbarProvider } from "notistack";
 
 export default function Root() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);

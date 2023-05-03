@@ -16,11 +16,11 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import DeleteIcon from "@mui/icons-material/Delete";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
+import { useSnackbar } from "notistack";
 import Task from "./Task";
 import CreateInputMenu from "./CreateInputMenu";
 import ApiHelper from "../helpers/apiHelper";
 import loadData from "../helpers/loadData";
-import { useSnackbar } from "notistack";
 
 export default function TasksList({ listId, deleteList }) {
   const [list, setList] = useState({});

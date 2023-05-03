@@ -16,6 +16,7 @@ import AddIcon from "@mui/icons-material/Add";
 import PropTypes from "prop-types";
 import DateRangeIcon from "@mui/icons-material/DateRange";
 import { Fab } from "@mui/material";
+import { useSnackbar } from "notistack";
 import ApiHelper from "../helpers/apiHelper";
 import loadData from "../helpers/loadData";
 import PrimarySearchAppBar from "./Searchbar";
@@ -41,6 +42,8 @@ export default function Sidebar2({
 
   useEffect(() => loadData("projects", setProjects), []);
 
+  const { enqueueSnackbar } = useSnackbar();
+
   const createProject = (projectName, selectedUser) => {
     console.info("TEST");
     ApiHelper("projects", "post", {
@@ -49,9 +52,14 @@ export default function Sidebar2({
     })
       .then(() => {
         loadData("projects", setProjects);
+        enqueueSnackbar(`Project "${projectName}" successfully created`, {
+          variant: "success",
+        });
       })
-      .catch((err) => {
-        console.error(`Axios Error : ${err.message}`);
+      .catch(() => {
+        enqueueSnackbar("An error occurred, Please try again.", {
+          variant: "error",
+        });
       });
   };
 
@@ -66,25 +74,33 @@ export default function Sidebar2({
       "application/merge-patch+json"
     )
       .then(() => {
-        console.info("Update successful");
         loadData("projects", setProjects);
+        enqueueSnackbar(`Project "${newProjectName}" successfully edited`, {
+          variant: "success",
+        });
         if (selectedProject?.id === projectId)
           loadData("projects", setSelectedProject, projectId);
       })
-      .catch((err) => {
-        console.error(`Axios Error : ${err.message}`);
+      .catch(() => {
+        enqueueSnackbar("An error occurred, Please try again.", {
+          variant: "error",
+        });
       });
   };
 
-  const deleteProject = (projectId) => {
+  const deleteProject = (projectId, projectName) => {
     console.info(`Deleting project : ${projectId}`);
     ApiHelper(`projects/${projectId}`, "delete")
       .then(() => {
-        console.info("Delete successful");
+        enqueueSnackbar(`Project "${projectName}" successfully deleted`, {
+          variant: "success",
+        });
         loadData("projects", setProjects);
       })
-      .catch((err) => {
-        console.error(`Axios Error : ${err.message}`);
+      .catch(() => {
+        enqueueSnackbar("An error occurred, Please try again.", {
+          variant: "error",
+        });
       });
   };
 
@@ -95,10 +111,11 @@ export default function Sidebar2({
         aria-label="edit"
         size="small"
         sx={{
-          marginLeft: isDrawerOpen ? 19 : -4,
-          marginTop: "50vh",
+          position: "fixed",
+          left: isDrawerOpen ? 230 : 45,
+          top: "50vh",
           zIndex: 1300,
-          transition: "all 0.1s",
+          transition: "all 0.25s",
         }}
         onClick={() => toggleDrawer()}
       >

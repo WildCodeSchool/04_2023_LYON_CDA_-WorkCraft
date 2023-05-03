@@ -16,6 +16,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import DeleteIcon from "@mui/icons-material/Delete";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
+import { useSnackbar } from "notistack";
 import Task from "./Task";
 import CreateInputMenu from "./CreateInputMenu";
 import ApiHelper from "../helpers/apiHelper";
@@ -36,23 +37,45 @@ export default function TasksList({ listId, deleteList }) {
 
   useEffect(() => loadData("project_lists", setList, listId), []);
 
-  const createTask = (titleTask) => {
+  const { enqueueSnackbar } = useSnackbar();
+
+  const createTask = (taskName) => {
     ApiHelper(`tasks`, "post", {
-      title: titleTask,
+      title: taskName,
       description: "",
       list: `api/project_lists/${listId}`,
-    }).then(() => loadData("project_lists", setList, listId));
+    })
+      .then(() => {
+        loadData("project_lists", setList, listId);
+        enqueueSnackbar(`Task "${taskName}" successfully created`, {
+          variant: "success",
+        });
+      })
+      .catch(() => {
+        enqueueSnackbar("An error occurred, Please try again.", {
+          variant: "error",
+        });
+      });
   };
 
-  const deleteTask = (taskId) => {
-    ApiHelper(`tasks/${taskId}`, "delete").then(() =>
-      loadData("project_lists", setList, listId)
-    );
+  const deleteTask = (taskId, taskName) => {
+    ApiHelper(`tasks/${taskId}`, "delete")
+      .then(() => {
+        loadData("project_lists", setList, listId);
+        enqueueSnackbar(`Task "${taskName}" successfully deleted`, {
+          variant: "success",
+        });
+      })
+      .catch(() => {
+        enqueueSnackbar("An error occurred, Please try again.", {
+          variant: "error",
+        });
+      });
   };
 
   const handleDeleteListButton = () => {
     handleClose();
-    deleteList(listId);
+    deleteList(listId, list.title);
   };
 
   return (

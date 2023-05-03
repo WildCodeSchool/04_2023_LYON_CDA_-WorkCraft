@@ -44,7 +44,7 @@ export default function Task({ taskId, deleteTask }) {
 
   const handleDeleteTaskButton = () => {
     handleCloseTask();
-    deleteTask(taskId);
+    deleteTask(taskId, task.title);
   };
 
   return (

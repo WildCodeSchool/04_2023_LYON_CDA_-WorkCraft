@@ -39,34 +39,43 @@ export default function TasksList({ listId, deleteList }) {
 
   const { enqueueSnackbar } = useSnackbar();
 
-  const createTask = (titleTask) => {
+  const createTask = (taskName) => {
     ApiHelper(`tasks`, "post", {
-      title: titleTask,
+      title: taskName,
       description: "",
       list: `api/project_lists/${listId}`,
     })
       .then(() => {
         loadData("project_lists", setList, listId);
-        enqueueSnackbar(`Task "${titleTask}" successfully created`, {
+        enqueueSnackbar(`Task "${taskName}" successfully created`, {
           variant: "success",
         });
       })
       .catch(() => {
-        enqueueSnackbar("An error occured, Please try again.", {
+        enqueueSnackbar("An error occurred, Please try again.", {
           variant: "error",
         });
       });
   };
 
-  const deleteTask = (taskId) => {
-    ApiHelper(`tasks/${taskId}`, "delete").then(() => {
-      loadData("project_lists", setList, listId);
-    });
+  const deleteTask = (taskId, taskName) => {
+    ApiHelper(`tasks/${taskId}`, "delete")
+      .then(() => {
+        loadData("project_lists", setList, listId);
+        enqueueSnackbar(`Task "${taskName}" successfully deleted`, {
+          variant: "success",
+        });
+      })
+      .catch(() => {
+        enqueueSnackbar("An error occurred, Please try again.", {
+          variant: "error",
+        });
+      });
   };
 
   const handleDeleteListButton = () => {
     handleClose();
-    deleteList(listId);
+    deleteList(listId, list.title);
   };
 
   return (
@@ -81,7 +90,7 @@ export default function TasksList({ listId, deleteList }) {
         }
       />
       <CardContent>
-        <List>
+        <List sx={{ maxHeight: "70vh", overflow: "auto" }}>
           {list.tasks &&
             list.tasks.map((task) => (
               <ListItem key={task.id}>

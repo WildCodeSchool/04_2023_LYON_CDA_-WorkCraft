@@ -32,27 +32,37 @@ export default function Project() {
         });
       })
       .catch(() => {
-        enqueueSnackbar("An error occured, Please try again.", {
+        enqueueSnackbar("An error occurred, Please try again.", {
           variant: "error",
         });
       });
   };
 
-  const deleteList = (listId) => {
-    ApiHelper(`project_lists/${listId}`, "delete").then(() =>
-      loadData("projects", setSelectedProject, projectId)
-    );
+  const deleteList = (listId, listName) => {
+    ApiHelper(`project_lists/${listId}`, "delete").then(() => {
+      loadData("projects", setSelectedProject, projectId);
+      enqueueSnackbar(`List "${listName}" successfully deleted`, {
+        variant: "success",
+      }).catch(() => {
+        enqueueSnackbar("An error occurred, Please try again.", {
+          variant: "error",
+        });
+      });
+    });
   };
 
   return (
     <Box
       sx={{
         width: "100%",
+        height: "100%",
+        overflow: "auto",
       }}
     >
       <Box
         sx={{
           backgroundColor: "primary.main",
+          width: "100%",
         }}
       >
         <Typography variant="h3" color="primary.contrastText" align="center">
@@ -60,11 +70,11 @@ export default function Project() {
         </Typography>
       </Box>
       <Box
-        style={{
+        sx={{
           display: "flex",
           alignItems: "flex-start",
           justifyContent: "left",
-          gap: 20,
+          gap: 5,
         }}
       >
         {selectedProject.lists &&

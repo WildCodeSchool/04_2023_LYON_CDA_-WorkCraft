@@ -2,7 +2,6 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import { Outlet } from "react-router-dom";
 import { useState } from "react";
-import { Grow } from "@mui/material";
 import { SnackbarProvider } from "notistack";
 import Sidebar1 from "../components/Sidebar1";
 import Sidebar2 from "../components/Sidebar2";
@@ -39,7 +38,6 @@ export default function Root() {
   return (
     <ThemeProvider theme={theme}>
       <SnackbarProvider
-        TransitionComponent={Grow}
         autoHideDuration={3000}
         anchorOrigin={{
           vertical: "bottom",
@@ -59,8 +57,8 @@ export default function Root() {
             backgroundImage: `url(${bgImage})`,
             backgroundSize: "cover",
             backgroundPosition: "center",
-            height: "100vh",
-            width: "100vw",
+            height: "98vh",
+            width: "300vh",
           }}
         >
           <Outlet context={[selectedProject, setSelectedProject]} />

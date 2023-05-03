@@ -55,6 +55,7 @@ export default function Task({ taskId, deleteTask }) {
             open={openTask}
             handleClose={handleCloseTask}
             task={task}
+            taskId={task.id}
           />
           <CardActionArea onClick={handleClickOpenTask}>
             <CardHeader

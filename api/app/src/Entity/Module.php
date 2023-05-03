@@ -6,6 +6,7 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Link;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use App\Repository\ModuleRepository;
@@ -30,6 +31,17 @@ use Symfony\Component\Validator\Constraints as Assert;
         'groups' => ['module:write']
     ],
 )]
+#[ApiResource(
+    uriTemplate: "/tasks/{task_id}/modules",
+    operations: [new GetCollection()],
+    uriVariables: [
+        'task_id' => new Link(
+            fromProperty: 'modules',
+            fromClass: Task::class,
+        )
+    ]
+)]
+
 class Module
 {
     #[ORM\Id]
@@ -64,6 +76,7 @@ class Module
     private ?bool $isDone = null;
 
     #[ORM\ManyToOne(inversedBy: 'modules')]
+    #[Groups(['module:read', 'module:write'])]
     private ?Task $task = null;
 
     public function getId(): ?int

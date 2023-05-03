@@ -21,6 +21,7 @@ import loadData from "../helpers/loadData";
 import PrimarySearchAppBar from "./Searchbar";
 import ProjectItem from "./ProjectItem";
 import ProjectModal from "./ProjectModal";
+import { useSnackbar } from "notistack";
 
 export default function Sidebar2({
   toggleDrawer,
@@ -41,6 +42,8 @@ export default function Sidebar2({
 
   useEffect(() => loadData("projects", setProjects), []);
 
+  const { enqueueSnackbar } = useSnackbar();
+
   const createProject = (projectName, selectedUser) => {
     console.info("TEST");
     ApiHelper("projects", "post", {
@@ -49,9 +52,14 @@ export default function Sidebar2({
     })
       .then(() => {
         loadData("projects", setProjects);
+        enqueueSnackbar(`Project "${projectName}" successfully created`, {
+          variant: "success",
+        });
       })
-      .catch((err) => {
-        console.error(`Axios Error : ${err.message}`);
+      .catch(() => {
+        enqueueSnackbar("An error occured, Please try again.", {
+          variant: "error",
+        });
       });
   };
 

@@ -20,6 +20,7 @@ import Task from "./Task";
 import CreateInputMenu from "./CreateInputMenu";
 import ApiHelper from "../helpers/apiHelper";
 import loadData from "../helpers/loadData";
+import { useSnackbar } from "notistack";
 
 export default function TasksList({ listId, deleteList }) {
   const [list, setList] = useState({});
@@ -36,18 +37,31 @@ export default function TasksList({ listId, deleteList }) {
 
   useEffect(() => loadData("project_lists", setList, listId), []);
 
+  const { enqueueSnackbar } = useSnackbar();
+
   const createTask = (titleTask) => {
     ApiHelper(`tasks`, "post", {
       title: titleTask,
       description: "",
       list: `api/project_lists/${listId}`,
-    }).then(() => loadData("project_lists", setList, listId));
+    })
+      .then(() => {
+        loadData("project_lists", setList, listId);
+        enqueueSnackbar(`Task "${titleTask}" successfully created`, {
+          variant: "success",
+        });
+      })
+      .catch(() => {
+        enqueueSnackbar("An error occured, Please try again.", {
+          variant: "error",
+        });
+      });
   };
 
   const deleteTask = (taskId) => {
-    ApiHelper(`tasks/${taskId}`, "delete").then(() =>
-      loadData("project_lists", setList, listId)
-    );
+    ApiHelper(`tasks/${taskId}`, "delete").then(() => {
+      loadData("project_lists", setList, listId);
+    });
   };
 
   const handleDeleteListButton = () => {

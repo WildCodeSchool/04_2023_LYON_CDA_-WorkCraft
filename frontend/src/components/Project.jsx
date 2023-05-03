@@ -5,6 +5,7 @@ import loadData from "../helpers/loadData";
 import TasksList from "./TasksList";
 import CreateInputMenu from "./CreateInputMenu";
 import ApiHelper from "../helpers/apiHelper";
+import { useSnackbar } from "notistack";
 
 export default function Project() {
   const { projectId } = useParams();
@@ -16,6 +17,8 @@ export default function Project() {
     [projectId]
   );
 
+  const { enqueueSnackbar } = useSnackbar();
+
   const createList = (listName) => {
     setIsCreateInputActive(false);
     ApiHelper("project_lists", "post", {
@@ -24,9 +27,14 @@ export default function Project() {
     })
       .then(() => {
         loadData("projects", setSelectedProject, projectId);
+        enqueueSnackbar(`List "${listName}" successfully created`, {
+          variant: "success",
+        });
       })
-      .catch((err) => {
-        console.error(`Axios Error : ${err.message}`);
+      .catch(() => {
+        enqueueSnackbar("An error occured, Please try again.", {
+          variant: "error",
+        });
       });
   };
 

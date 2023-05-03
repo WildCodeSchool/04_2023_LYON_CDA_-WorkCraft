@@ -11,19 +11,30 @@ import {
   ListItemText,
   CardActions,
   Button,
+  ClickAwayListener,
+  TextField,
 } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import DeleteIcon from "@mui/icons-material/Delete";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
+import EditIcon from "@mui/icons-material/Edit";
 import { useSnackbar } from "notistack";
 import Task from "./Task";
 import CreateInputMenu from "./CreateInputMenu";
 import ApiHelper from "../helpers/apiHelper";
 import loadData from "../helpers/loadData";
 
-export default function TasksList({ listId, deleteList }) {
+export default function TasksList({
+  listId,
+  deleteList,
+  editList,
+  reloadList,
+}) {
   const [list, setList] = useState({});
+  const [reload, setReload] = useState(false);
+  const [newListName, setNewListName] = useState(list.title);
+  const [isEditActive, setIsEditActive] = useState(false);
   const [anchorMenuElement, setAnchorMenuElement] = useState(null);
   const isMenuOpen = Boolean(anchorMenuElement);
   const handleClick = (event) => {
@@ -33,9 +44,21 @@ export default function TasksList({ listId, deleteList }) {
     setAnchorMenuElement(null);
   };
 
+  const handleEditList = () => {
+    handleClose();
+    setNewListName(list.title);
+    setIsEditActive(true); // Reset the editing state variable
+  };
+
+  const handleCloseEditList = () => {
+    editList(listId, newListName);
+    setIsEditActive(false);
+    setNewListName("");
+  };
+
   const [isCreateInputActive, setIsCreateInputActive] = useState(false);
 
-  useEffect(() => loadData("project_lists", setList, listId), []);
+  useEffect(() => loadData("project_lists", setList, listId), [reloadList]);
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -78,23 +101,58 @@ export default function TasksList({ listId, deleteList }) {
     deleteList(listId, list.title);
   };
 
+  const editTask = (taskId, newTaskName) => {
+    ApiHelper(
+      `tasks/${taskId}`,
+      "patch",
+      {
+        title: newTaskName,
+      },
+      "application/merge-patch+json"
+    ).then(() => {
+      loadData("project_lists", setList, listId);
+      setReload(!reload);
+    });
+  };
+  // console.log(list);
+
   return (
     <Card sx={{ minWidth: 275 }}>
-      <CardHeader
-        title={list.title}
-        align="center"
-        action={
-          <IconButton aria-label="settings" onClick={handleClick}>
-            <MoreVertIcon />
-          </IconButton>
-        }
-      />
+      {isEditActive ? (
+        <ClickAwayListener onClickAway={() => handleCloseEditList()}>
+          <form onSubmit={(e) => e.preventDefault()}>
+            <TextField
+              variant="standard"
+              sx={{ width: "100%" }}
+              value={newListName}
+              onKeyDown={(e) => e.key === "Enter" && handleCloseEditList()}
+              onChange={(e) => setNewListName(e.target.value)}
+              ref={(input) => input && input.focus()}
+            />
+          </form>
+        </ClickAwayListener>
+      ) : (
+        <CardHeader
+          title={list.title}
+          align="center"
+          action={
+            <IconButton aria-label="settings" onClick={handleClick}>
+              <MoreVertIcon />
+            </IconButton>
+          }
+        />
+      )}
       <CardContent>
         <List sx={{ maxHeight: "70vh", overflow: "auto" }}>
           {list.tasks &&
             list.tasks.map((task) => (
               <ListItem key={task.id}>
-                <Task deleteTask={deleteTask} taskId={task.id} />
+                <Task
+                  deleteTask={deleteTask}
+                  taskId={task.id}
+                  editTask={editTask}
+                  reload={reload}
+                />
               </ListItem>
             ))}
         </List>
@@ -112,7 +170,7 @@ export default function TasksList({ listId, deleteList }) {
             variant="contained"
             onClick={() => setIsCreateInputActive(true)}
           >
-            New List
+            New Task
           </Button>
         )}
       </CardActions>
@@ -125,6 +183,12 @@ export default function TasksList({ listId, deleteList }) {
           "aria-labelledby": "basic-button",
         }}
       >
+        <MenuItem onClick={() => handleEditList()}>
+          <ListItemIcon>
+            <EditIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>Edit</ListItemText>
+        </MenuItem>
         <MenuItem onClick={handleDeleteListButton}>
           <ListItemIcon>
             <DeleteIcon fontSize="small" />
@@ -139,4 +203,6 @@ export default function TasksList({ listId, deleteList }) {
 TasksList.propTypes = {
   listId: PropTypes.number.isRequired,
   deleteList: PropTypes.func.isRequired,
+  editList: PropTypes.func.isRequired,
+  reloadList: PropTypes.bool.isRequired,
 };

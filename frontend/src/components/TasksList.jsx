@@ -19,13 +19,20 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
+
 import Task from "./Task";
 import CreateInputMenu from "./CreateInputMenu";
 import ApiHelper from "../helpers/apiHelper";
 import loadData from "../helpers/loadData";
 
-export default function TasksList({ listId, deleteList, editList }) {
+export default function TasksList({
+  listId,
+  deleteList,
+  editList,
+  reloadList,
+}) {
   const [list, setList] = useState({});
+  const [reload, setReload] = useState(false);
   const [newListName, setNewListName] = useState(list.title);
   const [isEditActive, setIsEditActive] = useState(false);
   const [anchorMenuElement, setAnchorMenuElement] = useState(null);
@@ -44,14 +51,14 @@ export default function TasksList({ listId, deleteList, editList }) {
   };
 
   const handleCloseEditList = () => {
+    editList(listId, newListName);
     setIsEditActive(false);
     setNewListName("");
-    editList(newListName, listId);
   };
 
   const [isCreateInputActive, setIsCreateInputActive] = useState(false);
 
-  useEffect(() => loadData("project_lists", setList, listId), []);
+  useEffect(() => loadData("project_lists", setList, listId), [reloadList]);
 
   const createTask = (titleTask) => {
     ApiHelper(`tasks`, "post", {
@@ -72,16 +79,25 @@ export default function TasksList({ listId, deleteList, editList }) {
     deleteList(listId);
   };
 
-  const editTask = (taskId) => {
-    ApiHelper(`tasks/${taskId}`, "patch").then(() =>
-      loadData("project_lists", setList, listId)
-    );
+  const editTask = (taskId, newTaskName) => {
+    ApiHelper(
+      `tasks/${taskId}`,
+      "patch",
+      {
+        title: newTaskName,
+      },
+      "application/merge-patch+json"
+    ).then(() => {
+      loadData("project_lists", setList, listId);
+      setReload(!reload);
+    });
   };
+  // console.log(list);
 
   return (
     <Card sx={{ minWidth: 275 }}>
       {isEditActive ? (
-        <ClickAwayListener onClickAway={() => handleCloseEditList(list.id)}>
+        <ClickAwayListener onClickAway={() => handleCloseEditList()}>
           <TextField
             variant="standard"
             sx={{ width: "100%" }}
@@ -110,6 +126,7 @@ export default function TasksList({ listId, deleteList, editList }) {
                   deleteTask={deleteTask}
                   taskId={task.id}
                   editTask={editTask}
+                  reload={reload}
                 />
               </ListItem>
             ))}
@@ -162,4 +179,5 @@ TasksList.propTypes = {
   listId: PropTypes.number.isRequired,
   deleteList: PropTypes.func.isRequired,
   editList: PropTypes.func.isRequired,
+  reloadList: PropTypes.bool.isRequired,
 };

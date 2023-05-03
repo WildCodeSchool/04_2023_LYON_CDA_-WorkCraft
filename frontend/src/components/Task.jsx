@@ -6,7 +6,10 @@ import {
   CardHeader,
   CardActionArea,
   IconButton,
+  ClickAwayListener,
+  TextField,
 } from "@mui/material";
+
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -15,16 +18,16 @@ import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
-import TaskModal from "./TaskModal";
 import loadData from "../helpers/loadData";
+import TaskModal from "./TaskModal";
 
-export default function Task({ taskId, deleteTask, editTask }) {
+export default function Task({ taskId, deleteTask, editTask, reload }) {
   const [task, setTask] = useState({});
   const [newTaskName, setNewTaskName] = useState(task.title);
   const [isEditActive, setIsEditActive] = useState(false);
   const [openAlertDeleteDialog, setOpenAlertDeleteDialog] = useState(false);
 
-  useEffect(() => loadData("tasks", setTask, taskId), []);
+  useEffect(() => loadData("tasks", setTask, taskId), [reload]);
 
   const handleClickOpenTaskDelete = (e) => {
     e.stopPropagation();
@@ -43,21 +46,23 @@ export default function Task({ taskId, deleteTask, editTask }) {
 
   const [openTask, setOpenTask] = useState(false);
 
-  const handleClickOpenTask = () => {
-    setOpenTask(true);
-  };
-
   const handleCloseTask = () => {
     setOpenTask(false);
+  };
+
+  const handleClickOpenTask = () => {
+    setOpenTask(true);
   };
 
   const handleDeleteTaskButton = () => {
     handleCloseTask();
     deleteTask(taskId);
   };
-  const handleEditTaskButton = () => {
-    handleCloseTask();
-    editTask(taskId);
+
+  const handleCloseEditTask = () => {
+    editTask(taskId, newTaskName);
+    setIsEditActive(false);
+    setNewTaskName("");
   };
 
   return (
@@ -69,30 +74,34 @@ export default function Task({ taskId, deleteTask, editTask }) {
             handleClose={handleCloseTask}
             task={task}
           />
-          <CardActionArea onClick={handleClickOpenTask}>
-            <CardHeader
-              action={
-                <div>
-                  <IconButton onClick={handleClickOpenTaskDelete}>
-                    <DeleteIcon />
-                  </IconButton>
-                  <IconButton onClick={handleClickOpenTaskEdit}>
-                    <EditIcon />
-                  </IconButton>
-                </div>
-              }
-              title={
-                isEditActive ? (
-                  <input
-                    type="text"
+          <CardHeader
+            action={
+              <div>
+                <IconButton onClick={handleClickOpenTaskDelete}>
+                  <DeleteIcon />
+                </IconButton>
+                <IconButton onClick={handleClickOpenTaskEdit}>
+                  <EditIcon />
+                </IconButton>
+              </div>
+            }
+            title={
+              isEditActive ? (
+                <ClickAwayListener onClickAway={() => handleCloseEditTask()}>
+                  <TextField
+                    variant="standard"
+                    sx={{ width: "100%" }}
                     value={newTaskName}
-                    onChange={() => handleEditTaskButton()}
+                    onChange={(e) => setNewTaskName(e.target.value)}
+                    ref={(input) => input && input.focus()}
                   />
-                ) : (
-                  <span style={{ color: "primary" }}>{task.title}</span>
-                )
-              }
-            />
+                </ClickAwayListener>
+              ) : (
+                <span style={{ color: "primary" }}>{task.title}</span>
+              )
+            }
+          />
+          <CardActionArea onClick={handleClickOpenTask}>
             <CardContent>
               <Typography sx={{ fontSize: 14 }} color="initial">
                 {task.description}
@@ -140,4 +149,5 @@ Task.propTypes = {
   taskId: PropTypes.number.isRequired,
   deleteTask: PropTypes.func.isRequired,
   editTask: PropTypes.func.isRequired,
+  reload: PropTypes.bool.isRequired,
 };

@@ -73,6 +73,7 @@ export default function Task({ taskId, deleteTask, editTask, reload }) {
             open={openTask}
             handleClose={handleCloseTask}
             task={task}
+            taskId={task.id}
           />
           <CardHeader
             action={

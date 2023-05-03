@@ -88,13 +88,18 @@ export default function Task({ taskId, deleteTask, editTask, reload }) {
             title={
               isEditActive ? (
                 <ClickAwayListener onClickAway={() => handleCloseEditTask()}>
-                  <TextField
-                    variant="standard"
-                    sx={{ width: "100%" }}
-                    value={newTaskName}
-                    onChange={(e) => setNewTaskName(e.target.value)}
-                    ref={(input) => input && input.focus()}
-                  />
+                  <form onSubmit={(e) => e.preventDefault()}>
+                    <TextField
+                      variant="standard"
+                      sx={{ width: "100%" }}
+                      value={newTaskName}
+                      onKeyDown={(e) =>
+                        e.key === "Enter" && handleCloseEditTask()
+                      }
+                      onChange={(e) => setNewTaskName(e.target.value)}
+                      ref={(input) => input && input.focus()}
+                    />
+                  </form>
                 </ClickAwayListener>
               ) : (
                 <span style={{ color: "primary" }}>{task.title}</span>

@@ -98,13 +98,16 @@ export default function TasksList({
     <Card sx={{ minWidth: 275 }}>
       {isEditActive ? (
         <ClickAwayListener onClickAway={() => handleCloseEditList()}>
-          <TextField
-            variant="standard"
-            sx={{ width: "100%" }}
-            value={newListName}
-            onChange={(e) => setNewListName(e.target.value)}
-            ref={(input) => input && input.focus()}
-          />
+          <form onSubmit={(e) => e.preventDefault()}>
+            <TextField
+              variant="standard"
+              sx={{ width: "100%" }}
+              value={newListName}
+              onKeyDown={(e) => e.key === "Enter" && handleCloseEditList()}
+              onChange={(e) => setNewListName(e.target.value)}
+              ref={(input) => input && input.focus()}
+            />
+          </form>
         </ClickAwayListener>
       ) : (
         <CardHeader

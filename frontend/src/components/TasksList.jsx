@@ -19,7 +19,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
-
+import { useSnackbar } from "notistack";
 import Task from "./Task";
 import CreateInputMenu from "./CreateInputMenu";
 import ApiHelper from "../helpers/apiHelper";
@@ -60,23 +60,45 @@ export default function TasksList({
 
   useEffect(() => loadData("project_lists", setList, listId), [reloadList]);
 
-  const createTask = (titleTask) => {
+  const { enqueueSnackbar } = useSnackbar();
+
+  const createTask = (taskName) => {
     ApiHelper(`tasks`, "post", {
-      title: titleTask,
+      title: taskName,
       description: "",
       list: `api/project_lists/${listId}`,
-    }).then(() => loadData("project_lists", setList, listId));
+    })
+      .then(() => {
+        loadData("project_lists", setList, listId);
+        enqueueSnackbar(`Task "${taskName}" successfully created`, {
+          variant: "success",
+        });
+      })
+      .catch(() => {
+        enqueueSnackbar("An error occurred, Please try again.", {
+          variant: "error",
+        });
+      });
   };
 
-  const deleteTask = (taskId) => {
-    ApiHelper(`tasks/${taskId}`, "delete").then(() =>
-      loadData("project_lists", setList, listId)
-    );
+  const deleteTask = (taskId, taskName) => {
+    ApiHelper(`tasks/${taskId}`, "delete")
+      .then(() => {
+        loadData("project_lists", setList, listId);
+        enqueueSnackbar(`Task "${taskName}" successfully deleted`, {
+          variant: "success",
+        });
+      })
+      .catch(() => {
+        enqueueSnackbar("An error occurred, Please try again.", {
+          variant: "error",
+        });
+      });
   };
 
   const handleDeleteListButton = () => {
     handleClose();
-    deleteList(listId);
+    deleteList(listId, list.title);
   };
 
   const editTask = (taskId, newTaskName) => {
@@ -98,13 +120,16 @@ export default function TasksList({
     <Card sx={{ minWidth: 275 }}>
       {isEditActive ? (
         <ClickAwayListener onClickAway={() => handleCloseEditList()}>
-          <TextField
-            variant="standard"
-            sx={{ width: "100%" }}
-            value={newListName}
-            onChange={(e) => setNewListName(e.target.value)}
-            ref={(input) => input && input.focus()}
-          />
+          <form onSubmit={(e) => e.preventDefault()}>
+            <TextField
+              variant="standard"
+              sx={{ width: "100%" }}
+              value={newListName}
+              onKeyDown={(e) => e.key === "Enter" && handleCloseEditList()}
+              onChange={(e) => setNewListName(e.target.value)}
+              ref={(input) => input && input.focus()}
+            />
+          </form>
         </ClickAwayListener>
       ) : (
         <CardHeader
@@ -118,7 +143,7 @@ export default function TasksList({
         />
       )}
       <CardContent>
-        <List>
+        <List sx={{ maxHeight: "70vh", overflow: "auto" }}>
           {list.tasks &&
             list.tasks.map((task) => (
               <ListItem key={task.id}>

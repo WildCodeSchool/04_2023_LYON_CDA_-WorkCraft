@@ -1,6 +1,7 @@
 import { useOutletContext, useParams } from "react-router-dom";
 import { Box, Button, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
+import { useSnackbar } from "notistack";
 import loadData from "../helpers/loadData";
 import TasksList from "./TasksList";
 import CreateInputMenu from "./CreateInputMenu";
@@ -17,6 +18,8 @@ export default function Project() {
     [projectId]
   );
 
+  const { enqueueSnackbar } = useSnackbar();
+
   const createList = (listName) => {
     setIsCreateInputActive(false);
     ApiHelper("project_lists", "post", {
@@ -25,16 +28,28 @@ export default function Project() {
     })
       .then(() => {
         loadData("projects", setSelectedProject, projectId);
+        enqueueSnackbar(`List "${listName}" successfully created`, {
+          variant: "success",
+        });
       })
-      .catch((err) => {
-        console.error(`Axios Error : ${err.message}`);
+      .catch(() => {
+        enqueueSnackbar("An error occurred, Please try again.", {
+          variant: "error",
+        });
       });
   };
 
-  const deleteList = (listId) => {
-    ApiHelper(`project_lists/${listId}`, "delete").then(() =>
-      loadData("projects", setSelectedProject, projectId)
-    );
+  const deleteList = (listId, listName) => {
+    ApiHelper(`project_lists/${listId}`, "delete").then(() => {
+      loadData("projects", setSelectedProject, projectId);
+      enqueueSnackbar(`List "${listName}" successfully deleted`, {
+        variant: "success",
+      }).catch(() => {
+        enqueueSnackbar("An error occurred, Please try again.", {
+          variant: "error",
+        });
+      });
+    });
   };
 
   // Edit List
@@ -55,11 +70,14 @@ export default function Project() {
     <Box
       sx={{
         width: "100%",
+        height: "100%",
+        overflow: "auto",
       }}
     >
       <Box
         sx={{
           backgroundColor: "primary.main",
+          width: "100%",
         }}
       >
         <Typography variant="h3" color="primary.contrastText" align="center">
@@ -67,11 +85,11 @@ export default function Project() {
         </Typography>
       </Box>
       <Box
-        style={{
+        sx={{
           display: "flex",
           alignItems: "flex-start",
           justifyContent: "left",
-          gap: 20,
+          gap: 5,
         }}
       >
         {selectedProject.lists &&

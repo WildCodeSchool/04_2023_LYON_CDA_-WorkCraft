@@ -65,7 +65,7 @@ class Task
     private Collection $users;
 
     #[ORM\OneToMany(mappedBy: 'task', targetEntity: Module::class, orphanRemoval: true)]
-    #[Groups(['task:read', 'module:read', 'list:read'])]
+    #[Groups(['task:read', 'list:read'])]
     private Collection $modules;
 
     public function __construct()

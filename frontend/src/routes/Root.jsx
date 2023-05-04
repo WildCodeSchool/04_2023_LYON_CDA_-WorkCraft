@@ -2,6 +2,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import { Outlet } from "react-router-dom";
 import { useState } from "react";
+import { SnackbarProvider } from "notistack";
 import Sidebar1 from "../components/Sidebar1";
 import Sidebar2 from "../components/Sidebar2";
 import img6 from "../assets/backgroundImg/img6.jpg";
@@ -36,25 +37,33 @@ export default function Root() {
 
   return (
     <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Sidebar1 toggleDarkMode={toggleDarkMode} toggleDrawer={toggleDrawer} />
-      <Sidebar2
-        toggleDrawer={toggleDrawer}
-        isDrawerOpen={isDrawerOpen}
-        setSelectedProject={setSelectedProject}
-        selectedProject={selectedProject}
-      />
-      <main
-        style={{
-          backgroundImage: `url(${bgImage})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          height: "100vh",
-          width: "100vw",
+      <SnackbarProvider
+        autoHideDuration={3000}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "right",
         }}
       >
-        <Outlet context={[selectedProject, setSelectedProject]} />
-      </main>
+        <CssBaseline />
+        <Sidebar1 toggleDarkMode={toggleDarkMode} toggleDrawer={toggleDrawer} />
+        <Sidebar2
+          toggleDrawer={toggleDrawer}
+          isDrawerOpen={isDrawerOpen}
+          setSelectedProject={setSelectedProject}
+          selectedProject={selectedProject}
+        />
+        <main
+          style={{
+            backgroundImage: `url(${bgImage})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            height: "98vh",
+            width: "300vh",
+          }}
+        >
+          <Outlet context={[selectedProject, setSelectedProject]} />
+        </main>
+      </SnackbarProvider>
     </ThemeProvider>
   );
 }

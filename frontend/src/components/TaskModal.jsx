@@ -54,7 +54,9 @@ export default function TaskModal({ open, handleClose, task, taskId }) {
               value={moduleName}
               onChange={(e) => setModuleName(e.target.value)}
             />
-            <Button onClick={createModule}>Submit</Button>
+            <Button sx={{ color: "text.primary" }} onClick={createModule}>
+              Submit
+            </Button>
           </div>
           <DialogContentText>
             {modules.length > 0 &&
@@ -68,8 +70,12 @@ export default function TaskModal({ open, handleClose, task, taskId }) {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleClose}>Subscribe</Button>
+          <Button sx={{ color: "text.primary" }} onClick={handleClose}>
+            Cancel
+          </Button>
+          <Button sx={{ color: "text.primary" }} onClick={handleClose}>
+            Subscribe
+          </Button>
         </DialogActions>
       </Dialog>
     </div>

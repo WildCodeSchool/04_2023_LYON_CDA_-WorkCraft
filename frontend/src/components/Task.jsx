@@ -21,7 +21,6 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
 import loadData from "../helpers/loadData";
 import TaskModal from "./TaskModal";
-// import LinearProgressWithLabel from "./ProgressBar";
 
 export default function Task({ taskId, deleteTask, editTask, reload }) {
   const [task, setTask] = useState({});
@@ -115,13 +114,17 @@ export default function Task({ taskId, deleteTask, editTask, reload }) {
           />
           <CardActionArea onClick={handleClickOpenTask}>
             <CardContent>
-              <Typography sx={{ fontSize: 14 }} color="initial">
+              <Typography
+                sx={{ color: "secondary", fontSize: 14 }}
+                color="initial"
+              >
                 {task.description}
               </Typography>
               <Typography sx={{ fontSize: 10 }} color="initial">
                 {task.modules.length > 0 && (
                   <LinearProgress
                     variant="determinate"
+                    color="secondary"
                     value={percentageCompletion(task)}
                   />
                 )}
@@ -147,8 +150,17 @@ export default function Task({ taskId, deleteTask, editTask, reload }) {
           Would you like to delete this task?
         </DialogTitle>
         <DialogActions>
-          <Button onClick={handleCloseTaskDelete}>Disagree</Button>
-          <Button onClick={handleDeleteTaskButton} autoFocus>
+          <Button
+            sx={{ color: "text.primary" }}
+            onClick={handleCloseTaskDelete}
+          >
+            Disagree
+          </Button>
+          <Button
+            sx={{ color: "text.primary" }}
+            onClick={handleDeleteTaskButton}
+            autoFocus
+          >
             Agree
           </Button>
         </DialogActions>

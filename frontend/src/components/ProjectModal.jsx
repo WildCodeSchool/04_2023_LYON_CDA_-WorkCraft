@@ -124,8 +124,12 @@ export default function ProjectModal({ open, setOpen, createProject }) {
           )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCancel}>Cancel</Button>
-          <Button onClick={handleSubscribe}>Subscribe</Button>
+          <Button sx={{ color: "text.primary" }} onClick={handleCancel}>
+            Cancel
+          </Button>
+          <Button sx={{ color: "text.primary" }} onClick={handleSubscribe}>
+            Subscribe
+          </Button>
         </DialogActions>
       </Dialog>
     </div>

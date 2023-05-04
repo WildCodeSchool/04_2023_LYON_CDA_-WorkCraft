@@ -32,14 +32,25 @@ export default function TasksList({
   reloadList,
 }) {
   const [list, setList] = useState({});
-  const [reload, setReload] = useState(false);
+  const [tasks, setTasks] = useState([]);
+  const [reloadTasks, setReloadTasks] = useState(false);
   const [newListName, setNewListName] = useState(list.title);
   const [isEditActive, setIsEditActive] = useState(false);
   const [anchorMenuElement, setAnchorMenuElement] = useState(null);
+  const [isCreateInputActive, setIsCreateInputActive] = useState(false);
   const isMenuOpen = Boolean(anchorMenuElement);
+  const { enqueueSnackbar } = useSnackbar();
+
+  useEffect(() => loadData("project_lists", setList, listId), [reloadList]);
+  useEffect(
+    () => loadData("project_lists", setTasks, `${listId}/tasks`),
+    [reloadTasks]
+  );
+
   const handleClick = (event) => {
     setAnchorMenuElement(event.currentTarget);
   };
+
   const handleClose = () => {
     setAnchorMenuElement(null);
   };
@@ -56,12 +67,6 @@ export default function TasksList({
     setNewListName("");
   };
 
-  const [isCreateInputActive, setIsCreateInputActive] = useState(false);
-
-  useEffect(() => loadData("project_lists", setList, listId), [reloadList]);
-
-  const { enqueueSnackbar } = useSnackbar();
-
   const createTask = (taskName) => {
     ApiHelper(`tasks`, "post", {
       title: taskName,
@@ -69,23 +74,8 @@ export default function TasksList({
       list: `api/project_lists/${listId}`,
     })
       .then(() => {
-        loadData("project_lists", setList, listId);
+        setReloadTasks(!reloadTasks);
         enqueueSnackbar(`Task "${taskName}" successfully created`, {
-          variant: "success",
-        });
-      })
-      .catch(() => {
-        enqueueSnackbar("An error occurred, Please try again.", {
-          variant: "error",
-        });
-      });
-  };
-
-  const deleteTask = (taskId, taskName) => {
-    ApiHelper(`tasks/${taskId}`, "delete")
-      .then(() => {
-        loadData("project_lists", setList, listId);
-        enqueueSnackbar(`Task "${taskName}" successfully deleted`, {
           variant: "success",
         });
       })
@@ -110,11 +100,9 @@ export default function TasksList({
       },
       "application/merge-patch+json"
     ).then(() => {
-      loadData("project_lists", setList, listId);
-      setReload(!reload);
+      setReloadTasks(!reloadTasks);
     });
   };
-  // console.log(list);
 
   return (
     <Card sx={{ minWidth: 275 }}>
@@ -144,17 +132,17 @@ export default function TasksList({
       )}
       <CardContent>
         <List sx={{ maxHeight: "70vh", overflow: "auto" }}>
-          {list.tasks &&
-            list.tasks.map((task) => (
-              <ListItem key={task.id}>
+          <ListItem sx={{ display: "flex", flexDirection: "column" }}>
+            {tasks &&
+              tasks.map((task) => (
                 <Task
-                  deleteTask={deleteTask}
+                  key={task.id}
                   taskId={task.id}
                   editTask={editTask}
-                  reload={reload}
+                  reloadTasks={reloadTasks}
                 />
-              </ListItem>
-            ))}
+              ))}
+          </ListItem>
         </List>
       </CardContent>
       <CardActions>

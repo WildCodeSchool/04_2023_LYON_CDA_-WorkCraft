@@ -9,54 +9,38 @@ import {
   ClickAwayListener,
   TextField,
 } from "@mui/material";
-
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
-import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import Button from "@mui/material/Button";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogTitle from "@mui/material/DialogTitle";
 import loadData from "../helpers/loadData";
 import TaskModal from "./TaskModal";
 
-export default function Task({ taskId, deleteTask, editTask, reload }) {
-  const [task, setTask] = useState({});
+export default function Task({ taskId, editTask, reloadTasks }) {
+  const [openTask, setOpenTask] = useState(false);
+  const [task, setTask] = useState({
+    id: taskId,
+    title: "",
+    description: "",
+    modules: [],
+  });
   const [newTaskName, setNewTaskName] = useState(task.title);
   const [isEditActive, setIsEditActive] = useState(false);
-  const [openAlertDeleteDialog, setOpenAlertDeleteDialog] = useState(false);
+  const [loadingModal, setLoadingModal] = useState(false);
 
-  useEffect(() => loadData("tasks", setTask, taskId), [reload]);
+  useEffect(
+    () => loadData("tasks", setTask, taskId),
+    [reloadTasks, loadingModal]
+  );
 
-  const handleClickOpenTaskDelete = (e) => {
-    e.stopPropagation();
-    setOpenAlertDeleteDialog(true);
+  const handleOpenModal = () => {
+    setOpenTask(true);
+    setLoadingModal(!loadingModal);
   };
 
   const handleClickOpenTaskEdit = (e) => {
     e.stopPropagation();
     setIsEditActive(true);
     setNewTaskName(task.title);
-  };
-
-  const handleCloseTaskDelete = () => {
-    setOpenAlertDeleteDialog(false);
-  };
-
-  const [openTask, setOpenTask] = useState(false);
-
-  const handleCloseTask = () => {
-    setOpenTask(false);
-  };
-
-  const handleClickOpenTask = () => {
-    setOpenTask(true);
-  };
-
-  const handleDeleteTaskButton = () => {
-    handleCloseTask();
-    deleteTask(taskId, task.title);
   };
 
   const handleCloseEditTask = () => {
@@ -71,16 +55,15 @@ export default function Task({ taskId, deleteTask, editTask, reload }) {
         <Card>
           <TaskModal
             open={openTask}
-            handleClose={handleCloseTask}
+            setOpenTask={setOpenTask}
             task={task}
             taskId={task.id}
+            loadingModal={loadingModal}
+            setLoadingModal={setLoadingModal}
           />
           <CardHeader
             action={
               <div>
-                <IconButton onClick={handleClickOpenTaskDelete}>
-                  <DeleteIcon />
-                </IconButton>
                 <IconButton onClick={handleClickOpenTaskEdit}>
                   <EditIcon />
                 </IconButton>
@@ -107,7 +90,7 @@ export default function Task({ taskId, deleteTask, editTask, reload }) {
               )
             }
           />
-          <CardActionArea onClick={handleClickOpenTask}>
+          <CardActionArea onClick={handleOpenModal}>
             <CardContent>
               <Typography sx={{ fontSize: 14 }} color="initial">
                 {task.description}
@@ -131,29 +114,12 @@ export default function Task({ taskId, deleteTask, editTask, reload }) {
           height={Math.floor(Math.random() * 80) + 20}
         />
       )}
-      <Dialog
-        open={openAlertDeleteDialog}
-        onClose={handleCloseTask}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">
-          Would you like to delete this task?
-        </DialogTitle>
-        <DialogActions>
-          <Button onClick={handleCloseTaskDelete}>Disagree</Button>
-          <Button onClick={handleDeleteTaskButton} autoFocus>
-            Agree
-          </Button>
-        </DialogActions>
-      </Dialog>
     </div>
   );
 }
 
 Task.propTypes = {
   taskId: PropTypes.number.isRequired,
-  deleteTask: PropTypes.func.isRequired,
   editTask: PropTypes.func.isRequired,
-  reload: PropTypes.bool.isRequired,
+  reloadTasks: PropTypes.func.isRequired,
 };

@@ -8,6 +8,7 @@ import {
   IconButton,
   ClickAwayListener,
   TextField,
+  LinearProgress,
 } from "@mui/material";
 
 import PropTypes from "prop-types";
@@ -20,6 +21,7 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
 import loadData from "../helpers/loadData";
 import TaskModal from "./TaskModal";
+// import LinearProgressWithLabel from "./ProgressBar";
 
 export default function Task({ taskId, deleteTask, editTask, reload }) {
   const [task, setTask] = useState({});
@@ -64,6 +66,10 @@ export default function Task({ taskId, deleteTask, editTask, reload }) {
     setIsEditActive(false);
     setNewTaskName("");
   };
+  const completedModules = (currentTask) =>
+    currentTask.modules.filter((module) => module.isDone);
+  const percentageCompletion = (currentTask) =>
+    (completedModules(currentTask).length / currentTask.modules.length) * 100;
 
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>
@@ -107,12 +113,12 @@ export default function Task({ taskId, deleteTask, editTask, reload }) {
                 {task.description}
               </Typography>
               <Typography sx={{ fontSize: 10 }} color="initial">
-                {task.modules.length > 0 &&
-                  `Modules : ${task.modules
-                    .map((module) => (module.isDone ? 1 : 0))
-                    .reduce(
-                      (accumulator, current) => accumulator + current
-                    )} / ${task.modules.length}`}
+                {task.modules.length > 0 && (
+                  <LinearProgress
+                    variant="determinate"
+                    value={percentageCompletion(task)}
+                  />
+                )}
               </Typography>
             </CardContent>
           </CardActionArea>

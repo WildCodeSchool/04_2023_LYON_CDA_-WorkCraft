@@ -17,10 +17,13 @@ const getDesignTokens = (mode) => ({
           // palette values for light mode
           primary: {
             main: blue[500],
-            light: blue[500],
+            light: green[500],
           },
           secondary: {
             main: blue[500],
+          },
+          custom: {
+            main: green[500],
           },
           divider: grey[200],
           text: {
@@ -31,11 +34,14 @@ const getDesignTokens = (mode) => ({
       : {
           // palette values for dark mode
           primary: {
-            main: grey[900],
+            main: grey[600],
             light: green[500],
           },
           secondary: {
             main: grey[300],
+          },
+          custom: {
+            main: green[500],
           },
           divider: grey[500],
           background: {

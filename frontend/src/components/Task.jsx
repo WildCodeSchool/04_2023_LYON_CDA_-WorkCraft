@@ -17,7 +17,13 @@ import { useDrag } from "react-dnd";
 import loadData from "../helpers/loadData";
 import TaskModal from "./TaskModal";
 
-export default function Task({ taskId, editTask, reloadTasks, listId }) {
+export default function Task({
+  taskId,
+  editTask,
+  reloadTasks,
+  listId,
+  setReloadTasks,
+}) {
   const [openTask, setOpenTask] = useState(false);
   const [task, setTask] = useState({
     id: taskId,
@@ -75,6 +81,7 @@ export default function Task({ taskId, editTask, reloadTasks, listId }) {
             taskId={task.id}
             loadingModal={loadingModal}
             setLoadingModal={setLoadingModal}
+            setReloadTasks={setReloadTasks}
           />
           <CardHeader
             action={
@@ -137,5 +144,6 @@ Task.propTypes = {
   taskId: PropTypes.number.isRequired,
   listId: PropTypes.number.isRequired,
   editTask: PropTypes.func.isRequired,
-  reloadTasks: PropTypes.func.isRequired,
+  reloadTasks: PropTypes.bool.isRequired,
+  setReloadTasks: PropTypes.func.isRequired,
 };

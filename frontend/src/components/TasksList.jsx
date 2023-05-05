@@ -32,7 +32,6 @@ export default function TasksList({
   deleteList,
   setReloadListId,
   reloadListId,
-  reloadList,
 }) {
   const [list, setList] = useState({});
   const [tasks, setTasks] = useState([]);
@@ -45,11 +44,20 @@ export default function TasksList({
   const isMenuOpen = Boolean(anchorMenuElement);
   const { enqueueSnackbar } = useSnackbar();
 
-  useEffect(() => loadData("project_lists", setList, listId), [reloadList]);
+  useEffect(
+    () => loadData("project_lists", setList, listId),
+    [reloadListId, listId]
+  );
   useEffect(
     () => loadData("project_lists", setTasks, `${listId}/tasks`),
     [reloadTasks]
   );
+  useEffect(() => {
+    if (reloadListId === listId) {
+      loadData("project_lists", setList, listId);
+      setReloadListId(null);
+    }
+  }, [reloadListId]);
 
   const handleClick = (event) => {
     setAnchorMenuElement(event.currentTarget);
@@ -58,8 +66,6 @@ export default function TasksList({
   const handleClose = () => {
     setAnchorMenuElement(null);
   };
-
-  useEffect(() => loadData("project_lists", setList, listId), [listId]);
 
   // Edit List
   const editList = () => {
@@ -75,13 +81,17 @@ export default function TasksList({
     });
   };
 
+  const handleEditList = () => {
+    handleClose();
+    setNewListName(list.title);
+    setIsEditActive(true); // Reset the editing state variable
+  };
+
   const handleCloseEditList = () => {
     editList(listId, newListName);
     setIsEditActive(false);
     setNewListName("");
   };
-
-  useEffect(() => loadData("project_lists", setList, listId), [reloadList]);
 
   const createTask = (taskName) => {
     ApiHelper(`tasks`, "post", {
@@ -102,10 +112,17 @@ export default function TasksList({
       });
   };
 
-  const handleEditList = () => {
-    handleClose();
-    setNewListName(list.title);
-    setIsEditActive(true); // Reset the editing state variable
+  const editTask = (taskId, newTaskName) => {
+    ApiHelper(
+      `tasks/${taskId}`,
+      "patch",
+      {
+        title: newTaskName,
+      },
+      "application/merge-patch+json"
+    ).then(() => {
+      setReloadTasks(!reloadTasks);
+    });
   };
 
   const deleteTask = (taskId, taskName, taskListId) => {
@@ -142,13 +159,6 @@ export default function TasksList({
     });
   };
 
-  useEffect(() => {
-    if (reloadListId === listId) {
-      loadData("project_lists", setList, listId);
-      setReloadListId(null);
-    }
-  }, [reloadListId]);
-
   const [, drop] = useDrop(() => ({
     accept: "task",
     drop: (item) => {
@@ -160,7 +170,7 @@ export default function TasksList({
     }),
   }));
 
-  const handleDragStart = (task, e) => {
+  const handleDragStart = (e, task) => {
     if (e && e.dataTransfer) {
       e.dataTransfer.effectAllowed = "move";
       e.dataTransfer.setData("text/plain", JSON.stringify(task));
@@ -170,19 +180,6 @@ export default function TasksList({
 
   const handleDragEnd = () => {
     setDraggingTaskId(null);
-  };
-
-  const editTask = (taskId, newTaskName) => {
-    ApiHelper(
-      `tasks/${taskId}`,
-      "patch",
-      {
-        title: newTaskName,
-      },
-      "application/merge-patch+json"
-    ).then(() => {
-      setReloadTasks(!reloadTasks);
-    });
   };
 
   return (
@@ -228,6 +225,7 @@ export default function TasksList({
                     listId={listId}
                     editTask={editTask}
                     reloadTasks={reloadTasks}
+                    setReloadTasks={setReloadTasks}
                   />
                 ))}
             </ListItem>
@@ -282,7 +280,6 @@ TasksList.propTypes = {
   deleteList: PropTypes.func.isRequired,
   setReloadListId: PropTypes.func.isRequired,
   reloadListId: PropTypes.number,
-  reloadList: PropTypes.bool.isRequired,
 };
 
 TasksList.defaultProps = { reloadListId: null };

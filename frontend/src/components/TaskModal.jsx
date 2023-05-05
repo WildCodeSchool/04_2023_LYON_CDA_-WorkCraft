@@ -22,6 +22,7 @@ export default function TaskModal({
   taskId,
   loadingModal,
   setLoadingModal,
+  setReloadTasks,
 }) {
   const [modules, setModules] = useState([]);
   const [moduleName, setModuleName] = useState("");
@@ -54,6 +55,7 @@ export default function TaskModal({
     ApiHelper(`tasks/${taskId}`, "delete")
       .then(() => {
         setOpenTask((prev) => !prev);
+        setReloadTasks((prev) => !prev);
         enqueueSnackbar("Task successfully deleted", {
           variant: "success",
         });
@@ -74,7 +76,7 @@ export default function TaskModal({
       },
       "application/merge-patch+json"
     ).then(() => {
-      setLoadingModal((prev) => !prev);
+      setLoadingModal(!loadingModal);
     });
   };
 
@@ -184,4 +186,5 @@ TaskModal.propTypes = {
   }).isRequired,
   loadingModal: PropTypes.bool.isRequired,
   setLoadingModal: PropTypes.func.isRequired,
+  setReloadTasks: PropTypes.func.isRequired,
 };

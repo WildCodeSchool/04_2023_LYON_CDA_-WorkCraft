@@ -117,7 +117,7 @@ export default function TasksList({
   // console.log(list);
 
   return (
-    <Card sx={{ minWidth: 275 }}>
+    <Card sx={{ width: 300 }}>
       {isEditActive ? (
         <ClickAwayListener onClickAway={() => handleCloseEditList()}>
           <form onSubmit={(e) => e.preventDefault()}>

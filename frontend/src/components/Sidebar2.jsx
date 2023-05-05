@@ -45,7 +45,6 @@ export default function Sidebar2({
   const { enqueueSnackbar } = useSnackbar();
 
   const createProject = (projectName, selectedUser) => {
-    console.info("TEST");
     ApiHelper("projects", "post", {
       title: projectName,
       owner: `api/users/${selectedUser}`,

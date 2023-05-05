@@ -51,7 +51,7 @@ export default function ProjectItem({
   };
 
   const handleClickDeleteButton = () => {
-    deleteProject(project.id);
+    deleteProject(project.id, project.title);
   };
 
   const handleCloseEditProject = () => {

@@ -6,28 +6,40 @@ import {
   CardHeader,
   CardActionArea,
   IconButton,
+  ClickAwayListener,
+  TextField,
 } from "@mui/material";
+
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { useDrag } from "react-dnd";
-import TaskModal from "./TaskModal";
 import loadData from "../helpers/loadData";
+import TaskModal from "./TaskModal";
 
-export default function Task({ taskId, deleteTask, listId }) {
+export default function Task({ taskId, deleteTask, editTask, reload, listId }) {
   const [task, setTask] = useState({});
+  const [newTaskName, setNewTaskName] = useState(task.title);
+  const [isEditActive, setIsEditActive] = useState(false);
   const [openAlertDeleteDialog, setOpenAlertDeleteDialog] = useState(false);
 
-  useEffect(() => loadData("tasks", setTask, taskId), []);
+  useEffect(() => loadData("tasks", setTask, taskId), [reload]);
 
   const handleClickOpenTaskDelete = (e) => {
     e.stopPropagation();
     setOpenAlertDeleteDialog(true);
+  };
+
+  const handleClickOpenTaskEdit = (e) => {
+    e.stopPropagation();
+    setIsEditActive(true);
+    setNewTaskName(task.title);
   };
 
   const handleCloseTaskDelete = () => {
@@ -36,17 +48,23 @@ export default function Task({ taskId, deleteTask, listId }) {
 
   const [openTask, setOpenTask] = useState(false);
 
-  const handleClickOpenTask = () => {
-    setOpenTask(true);
-  };
-
   const handleCloseTask = () => {
     setOpenTask(false);
   };
 
+  const handleClickOpenTask = () => {
+    setOpenTask(true);
+  };
+
   const handleDeleteTaskButton = () => {
     handleCloseTask();
-    deleteTask(taskId, listId);
+    deleteTask(taskId, task.title, listId);
+  };
+
+  const handleCloseEditTask = () => {
+    editTask(taskId, newTaskName);
+    setIsEditActive(false);
+    setNewTaskName("");
   };
 
   const [{ isDragging }, drag] = useDrag(() => ({
@@ -70,19 +88,41 @@ export default function Task({ taskId, deleteTask, listId }) {
             open={openTask}
             handleClose={handleCloseTask}
             task={task}
+            taskId={task.id}
           />
-          <CardActionArea onClick={handleClickOpenTask}>
-            <CardHeader
-              action={
+          <CardHeader
+            action={
+              <div>
                 <IconButton onClick={handleClickOpenTaskDelete}>
                   <DeleteIcon />
                 </IconButton>
-              }
-              title={task.title}
-              titleTypographyProps={{
-                color: "primary",
-              }}
-            />
+                <IconButton onClick={handleClickOpenTaskEdit}>
+                  <EditIcon />
+                </IconButton>
+              </div>
+            }
+            title={
+              isEditActive ? (
+                <ClickAwayListener onClickAway={() => handleCloseEditTask()}>
+                  <form onSubmit={(e) => e.preventDefault()}>
+                    <TextField
+                      variant="standard"
+                      sx={{ width: "100%" }}
+                      value={newTaskName}
+                      onKeyDown={(e) =>
+                        e.key === "Enter" && handleCloseEditTask()
+                      }
+                      onChange={(e) => setNewTaskName(e.target.value)}
+                      ref={(input) => input && input.focus()}
+                    />
+                  </form>
+                </ClickAwayListener>
+              ) : (
+                <span style={{ color: "primary" }}>{task.title}</span>
+              )
+            }
+          />
+          <CardActionArea onClick={handleClickOpenTask}>
             <CardContent>
               <Typography sx={{ fontSize: 14 }} color="initial">
                 {task.description}
@@ -130,4 +170,6 @@ Task.propTypes = {
   taskId: PropTypes.number.isRequired,
   deleteTask: PropTypes.func.isRequired,
   listId: PropTypes.number.isRequired,
+  editTask: PropTypes.func.isRequired,
+  reload: PropTypes.bool.isRequired,
 };

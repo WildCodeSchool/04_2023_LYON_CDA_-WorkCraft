@@ -42,7 +42,10 @@ use Symfony\Component\Validator\Constraints as Assert;
             fromProperty: 'tasks',
             fromClass: ProjectList::class,
         )
-    ]
+        ],
+        normalizationContext: [
+            'groups' => ['task:read']
+        ],
 )]
 class Task
 {

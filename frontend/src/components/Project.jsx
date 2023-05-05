@@ -10,6 +10,7 @@ export default function Project() {
   const { projectId } = useParams();
   const [selectedProject, setSelectedProject] = useOutletContext();
   const [isCreateInputActive, setIsCreateInputActive] = useState(false);
+  const [reloadListId, setReloadListId] = useState(null);
 
   useEffect(
     () => loadData("projects", setSelectedProject, projectId),
@@ -61,7 +62,13 @@ export default function Project() {
       >
         {selectedProject.lists &&
           selectedProject.lists.map((list) => (
-            <TasksList key={list.id} listId={list.id} deleteList={deleteList} />
+            <TasksList
+              key={list.id}
+              listId={list.id}
+              deleteList={deleteList}
+              setReloadListId={setReloadListId}
+              reloadListId={reloadListId}
+            />
           ))}
         {isCreateInputActive ? (
           <CreateInputMenu

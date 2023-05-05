@@ -14,10 +14,12 @@ import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { useDrag } from "react-dnd";
 import TaskModal from "./TaskModal";
 import loadData from "../helpers/loadData";
 
-export default function Task({ taskId, deleteTask }) {
+export default function Task({ taskId, deleteTask, listId }) {
   const [task, setTask] = useState({});
   const [openAlertDeleteDialog, setOpenAlertDeleteDialog] = useState(false);
 
@@ -44,11 +46,24 @@ export default function Task({ taskId, deleteTask }) {
 
   const handleDeleteTaskButton = () => {
     handleCloseTask();
-    deleteTask(taskId);
+    deleteTask(taskId, listId);
   };
 
+  const [{ isDragging }, drag] = useDrag(() => ({
+    type: "task",
+    item: { id: taskId, sourceListId: listId },
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging(),
+    }),
+  }));
+
+  const opacity = isDragging ? 0.5 : 1;
+
   return (
-    <div style={{ display: "flex", flexDirection: "column" }}>
+    <div
+      style={{ display: "flex", flexDirection: "column", opacity }}
+      ref={drag}
+    >
       {Object.keys(task).length > 0 ? ( // check if task is filled or empty
         <Card>
           <TaskModal
@@ -114,4 +129,5 @@ export default function Task({ taskId, deleteTask }) {
 Task.propTypes = {
   taskId: PropTypes.number.isRequired,
   deleteTask: PropTypes.func.isRequired,
+  listId: PropTypes.number.isRequired,
 };

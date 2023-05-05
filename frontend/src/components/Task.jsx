@@ -12,10 +12,12 @@ import {
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { useDrag } from "react-dnd";
 import loadData from "../helpers/loadData";
 import TaskModal from "./TaskModal";
 
-export default function Task({ taskId, editTask, reloadTasks }) {
+export default function Task({ taskId, editTask, reloadTasks, listId }) {
   const [openTask, setOpenTask] = useState(false);
   const [task, setTask] = useState({
     id: taskId,
@@ -49,8 +51,21 @@ export default function Task({ taskId, editTask, reloadTasks }) {
     setNewTaskName("");
   };
 
+  const [{ isDragging }, drag] = useDrag(() => ({
+    type: "task",
+    item: { id: taskId, sourceListId: listId },
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging(),
+    }),
+  }));
+
+  const opacity = isDragging ? 0.5 : 1;
+
   return (
-    <div style={{ display: "flex", flexDirection: "column" }}>
+    <div
+      style={{ display: "flex", flexDirection: "column", opacity }}
+      ref={drag}
+    >
       {Object.keys(task).length > 0 ? ( // check if task is filled or empty
         <Card>
           <TaskModal
@@ -120,6 +135,7 @@ export default function Task({ taskId, editTask, reloadTasks }) {
 
 Task.propTypes = {
   taskId: PropTypes.number.isRequired,
+  listId: PropTypes.number.isRequired,
   editTask: PropTypes.func.isRequired,
   reloadTasks: PropTypes.func.isRequired,
 };

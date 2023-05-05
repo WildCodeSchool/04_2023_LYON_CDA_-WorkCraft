@@ -3,6 +3,10 @@ import CssBaseline from "@mui/material/CssBaseline";
 import { Outlet } from "react-router-dom";
 import { useState } from "react";
 import { SnackbarProvider } from "notistack";
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { DndProvider } from "react-dnd";
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { HTML5Backend } from "react-dnd-html5-backend";
 import Sidebar1 from "../components/Sidebar1";
 import Sidebar2 from "../components/Sidebar2";
 import img6 from "../assets/backgroundImg/img6.jpg";
@@ -36,34 +40,39 @@ export default function Root() {
   const [selectedProject, setSelectedProject] = useState({});
 
   return (
-    <ThemeProvider theme={theme}>
-      <SnackbarProvider
-        autoHideDuration={3000}
-        anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "right",
-        }}
-      >
-        <CssBaseline />
-        <Sidebar1 toggleDarkMode={toggleDarkMode} toggleDrawer={toggleDrawer} />
-        <Sidebar2
-          toggleDrawer={toggleDrawer}
-          isDrawerOpen={isDrawerOpen}
-          setSelectedProject={setSelectedProject}
-          selectedProject={selectedProject}
-        />
-        <main
-          style={{
-            backgroundImage: `url(${bgImage})`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            height: "98vh",
-            width: "300vh",
+    <DndProvider backend={HTML5Backend}>
+      <ThemeProvider theme={theme}>
+        <SnackbarProvider
+          autoHideDuration={3000}
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "right",
           }}
         >
-          <Outlet context={[selectedProject, setSelectedProject]} />
-        </main>
-      </SnackbarProvider>
-    </ThemeProvider>
+          <CssBaseline />
+          <Sidebar1
+            toggleDarkMode={toggleDarkMode}
+            toggleDrawer={toggleDrawer}
+          />
+          <Sidebar2
+            toggleDrawer={toggleDrawer}
+            isDrawerOpen={isDrawerOpen}
+            setSelectedProject={setSelectedProject}
+            selectedProject={selectedProject}
+          />
+          <main
+            style={{
+              backgroundImage: `url(${bgImage})`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              height: "98vh",
+              width: "300vh",
+            }}
+          >
+            <Outlet context={[selectedProject, setSelectedProject]} />
+          </main>
+        </SnackbarProvider>
+      </ThemeProvider>
+    </DndProvider>
   );
 }

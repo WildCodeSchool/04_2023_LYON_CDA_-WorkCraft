@@ -11,7 +11,7 @@ export default function Project() {
   const { projectId } = useParams();
   const [selectedProject, setSelectedProject] = useOutletContext();
   const [isCreateInputActive, setIsCreateInputActive] = useState(false);
-  const [reloadList, setReloadList] = useState(false);
+  const [reloadListId, setReloadListId] = useState(null);
 
   useEffect(
     () => loadData("projects", setSelectedProject, projectId),
@@ -52,20 +52,6 @@ export default function Project() {
     });
   };
 
-  // Edit List
-  const editList = (listId, newListName) => {
-    ApiHelper(
-      `project_lists/${listId}`,
-      "patch",
-      {
-        title: newListName,
-      },
-      "application/merge-patch+json"
-    ).then(() => {
-      loadData("projects", setSelectedProject, projectId);
-      setReloadList(!reloadList);
-    });
-  };
   return (
     <Box
       sx={{
@@ -98,8 +84,8 @@ export default function Project() {
               key={list.id}
               listId={list.id}
               deleteList={deleteList}
-              editList={editList}
-              reloadList={reloadList}
+              setReloadListId={setReloadListId}
+              reloadListId={reloadListId}
             />
           ))}
         {isCreateInputActive ? (

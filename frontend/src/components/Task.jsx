@@ -78,7 +78,7 @@ export default function Task({
       ref={drag}
     >
       {Object.keys(task).length > 0 ? ( // check if task is filled or empty
-        <Card>
+        <Card sx={{ margin: "10px 0", bgcolor: "background.card" }}>
           <TaskModal
             open={openTask}
             setOpenTask={setOpenTask}

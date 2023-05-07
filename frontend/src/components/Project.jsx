@@ -74,8 +74,7 @@ export default function Project() {
         sx={{
           display: "flex",
           alignItems: "flex-start",
-          justifyContent: "left",
-          gap: 5,
+          justifyContent: "flex-start",
         }}
       >
         {selectedProject.lists &&

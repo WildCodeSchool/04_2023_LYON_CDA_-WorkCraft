@@ -1,4 +1,3 @@
-import PersonIcon from "@mui/icons-material/Person";
 import SettingsIcon from "@mui/icons-material/Settings";
 import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
 import SearchIcon from "@mui/icons-material/Search";
@@ -66,11 +65,9 @@ export default function Sidebar1({ toggleDarkMode, toggleDrawer }) {
           }}
         >
           <List>
-            {miniButton(<PersonIcon />)}
             {miniButton(<SearchIcon />, () => toggleDrawer())}
             {miniButton(<SettingsIcon />)}
           </List>
-          <Divider />
           <List>
             {miniButton(<DarkModeIcon />, toggleDarkMode)}
             {miniButton(<PowerSettingsNewIcon />)}

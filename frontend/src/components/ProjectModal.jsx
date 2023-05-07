@@ -5,44 +5,20 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import InputLabel from "@mui/material/InputLabel";
 import PropTypes from "prop-types";
-import UserList from "./UserList";
 
 export default function ProjectModal({ open, setOpen, createProject }) {
   const [projectName, setProjectName] = useState("");
   const [isProjectEmpty, setIsProjectEmpty] = useState(false);
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-  const [isDateEmpty, setIsDateEmpty] = useState(false);
-  const [isDatesInOrder, setIsDatesInOrder] = useState(true);
-  const [selectedUser, setSelectedUser] = useState(0);
 
   const handleProjectNameChange = (event) => {
     setProjectName(event.target.value);
     setIsProjectEmpty(false);
   };
 
-  const handleStartDateChange = (event) => {
-    setStartDate(event.target.value);
-    setIsDateEmpty(false);
-    setIsDatesInOrder(true);
-  };
-
-  const handleEndDateChange = (event) => {
-    setEndDate(event.target.value);
-    setIsDateEmpty(false);
-    setIsDatesInOrder(true);
-  };
-
   const resetForm = () => {
     setProjectName("");
     setIsProjectEmpty(false);
-    setStartDate("");
-    setEndDate("");
-    setIsDateEmpty(false);
-    setIsDatesInOrder(true);
-    setSelectedUser(0);
   };
 
   const handleSubscribe = (e) => {
@@ -52,15 +28,7 @@ export default function ProjectModal({ open, setOpen, createProject }) {
       setIsProjectEmpty(true);
       return;
     }
-    if (!startDate || !endDate) {
-      setIsDateEmpty(true);
-      return;
-    }
-    if (new Date(startDate) >= new Date(endDate)) {
-      setIsDatesInOrder(false);
-      return;
-    }
-    createProject(projectName, selectedUser);
+    createProject(projectName);
     resetForm();
     setOpen(false);
   };
@@ -73,7 +41,9 @@ export default function ProjectModal({ open, setOpen, createProject }) {
   return (
     <div>
       <Dialog open={open} onClose={handleCancel}>
-        <DialogTitle>Add a new project</DialogTitle>
+        <DialogTitle sx={{ textAlign: "center" }}>
+          Add a new project
+        </DialogTitle>
         <DialogContent>
           <TextField
             autoFocus
@@ -89,46 +59,15 @@ export default function ProjectModal({ open, setOpen, createProject }) {
           {isProjectEmpty && (
             <p style={{ color: "red" }}>Please fill the project name</p>
           )}
-          <UserList setSelectedUser={setSelectedUser} />
-          <InputLabel>Starting date</InputLabel>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="name"
-            label=""
-            type="date"
-            fullWidth
-            variant="standard"
-            value={startDate}
-            onChange={handleStartDateChange}
-          />
-          <InputLabel>Ending date</InputLabel>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="name"
-            label=""
-            type="date"
-            fullWidth
-            variant="standard"
-            value={endDate}
-            onChange={handleEndDateChange}
-          />
-          {isDateEmpty && (
-            <p style={{ color: "red" }}>Please fill the date field</p>
-          )}
-          {!isDatesInOrder && (
-            <p style={{ color: "red" }}>
-              Please fill the dates in the correct order
-            </p>
-          )}
         </DialogContent>
-        <DialogActions>
-          <Button sx={{ color: "text.primary" }} onClick={handleCancel}>
+        <DialogActions
+          sx={{ display: "flex", justifyContent: "space-between" }}
+        >
+          <Button variant="contained" onClick={handleCancel}>
             Cancel
           </Button>
-          <Button sx={{ color: "text.primary" }} onClick={handleSubscribe}>
-            Subscribe
+          <Button variant="contained" onClick={handleSubscribe}>
+            Create
           </Button>
         </DialogActions>
       </Dialog>

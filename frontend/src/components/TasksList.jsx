@@ -184,7 +184,7 @@ export default function TasksList({
 
   return (
     <div ref={drop}>
-      <Card sx={{ width: 300 }}>
+      <Card sx={{ width: 300, height: "83vh", margin: "4vh 2vw" }}>
         {isEditActive ? (
           <ClickAwayListener onClickAway={() => handleCloseEditList()}>
             <form onSubmit={(e) => e.preventDefault()}>
@@ -209,7 +209,7 @@ export default function TasksList({
           />
         )}
         <CardContent>
-          <List sx={{ maxHeight: "70vh", overflow: "auto" }}>
+          <List sx={{ maxHeight: "65vh", overflow: "auto" }}>
             <ListItem
               draggable
               onDragStart={(event) => handleDragStart(event, tasks)}
@@ -242,9 +242,10 @@ export default function TasksList({
           ) : (
             <Button
               variant="contained"
+              sx={{ width: "100%", margin: "0 10px" }}
               onClick={() => setIsCreateInputActive(true)}
             >
-              New List
+              New Task
             </Button>
           )}
         </CardActions>

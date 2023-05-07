@@ -50,6 +50,9 @@ const getDesignTokens = (mode) => ({
             main: green[500],
           },
           divider: grey[200],
+          background: {
+            card: blue[300],
+          },
           text: {
             primary: grey[900],
             secondary: grey[800],
@@ -67,6 +70,7 @@ const getDesignTokens = (mode) => ({
           background: {
             default: "#121212",
             paper: "#121212",
+            card: grey[600],
           },
           text: {
             primary: "#fff",

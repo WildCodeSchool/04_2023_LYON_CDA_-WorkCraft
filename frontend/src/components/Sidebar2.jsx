@@ -4,17 +4,11 @@ import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import Button from "@mui/material/Button";
 import List from "@mui/material/List";
-import Divider from "@mui/material/Divider";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
 import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import Stack from "@mui/material/Stack";
 import AddIcon from "@mui/icons-material/Add";
 import PropTypes from "prop-types";
-import DateRangeIcon from "@mui/icons-material/DateRange";
 import { Fab } from "@mui/material";
 import { useSnackbar } from "notistack";
 import ApiHelper from "../helpers/apiHelper";
@@ -44,10 +38,10 @@ export default function Sidebar2({
 
   const { enqueueSnackbar } = useSnackbar();
 
-  const createProject = (projectName, selectedUser) => {
+  const createProject = (projectName) => {
     ApiHelper("projects", "post", {
       title: projectName,
-      owner: `api/users/${selectedUser}`,
+      owner: "api/users/1",
     })
       .then(() => {
         loadData("projects", setProjects);
@@ -175,34 +169,7 @@ export default function Sidebar2({
                   />
                 );
               })}
-
             {/* Button collapse */}
-          </List>
-          <Divider />
-          <List>
-            {projects
-              .filter((project) =>
-                project.title
-                  .toLocaleLowerCase()
-                  .normalize("NFD")
-                  .replace(/[\u0300-\u036f]/g, "")
-                  .includes(
-                    searchValue
-                      .toLocaleLowerCase()
-                      .normalize("NFD")
-                      .replace(/[\u0300-\u036f]/g, "")
-                  )
-              )
-              .map((project) => (
-                <ListItem key={project.id} disablePadding>
-                  <ListItemButton>
-                    <ListItemIcon>
-                      <DateRangeIcon />
-                    </ListItemIcon>
-                    <ListItemText primary={project.title} />
-                  </ListItemButton>
-                </ListItem>
-              ))}
           </List>
         </Box>
       </Drawer>

@@ -136,7 +136,9 @@ export default function TaskModal({
               value={moduleName}
               onChange={(e) => setModuleName(e.target.value)}
             />
-            <Button onClick={createModule}>Submit</Button>
+            <Button sx={{ color: "text.primary" }} onClick={createModule}>
+              Submit
+            </Button>
           </div>
           <DialogContentText>
             {modules.length > 0 &&

@@ -8,6 +8,7 @@ import {
   IconButton,
   ClickAwayListener,
   TextField,
+  LinearProgress,
 } from "@mui/material";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
@@ -56,6 +57,10 @@ export default function Task({
     setIsEditActive(false);
     setNewTaskName("");
   };
+  const completedModules = (currentTask) =>
+    currentTask.modules.filter((module) => module.isDone);
+  const percentageCompletion = (currentTask) =>
+    (completedModules(currentTask).length / currentTask.modules.length) * 100;
 
   const [{ isDragging }, drag] = useDrag(() => ({
     type: "task",
@@ -114,16 +119,20 @@ export default function Task({
           />
           <CardActionArea onClick={handleOpenModal}>
             <CardContent>
-              <Typography sx={{ fontSize: 14 }} color="initial">
+              <Typography
+                sx={{ color: "secondary", fontSize: 14 }}
+                color="initial"
+              >
                 {task.description}
               </Typography>
               <Typography sx={{ fontSize: 10 }} color="initial">
-                {task.modules.length > 0 &&
-                  `Modules : ${task.modules
-                    .map((module) => (module.isDone ? 1 : 0))
-                    .reduce(
-                      (accumulator, current) => accumulator + current
-                    )} / ${task.modules.length}`}
+                {task.modules.length > 0 && (
+                  <LinearProgress
+                    variant="determinate"
+                    color="secondary"
+                    value={percentageCompletion(task)}
+                  />
+                )}
               </Typography>
             </CardContent>
           </CardActionArea>

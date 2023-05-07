@@ -7,10 +7,58 @@ import { SnackbarProvider } from "notistack";
 import { DndProvider } from "react-dnd";
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { HTML5Backend } from "react-dnd-html5-backend";
+import { blue, grey, green } from "@mui/material/colors";
 import Sidebar1 from "../components/Sidebar1";
 import Sidebar2 from "../components/Sidebar2";
 import img6 from "../assets/backgroundImg/img6.jpg";
 import img2 from "../assets/backgroundImg/img2.jpg";
+
+const getDesignTokens = (mode) => ({
+  palette: {
+    mode,
+    ...(mode === "light"
+      ? {
+          // palette values for light mode
+          primary: {
+            main: blue[500],
+            light: green[500],
+          },
+          secondary: {
+            main: blue[500],
+          },
+          custom: {
+            main: green[500],
+          },
+          divider: grey[200],
+          text: {
+            primary: grey[900],
+            secondary: grey[800],
+          },
+        }
+      : {
+          // palette values for dark mode
+          primary: {
+            main: grey[600],
+            light: green[500],
+          },
+          secondary: {
+            main: grey[300],
+          },
+          custom: {
+            main: green[500],
+          },
+          divider: grey[500],
+          background: {
+            default: "#121212",
+            paper: "#121212",
+          },
+          text: {
+            primary: "#fff",
+            secondary: "#fff",
+          },
+        }),
+  },
+});
 
 export default function Root() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -31,11 +79,7 @@ export default function Root() {
     }
   };
 
-  const theme = createTheme({
-    palette: {
-      mode: darkMode ? "dark" : "light",
-    },
-  });
+  const theme = createTheme(getDesignTokens(darkMode ? "dark" : "light"));
 
   const [selectedProject, setSelectedProject] = useState({});
 

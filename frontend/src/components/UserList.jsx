@@ -34,7 +34,7 @@ export default function UserList({ setSelectedUser }) {
       <List
         component="nav"
         aria-label="Owner project"
-        sx={{ bgcolor: "background.paper" }}
+        sx={{ bgcolor: "grey[200]" }}
       >
         <ListItem
           id="lock-button"

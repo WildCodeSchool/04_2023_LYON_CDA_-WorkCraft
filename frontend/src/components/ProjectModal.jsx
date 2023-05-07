@@ -58,7 +58,7 @@ export default function ProjectModal({ open, setOpen, createProject }) {
               onChange={handleProjectNameChange}
               onKeyDown={(e) => {
                 if (e.key === "Enter" && isProjectEmpty) {
-                  handleCancel(); // handle Cancel Works Partially
+                  handleCancel(); // handle Cancel still doesn't work'
                 } else if (e.key === "Enter" && projectName !== "") {
                   handleSubscribe(e);
                 }

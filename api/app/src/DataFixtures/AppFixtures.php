@@ -14,10 +14,8 @@ class AppFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-        UserFactory::createMany(5);
-
         ProjectFactory::createMany(
-            3,
+            1,
             [
                 'lists' => ProjectListFactory::new(
                     ['tasks' => TaskFactory::new(

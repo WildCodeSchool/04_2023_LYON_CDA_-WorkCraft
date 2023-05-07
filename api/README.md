@@ -31,3 +31,11 @@ For run fixtures you have to make this command :
 > docker compose exec php-workcraft php bin/console doctrine:fixtures:load
 
 **Don't forget to run composer install to get started**
+
+Refresh Id of fixtures :
+
+> docker compose exec php-workcraft php bin/console d:s:d --force
+
+> docker compose exec php-workcraft php bin/console d:s:u --force
+
+> docker compose exec php-workcraft php bin/console d:f:l -n

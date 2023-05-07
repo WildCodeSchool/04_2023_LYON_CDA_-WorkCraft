@@ -45,17 +45,26 @@ export default function ProjectModal({ open, setOpen, createProject }) {
           Add a new project
         </DialogTitle>
         <DialogContent>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="name"
-            label="Project Name"
-            type="text"
-            fullWidth
-            variant="standard"
-            value={projectName}
-            onChange={handleProjectNameChange}
-          />
+          <form onSubmit={(e) => e.preventDefault()}>
+            <TextField
+              autoFocus
+              margin="dense"
+              id="name"
+              label="Project Name"
+              type="text"
+              fullWidth
+              variant="standard"
+              value={projectName}
+              onChange={handleProjectNameChange}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && isProjectEmpty) {
+                  handleCancel(); // handle Cancel Works Partially
+                } else if (e.key === "Enter" && projectName !== "") {
+                  handleSubscribe(e);
+                }
+              }}
+            />
+          </form>
           {isProjectEmpty && (
             <p style={{ color: "red" }}>Please fill the project name</p>
           )}

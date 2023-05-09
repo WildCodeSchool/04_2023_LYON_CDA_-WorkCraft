@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import {
   Card,
   List,
@@ -33,6 +34,7 @@ export default function TasksList({
   setReloadListId,
   reloadListId,
   reloadList,
+  dragProps,
 }) {
   const [list, setList] = useState({});
   const [reload, setReload] = useState(false);
@@ -196,15 +198,17 @@ export default function TasksList({
             </form>
           </ClickAwayListener>
         ) : (
-          <CardHeader
-            title={list.title}
-            align="center"
-            action={
-              <IconButton aria-label="settings" onClick={handleClick}>
-                <MoreVertIcon />
-              </IconButton>
-            }
-          />
+          <div {...dragProps}>
+            <CardHeader
+              title={list.title}
+              align="center"
+              action={
+                <IconButton aria-label="settings" onClick={handleClick}>
+                  <MoreVertIcon />
+                </IconButton>
+              }
+            />
+          </div>
         )}
         <CardContent>
           <List>
@@ -276,6 +280,15 @@ TasksList.propTypes = {
   setReloadListId: PropTypes.func.isRequired,
   reloadListId: PropTypes.number,
   reloadList: PropTypes.bool.isRequired,
+  dragProps: PropTypes.shape({
+    "aria-describedby": PropTypes.string,
+    "data-rbd-drag-handle-context-id": PropTypes.string.isRequired,
+    "data-rbd-drag-handle-draggable-id": PropTypes.string.isRequired,
+    draggable: PropTypes.bool.isRequired,
+    onDragStart: PropTypes.func.isRequired,
+    role: PropTypes.string.isRequired,
+    tabIndex: PropTypes.number.isRequired,
+  }).isRequired,
 };
 
 TasksList.defaultProps = { reloadListId: null };

@@ -1,5 +1,6 @@
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
+import { blue, grey, green } from "@mui/material/colors";
 import { Outlet } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { SnackbarProvider } from "notistack";
@@ -7,7 +8,6 @@ import { SnackbarProvider } from "notistack";
 import { DndProvider } from "react-dnd";
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { HTML5Backend } from "react-dnd-html5-backend";
-import { blue, grey, green } from "@mui/material/colors";
 import Sidebar1 from "../components/Sidebar1";
 import Sidebar2 from "../components/Sidebar2";
 import img6 from "../assets/backgroundImg/Light/img6.jpg";

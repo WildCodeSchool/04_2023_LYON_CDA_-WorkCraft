@@ -17,11 +17,11 @@ import {
 } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { useDrop } from "react-dnd";
-import EditIcon from "@mui/icons-material/Edit";
 import { useSnackbar } from "notistack";
 import Task from "./Task";
 import CreateInputMenu from "./CreateInputMenu";

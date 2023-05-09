@@ -30,17 +30,17 @@ export default function CreateInputMenu({
   };
 
   return (
-    <div>
+    <div style={{ margin: "4vh 1vw" }}>
       <ClickAwayListener onClickAway={handleCloseListMenu}>
         <form onSubmit={handleSubmit}>
           <Card sx={{ minWidth: 275, padding: "10px 5px" }}>
             <CardContent>
               <TextField
+                autoFocus
                 sx={{ width: "100%" }}
                 label={`${label} Name`}
                 value={nameInput}
                 onChange={(e) => setNameInput(e.target.value)}
-                inputRef={(input) => input && input.focus()}
               />
             </CardContent>
             <CardActions>

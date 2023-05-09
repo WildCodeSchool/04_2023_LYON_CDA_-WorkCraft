@@ -127,7 +127,7 @@ export default function Task({
             }
           />
           <CardActionArea onClick={handleOpenModal}>
-            <CardContent sx={{ padding: "0 16px" }}>
+            <CardContent sx={{ padding: "0 16px", minHeight: "30px" }}>
               <Typography
                 variant="p"
                 sx={{ color: "secondary" }}

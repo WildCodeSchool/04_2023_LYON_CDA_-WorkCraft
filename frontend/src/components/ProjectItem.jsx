@@ -1,24 +1,22 @@
 import * as React from "react";
-import Box from "@mui/material/Box";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import Collapse from "@mui/material/Collapse";
-import ExpandLess from "@mui/icons-material/ExpandLess";
-import ExpandMore from "@mui/icons-material/ExpandMore";
-import StarBorder from "@mui/icons-material/StarBorder";
-import DateRangeIcon from "@mui/icons-material/DateRange";
-import { NavLink } from "react-router-dom";
 import {
+  Box,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Collapse,
   ClickAwayListener,
   IconButton,
   Menu,
   MenuItem,
   TextField,
 } from "@mui/material";
+import { ExpandLess, ExpandMore, StarBorder } from "@mui/icons-material";
+import { NavLink } from "react-router-dom";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import DateRangeIcon from "@mui/icons-material/DateRange";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import PropTypes from "prop-types";
@@ -63,7 +61,7 @@ export default function ProjectItem({
   return (
     <div>
       <ListItem sx={{ display: "flex", justifyContent: "space-between" }}>
-        <Box sx={{ display: "flex", alignItems: "center" }}>
+        <Box sx={{ display: "flex", alignItems: "center", width: "100%" }}>
           <ListItemIcon>
             <DateRangeIcon />
           </ListItemIcon>
@@ -73,7 +71,7 @@ export default function ProjectItem({
             >
               <TextField
                 variant="standard"
-                sx={{ width: "100%" }}
+                sx={{ width: "100%", flexGrow: "4" }}
                 value={newName}
                 onChange={(e) => setNewName(e.target.value)}
                 ref={(input) => input && input.focus()}
@@ -85,6 +83,7 @@ export default function ProjectItem({
               style={{
                 textDecoration: "none",
                 color: "inherit",
+                flexGrow: "4",
               }}
             >
               <ListItemText primary={project.title} />

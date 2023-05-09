@@ -1,15 +1,18 @@
 import { useState, useEffect } from "react";
-import { IconButton } from "@mui/material";
+import {
+  IconButton,
+  Button,
+  TextField,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from "@mui/material";
 import { useSnackbar } from "notistack";
 import PropTypes from "prop-types";
-import Button from "@mui/material/Button";
 import EditIcon from "@mui/icons-material/Edit";
-import TextField from "@mui/material/TextField";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
+import DeleteIcon from "@mui/icons-material/Delete";
 import ConfirmDialog from "./ConfirmDialog";
 import ApiHelper from "../helpers/apiHelper";
 import loadData from "../helpers/loadData";
@@ -94,7 +97,7 @@ export default function TaskModal({
     <div>
       <Dialog open={open}>
         <DialogTitle>{task.title}</DialogTitle>
-        <DialogContent>
+        <DialogContent sx={{ padding: "12px 16px" }}>
           {isEditActive ? (
             <form
               style={{ flexGrow: "4" }}
@@ -115,7 +118,9 @@ export default function TaskModal({
           ) : (
             <div style={{ display: "flex" }}>
               <DialogContentText sx={{ flexGrow: "4" }}>
-                {task.description}
+                {task.description.length > 0
+                  ? task.description
+                  : "Enter description"}
               </DialogContentText>
               <DialogActions>
                 <IconButton onClick={handleOpenEditDescription}>
@@ -124,9 +129,10 @@ export default function TaskModal({
               </DialogActions>
             </div>
           )}
-          <div style={{ display: "flex" }}>
+          <div style={{ display: "flex", alignItems: "center" }}>
             <TextField
               autoFocus
+              sx={{ margin: 0 }}
               margin="dense"
               id="module"
               label="Module Name"
@@ -136,7 +142,11 @@ export default function TaskModal({
               value={moduleName}
               onChange={(e) => setModuleName(e.target.value)}
             />
-            <Button sx={{ color: "text.primary" }} onClick={createModule}>
+            <Button
+              variant="contained"
+              sx={{ maxHeight: "35px" }}
+              onClick={createModule}
+            >
               Submit
             </Button>
           </div>
@@ -154,7 +164,12 @@ export default function TaskModal({
         <DialogActions
           sx={{ display: "flex", justifyContent: "space-between" }}
         >
-          <Button onClick={() => setConfirmOpen(true)}>Delete Task</Button>
+          <IconButton onClick={() => setConfirmOpen(true)}>
+            <DeleteIcon />
+            <DialogContentText sx={{ margin: "0 10px" }}>
+              Delete Task
+            </DialogContentText>
+          </IconButton>
           <ConfirmDialog
             title="Delete Task?"
             open={confirmOpen}
@@ -163,7 +178,9 @@ export default function TaskModal({
           >
             Are you sure you want to delete this task?
           </ConfirmDialog>
-          <Button onClick={(prev) => setOpenTask(!prev)}>Close</Button>
+          <Button variant="contained" onClick={(prev) => setOpenTask(!prev)}>
+            Close
+          </Button>
         </DialogActions>
       </Dialog>
     </div>

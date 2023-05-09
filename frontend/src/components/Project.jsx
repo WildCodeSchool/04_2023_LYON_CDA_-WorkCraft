@@ -62,11 +62,16 @@ export default function Project() {
     >
       <Box
         sx={{
-          backgroundColor: "primary.main",
           width: "100%",
+          textAlign: "center",
         }}
       >
-        <Typography variant="h2" color="primary.contrastText" align="center">
+        <Typography
+          variant="h2"
+          color="primary.contrastText"
+          backgroundColor="primary.main"
+          sx={{ height: "65px" }}
+        >
           {selectedProject && selectedProject.title}
         </Typography>
       </Box>
@@ -98,6 +103,7 @@ export default function Project() {
           <Button
             variant="contained"
             onClick={() => setIsCreateInputActive(true)}
+            sx={{ margin: "4vh 1vw", width: "5vw" }}
           >
             New List
           </Button>

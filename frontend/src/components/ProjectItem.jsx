@@ -69,13 +69,18 @@ export default function ProjectItem({
             <ClickAwayListener
               onClickAway={() => handleCloseEditProject(project.id)}
             >
-              <TextField
-                variant="standard"
-                sx={{ width: "100%", flexGrow: "4" }}
-                value={newName}
-                onChange={(e) => setNewName(e.target.value)}
-                ref={(input) => input && input.focus()}
-              />
+              <form onSubmit={(e) => e.preventDefault()}>
+                <TextField
+                  autoFocus
+                  variant="standard"
+                  sx={{ width: "100%", flexGrow: "4" }}
+                  value={newName}
+                  onKeyDown={(e) =>
+                    e.key === "Enter" && handleCloseEditProject()
+                  }
+                  onChange={(e) => setNewName(e.target.value)}
+                />
+              </form>
             </ClickAwayListener>
           ) : (
             <NavLink

@@ -1,6 +1,6 @@
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
-import { blue, grey, green } from "@mui/material/colors";
+import { blue, grey } from "@mui/material/colors";
 import { Outlet } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { SnackbarProvider } from "notistack";
@@ -45,9 +45,6 @@ const getDesignTokens = (mode) => ({
           },
           secondary: {
             main: blue[500],
-          },
-          custom: {
-            main: green[500],
           },
           divider: grey[200],
           background: {
@@ -174,7 +171,9 @@ export default function Root() {
               width: "300vh",
             }}
           >
-            <Outlet context={[selectedProject, setSelectedProject]} />
+            <Outlet
+              context={{ selectedProject, setSelectedProject, darkMode }}
+            />
           </main>
         </SnackbarProvider>
       </ThemeProvider>

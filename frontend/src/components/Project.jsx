@@ -9,7 +9,7 @@ import ApiHelper from "../helpers/apiHelper";
 
 export default function Project() {
   const { projectId } = useParams();
-  const [selectedProject, setSelectedProject] = useOutletContext();
+  const { selectedProject, setSelectedProject, darkMode } = useOutletContext();
   const [isCreateInputActive, setIsCreateInputActive] = useState(false);
   const [reloadListId, setReloadListId] = useState(null);
 
@@ -61,10 +61,21 @@ export default function Project() {
       }}
     >
       <Box
-        sx={{
-          width: "100%",
-          textAlign: "center",
-        }}
+        sx={
+          !darkMode
+            ? {
+                backgroundImage:
+                  "linear-gradient(to top, #00c6fb 0%, #005bea 100%)",
+                width: "100%",
+                textAlign: "center",
+              }
+            : {
+                backgroundImage:
+                  "linear-gradient(to top, #434343 0%, black 100%)",
+                width: "100%",
+                textAlign: "center",
+              }
+        }
       >
         <Typography
           variant="h2"

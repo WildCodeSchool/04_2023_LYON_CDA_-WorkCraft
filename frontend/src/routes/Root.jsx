@@ -7,7 +7,7 @@ import { SnackbarProvider } from "notistack";
 import { DndProvider } from "react-dnd";
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { HTML5Backend } from "react-dnd-html5-backend";
-import { blue, grey, green } from "@mui/material/colors";
+import { blue, grey } from "@mui/material/colors";
 import Sidebar1 from "../components/Sidebar1";
 import Sidebar2 from "../components/Sidebar2";
 import img6 from "../assets/backgroundImg/Light/img6.jpg";
@@ -45,9 +45,6 @@ const getDesignTokens = (mode) => ({
           },
           secondary: {
             main: blue[500],
-          },
-          custom: {
-            main: green[500],
           },
           divider: grey[200],
           background: {
@@ -174,7 +171,9 @@ export default function Root() {
               width: "300vh",
             }}
           >
-            <Outlet context={[selectedProject, setSelectedProject]} />
+            <Outlet
+              context={{ selectedProject, setSelectedProject, darkMode }}
+            />
           </main>
         </SnackbarProvider>
       </ThemeProvider>

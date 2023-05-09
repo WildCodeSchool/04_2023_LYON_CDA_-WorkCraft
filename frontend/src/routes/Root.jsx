@@ -112,6 +112,22 @@ export default function Root() {
 
   const theme = createTheme(getDesignTokens(darkMode ? "dark" : "light"));
 
+  theme.typography.h2 = {
+    fontSize: "3rem",
+  };
+
+  theme.typography.h3 = {
+    fontSize: "1.5rem",
+  };
+
+  theme.typography.h4 = {
+    fontSize: "1rem",
+  };
+
+  theme.typography.p = {
+    fontSize: "0.75rem",
+  };
+
   const [selectedProject, setSelectedProject] = useState({});
 
   useEffect(() => {

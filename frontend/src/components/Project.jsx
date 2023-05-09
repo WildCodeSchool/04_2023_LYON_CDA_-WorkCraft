@@ -66,7 +66,7 @@ export default function Project() {
           width: "100%",
         }}
       >
-        <Typography variant="h3" color="primary.contrastText" align="center">
+        <Typography variant="h2" color="primary.contrastText" align="center">
           {selectedProject && selectedProject.title}
         </Typography>
       </Box>

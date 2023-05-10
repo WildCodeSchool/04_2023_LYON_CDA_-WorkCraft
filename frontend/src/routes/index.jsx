@@ -9,12 +9,12 @@ const Routes = [
     element: <Root />,
     children: [
       {
-        path: "*",
-        element: <NotFound />,
+        index: true,
+        element: <HomePage />,
       },
       {
-        path: "home",
-        element: <HomePage />,
+        path: "*",
+        element: <NotFound />,
       },
       {
         path: "projects/:projectId",

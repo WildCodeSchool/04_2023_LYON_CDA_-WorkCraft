@@ -162,7 +162,11 @@ export default function TaskModal({
           </DialogContentText>
         </DialogContent>
         <DialogActions
-          sx={{ display: "flex", justifyContent: "space-between" }}
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            padding: "16px",
+          }}
         >
           <IconButton onClick={() => setConfirmOpen(true)}>
             <DeleteIcon />

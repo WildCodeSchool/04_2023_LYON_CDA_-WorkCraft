@@ -16,10 +16,18 @@ import CssBaseline from "@mui/material/CssBaseline";
 import { PropTypes } from "prop-types";
 import ApiHelper from "../helpers/apiHelper";
 import data from "../data";
+import data2 from "../data2";
 
 export default function Sidebar1({ toggleDarkMode, toggleDrawer }) {
   const createFakeData = () => {
     ApiHelper("projects", "post", data)
+      .then(() => {
+        console.info("ok");
+      })
+      .catch(() => {
+        console.info("nop");
+      });
+    ApiHelper("projects", "post", data2)
       .then(() => {
         console.info("ok");
       })

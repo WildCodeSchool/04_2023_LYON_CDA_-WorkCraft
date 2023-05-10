@@ -1,5 +1,5 @@
 import SettingsIcon from "@mui/icons-material/Settings";
-import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
+import HomeIcon from "@mui/icons-material/Home";
 import SearchIcon from "@mui/icons-material/Search";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import * as React from "react";
@@ -12,10 +12,12 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import { PropTypes } from "prop-types";
+import { useNavigate } from "react-router-dom";
 import ApiHelper from "../helpers/apiHelper";
 import data from "../data";
 
 export default function Sidebar1({ toggleDarkMode, toggleDrawer }) {
+  const navigate = useNavigate();
   const createFakeData = () => {
     ApiHelper("projects", "post", data)
       .then(() => {
@@ -82,7 +84,7 @@ export default function Sidebar1({ toggleDarkMode, toggleDrawer }) {
           </List>
           <List>
             {miniButton(<DarkModeIcon />, toggleDarkMode)}
-            {miniButton(<PowerSettingsNewIcon />)}
+            {miniButton(<HomeIcon />, () => navigate("/home"))}
           </List>
         </Box>
       </Drawer>

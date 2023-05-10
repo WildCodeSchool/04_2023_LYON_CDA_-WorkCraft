@@ -1,7 +1,7 @@
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import { blue, grey } from "@mui/material/colors";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { SnackbarProvider } from "notistack";
 // eslint-disable-next-line import/no-extraneous-dependencies
@@ -130,15 +130,9 @@ export default function Root() {
 
   const location = useLocation();
 
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (location.pathname === "/") navigate("/home");
-  }, [location.pathname]);
-
   useEffect(() => {
     const mode = darkMode ? "dark" : "light";
-    if (location.pathname === "/home") {
+    if (location.pathname === "/") {
       if (darkMode) {
         setBgImage(img2);
       } else {

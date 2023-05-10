@@ -41,7 +41,6 @@ function HomePage() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          height: "100%",
           textAlign: "center",
           gap: "50px",
           flexWrap: "wrap",

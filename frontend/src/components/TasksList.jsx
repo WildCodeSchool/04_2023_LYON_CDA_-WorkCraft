@@ -13,6 +13,7 @@ import {
   Button,
   ClickAwayListener,
   TextField,
+  Typography,
 } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -184,7 +185,15 @@ export default function TasksList({
 
   return (
     <div ref={drop}>
-      <Card sx={{ width: 300, height: "83vh", margin: "4vh 2vw" }}>
+      <Card
+        sx={{
+          width: 300,
+          height: "83vh",
+          margin: "4vh 2vw",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
         {isEditActive ? (
           <ClickAwayListener onClickAway={() => handleCloseEditList()}>
             <form onSubmit={(e) => e.preventDefault()}>
@@ -198,18 +207,21 @@ export default function TasksList({
             </form>
           </ClickAwayListener>
         ) : (
-          <CardHeader
-            title={list.title}
-            align="center"
-            action={
-              <IconButton aria-label="settings" onClick={handleClick}>
-                <MoreVertIcon />
-              </IconButton>
-            }
-          />
+          <Typography variant="h3" align="center">
+            <CardHeader
+              sx={{ padding: "12px 16px" }}
+              title={list.title}
+              align="center"
+              action={
+                <IconButton aria-label="settings" onClick={handleClick}>
+                  <MoreVertIcon />
+                </IconButton>
+              }
+            />
+          </Typography>
         )}
-        <CardContent>
-          <List sx={{ maxHeight: "65vh", overflow: "auto" }}>
+        <CardContent sx={{ flexGrow: 4, padding: "0 16px" }}>
+          <List sx={{ maxHeight: "68vh", overflow: "auto" }}>
             <ListItem
               draggable
               onDragStart={(event) => handleDragStart(event, tasks)}
@@ -242,7 +254,7 @@ export default function TasksList({
           ) : (
             <Button
               variant="contained"
-              sx={{ width: "100%", margin: "0 10px" }}
+              sx={{ width: "100%", margin: "10px" }}
               onClick={() => setIsCreateInputActive(true)}
             >
               New Task

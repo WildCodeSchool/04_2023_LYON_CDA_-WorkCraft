@@ -61,7 +61,8 @@ class Module
         'module:read',
         'module:write',
         'list:read',
-        'task:read'
+        'task:read',
+        'project:write',
     ])]
     private ?string $title = null;
 
@@ -70,7 +71,8 @@ class Module
         'module:read',
         'module:write',
         'list:read',
-        'task:read'
+        'task:read',
+        'project:write',
     ])]
     private ?bool $isDone = null;
 

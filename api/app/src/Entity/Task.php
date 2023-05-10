@@ -63,11 +63,11 @@ class Task
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
-    #[Groups(['task:read', 'task:write', 'list:read'])]
+    #[Groups(['task:read', 'task:write', 'list:read', 'project:write'])]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups(['task:read', 'task:write', 'list:read'])]
+    #[Groups(['task:read', 'task:write', 'list:read', 'project:write'])]
     private ?string $description = null;
 
     #[ORM\ManyToOne(inversedBy: 'tasks')]
@@ -78,8 +78,8 @@ class Task
     #[Groups(['task:read', 'user:read'])]
     private Collection $users;
 
-    #[ORM\OneToMany(mappedBy: 'task', targetEntity: Module::class, orphanRemoval: true)]
-    #[Groups(['task:read', 'list:read'])]
+    #[ORM\OneToMany(mappedBy: 'task', targetEntity: Module::class, orphanRemoval: true, cascade: ["persist"])]
+    #[Groups(['task:read', 'list:read', 'project:write'])]
     private Collection $modules;
 
     public function __construct()

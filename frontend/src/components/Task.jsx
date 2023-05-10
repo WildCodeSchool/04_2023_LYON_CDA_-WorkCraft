@@ -78,7 +78,13 @@ export default function Task({
       ref={drag}
     >
       {Object.keys(task).length > 0 ? ( // check if task is filled or empty
-        <Card sx={{ margin: "10px 0", bgcolor: "background.card" }}>
+        <Card
+          sx={{
+            margin: "10px 0",
+            minWidth: "250px",
+            bgcolor: "background.card",
+          }}
+        >
           <TaskModal
             open={openTask}
             setOpenTask={setOpenTask}
@@ -89,6 +95,7 @@ export default function Task({
             setReloadTasks={setReloadTasks}
           />
           <CardHeader
+            sx={{ padding: "8px 16px" }}
             action={
               <div>
                 <IconButton onClick={handleClickOpenTaskEdit}>
@@ -113,27 +120,40 @@ export default function Task({
                   </form>
                 </ClickAwayListener>
               ) : (
-                <span style={{ color: "primary" }}>{task.title}</span>
+                <Typography variant="h4" color="initial">
+                  <span style={{ color: "primary" }}>{task.title}</span>
+                </Typography>
               )
             }
           />
           <CardActionArea onClick={handleOpenModal}>
-            <CardContent>
+            <CardContent sx={{ padding: "0 16px" }}>
               <Typography
-                sx={{ color: "secondary", fontSize: 14 }}
+                variant="p"
+                sx={{ color: "secondary" }}
                 color="initial"
               >
                 {task.description}
               </Typography>
-              <Typography sx={{ fontSize: 10 }} color="initial">
-                {task.modules.length > 0 && (
+              {task.modules.length > 0 && (
+                <Typography
+                  sx={{
+                    fontSize: 10,
+                    padding: "12px 0",
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                  color="initial"
+                >
                   <LinearProgress
                     variant="determinate"
                     color="secondary"
                     value={percentageCompletion(task)}
+                    sx={{ width: "100%", margin: "0 8px" }}
                   />
-                )}
-              </Typography>
+                  {`${Math.round(percentageCompletion(task))}`}%
+                </Typography>
+              )}
             </CardContent>
           </CardActionArea>
         </Card>

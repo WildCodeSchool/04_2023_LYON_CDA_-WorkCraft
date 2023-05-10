@@ -13,9 +13,20 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import { PropTypes } from "prop-types";
 import { useNavigate } from "react-router-dom";
+import ApiHelper from "../helpers/apiHelper";
+import data from "../data";
 
 export default function Sidebar1({ toggleDarkMode, toggleDrawer }) {
   const navigate = useNavigate();
+  const createFakeData = () => {
+    ApiHelper("projects", "post", data)
+      .then(() => {
+        console.info("ok");
+      })
+      .catch(() => {
+        console.info("nop");
+      });
+  };
 
   function miniButton(icon, onClick = undefined) {
     return (
@@ -69,7 +80,7 @@ export default function Sidebar1({ toggleDarkMode, toggleDrawer }) {
         >
           <List>
             {miniButton(<SearchIcon />, () => toggleDrawer())}
-            {miniButton(<SettingsIcon />)}
+            {miniButton(<SettingsIcon />, createFakeData)}
           </List>
           <List>
             {miniButton(<DarkModeIcon />, toggleDarkMode)}

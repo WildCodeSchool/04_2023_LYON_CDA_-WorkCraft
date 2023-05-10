@@ -52,6 +52,7 @@ class ProjectList
         'list:read',
         'list:write',
         'project:read',
+        'project:write',
     ])]
     private ?string $title = null;
 
@@ -61,10 +62,11 @@ class ProjectList
     ])]
     private ?Project $project = null;
 
-    #[ORM\OneToMany(mappedBy: 'list', targetEntity: Task::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'list', targetEntity: Task::class, orphanRemoval: true, cascade: ["persist"])]
     #[Groups([
         'list:read',
         'task:read',
+        'project:write',
     ])]
     private Collection $tasks;
 

@@ -7,7 +7,7 @@ import { SnackbarProvider } from "notistack";
 import { DndProvider } from "react-dnd";
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { HTML5Backend } from "react-dnd-html5-backend";
-import { blue, grey, green } from "@mui/material/colors";
+import { blue, grey } from "@mui/material/colors";
 import Sidebar1 from "../components/Sidebar1";
 import Sidebar2 from "../components/Sidebar2";
 import loadData from "../helpers/loadData";
@@ -46,9 +46,6 @@ const getDesignTokens = (mode) => ({
           },
           secondary: {
             main: blue[500],
-          },
-          custom: {
-            main: green[500],
           },
           divider: grey[200],
           background: {
@@ -112,6 +109,22 @@ export default function Root() {
   };
 
   const theme = createTheme(getDesignTokens(darkMode ? "dark" : "light"));
+
+  theme.typography.h2 = {
+    fontSize: "3rem",
+  };
+
+  theme.typography.h3 = {
+    fontSize: "1.5rem",
+  };
+
+  theme.typography.h4 = {
+    fontSize: "1rem",
+  };
+
+  theme.typography.p = {
+    fontSize: "0.75rem",
+  };
 
   const [selectedProject, setSelectedProject] = useState({});
 

@@ -66,9 +66,10 @@ class Project
     ])]
     private ?User $owner = null;
 
-    #[ORM\OneToMany(mappedBy: 'project', targetEntity: ProjectList::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'project', targetEntity: ProjectList::class, orphanRemoval: true, cascade: ["persist"])]
     #[Groups([
         'project:read',
+        'project:write',
         'list:read',
     ])]
     private Collection $lists;

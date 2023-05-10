@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import {
   Card,
   List,
@@ -33,6 +34,7 @@ export default function TasksList({
   deleteList,
   setReloadListId,
   reloadListId,
+  dragProps,
 }) {
   const [list, setList] = useState({});
   const [tasks, setTasks] = useState([]);
@@ -51,14 +53,8 @@ export default function TasksList({
   );
   useEffect(
     () => loadData("project_lists", setTasks, `${listId}/tasks`),
-    [reloadTasks]
+    [reloadTasks, reloadListId]
   );
-  useEffect(() => {
-    if (reloadListId === listId) {
-      loadData("project_lists", setList, listId);
-      setReloadListId(null);
-    }
-  }, [reloadListId]);
 
   const handleClick = (event) => {
     setAnchorMenuElement(event.currentTarget);
@@ -207,18 +203,20 @@ export default function TasksList({
             </form>
           </ClickAwayListener>
         ) : (
-          <Typography variant="h3" align="center">
-            <CardHeader
-              sx={{ padding: "12px 16px" }}
-              title={list.title}
-              align="center"
-              action={
-                <IconButton aria-label="settings" onClick={handleClick}>
-                  <MoreVertIcon />
-                </IconButton>
-              }
-            />
-          </Typography>
+          <div {...dragProps}>
+            <Typography variant="h3" align="center">
+              <CardHeader
+                sx={{ padding: "12px 16px" }}
+                title={list.title}
+                align="center"
+                action={
+                  <IconButton aria-label="settings" onClick={handleClick}>
+                    <MoreVertIcon />
+                  </IconButton>
+                }
+              />
+            </Typography>
+          </div>
         )}
         <CardContent sx={{ flexGrow: 4, padding: "0 16px" }}>
           <List sx={{ maxHeight: "68vh", overflow: "auto" }}>
@@ -293,6 +291,15 @@ TasksList.propTypes = {
   deleteList: PropTypes.func.isRequired,
   setReloadListId: PropTypes.func.isRequired,
   reloadListId: PropTypes.number,
+  dragProps: PropTypes.shape({
+    "aria-describedby": PropTypes.string,
+    "data-rbd-drag-handle-context-id": PropTypes.string.isRequired,
+    "data-rbd-drag-handle-draggable-id": PropTypes.string.isRequired,
+    draggable: PropTypes.bool.isRequired,
+    onDragStart: PropTypes.func.isRequired,
+    role: PropTypes.string.isRequired,
+    tabIndex: PropTypes.number.isRequired,
+  }).isRequired,
 };
 
 TasksList.defaultProps = { reloadListId: null };

@@ -94,7 +94,7 @@ export default function Sidebar1({ toggleDarkMode, toggleDrawer }) {
           </List>
           <List>
             {miniButton(<DarkModeIcon />, toggleDarkMode)}
-            {miniButton(<HomeIcon />, () => navigate("/home"))}
+            {miniButton(<HomeIcon />, () => navigate("/"))}
           </List>
         </Box>
       </Drawer>

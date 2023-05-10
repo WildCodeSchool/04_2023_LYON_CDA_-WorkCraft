@@ -55,6 +55,12 @@ export default function TasksList({
     () => loadData("project_lists", setTasks, `${listId}/tasks`),
     [reloadTasks, reloadListId]
   );
+  useEffect(() => {
+    if (reloadListId === listId) {
+      loadData("project_lists", setList, listId);
+      setReloadListId(null);
+    }
+  }, [reloadListId]);
 
   const handleClick = (event) => {
     setAnchorMenuElement(event.currentTarget);
@@ -241,7 +247,7 @@ export default function TasksList({
             </ListItem>
           </List>
         </CardContent>
-        <CardActions>
+        <CardActions sx={{ width: "100%" }}>
           {isCreateInputActive ? (
             <CreateInputMenu
               onSubmit={createTask}

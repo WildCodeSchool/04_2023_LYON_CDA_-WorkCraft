@@ -30,7 +30,7 @@ export default function CreateInputMenu({
   };
 
   return (
-    <div style={{ margin: "4vh 1vw" }}>
+    <div style={{ width: "100%" }}>
       <ClickAwayListener onClickAway={handleCloseListMenu}>
         <form onSubmit={handleSubmit}>
           <Card sx={{ minWidth: 275, padding: "10px 5px" }}>

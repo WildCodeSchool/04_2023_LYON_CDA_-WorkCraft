@@ -36,6 +36,7 @@ export default function Module({ moduleId, setLoadingModal }) {
     )
       .then(() => {
         setLoadingModule(!loadingModule);
+        setLoadingModal((prev) => !prev);
       })
       .catch((err) => {
         console.error(`Axios Error : ${err.message}`);

@@ -11,14 +11,19 @@ It's pre-configured with a set of tools which'll help students produce industry-
 - Clone this repo, enter it
 - If you are using `yarn` or `pnpm`, adapt the `config/cli` in `package.json`
 - Run command `npm install`
-- _NB: To launch the backend server, you'll need an environment file with database credentials. You'll find a template one in `backend/.env.sample`_
+- _NB: To launch the api server, you'll need an environment file with database credentials. You'll find a template one in `api/.env.local`_
+- Go to /api and run command `docker compose up -d`
+- Run command `docker compose exec php-workcraft composer install`
+- Create database `docker compose exec php-workcraft php bin/console make:migration` and `docker compose exec php-workcraft php bin/console d:m:m`
+- Run fixtures `docker compose exec php-workcraft php bin/console doctrine:fixtures:load`
 
 ### Available Commands
 
+- `docker compose up -d` : Run the api server in /api
 - `migrate` : Run the database migration script
-- `dev` : Starts both servers (frontend + backend) in one terminal
-- `dev-front` : Starts the React frontend server
-- `dev-back` : Starts the Express backend server
+- `npm run dev` : Starts both servers (frontend + backend) in one terminal
+- `npm run dev-front` : Starts the React frontend server
+- `npm run dev-back` : Starts the Express backend server
 - `lint` : Runs validation tools, and refuses unclean code (will be executed on every _commit_)
 - `fix` : Fixes linter errors (run it if `lint` growls on your code !)
 

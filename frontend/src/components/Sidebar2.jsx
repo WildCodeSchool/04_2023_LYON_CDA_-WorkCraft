@@ -1,11 +1,12 @@
 import * as React from "react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Box, Drawer, Button, List, Stack, Fab } from "@mui/material";
 import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import AddIcon from "@mui/icons-material/Add";
 import PropTypes from "prop-types";
 import { useSnackbar } from "notistack";
+import { useNavigate } from "react-router-dom";
 import ApiHelper from "../helpers/apiHelper";
 import loadData from "../helpers/loadData";
 import PrimarySearchAppBar from "./Searchbar";
@@ -17,9 +18,9 @@ export default function Sidebar2({
   isDrawerOpen,
   setSelectedProject,
   selectedProject,
+  projects,
+  setProjects,
 }) {
-  const [projects, setProjects] = useState([]);
-
   const [searchValue, setSearchValue] = useState("");
 
   const [collapseList, setCollapseList] = useState({});
@@ -29,17 +30,18 @@ export default function Sidebar2({
 
   const [openCreateProjectModal, setOpenCreateProjectModal] = useState(false);
 
-  useEffect(() => loadData("projects", setProjects), []);
-
   const { enqueueSnackbar } = useSnackbar();
+
+  const navigate = useNavigate();
 
   const createProject = (projectName) => {
     ApiHelper("projects", "post", {
       title: projectName,
       owner: "api/users/1",
     })
-      .then(() => {
+      .then((res) => {
         loadData("projects", setProjects);
+        navigate(`/projects/${res.data.id}`);
         enqueueSnackbar(`Project "${projectName}" successfully created`, {
           variant: "success",
         });
@@ -84,6 +86,10 @@ export default function Sidebar2({
           variant: "success",
         });
         loadData("projects", setProjects);
+        if (projectId === selectedProject.id) {
+          setSelectedProject({});
+          navigate("/");
+        }
       })
       .catch(() => {
         enqueueSnackbar("An error occurred, Please try again.", {
@@ -191,6 +197,19 @@ Sidebar2.propTypes = {
       })
     ),
   }),
+  projects: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number,
+      title: PropTypes.string,
+      lists: PropTypes.arrayOf(
+        PropTypes.shape({
+          id: PropTypes.number,
+          title: PropTypes.string,
+        })
+      ),
+    })
+  ).isRequired,
+  setProjects: PropTypes.func.isRequired,
 };
 
 Sidebar2.defaultProps = {

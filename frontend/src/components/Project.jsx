@@ -9,7 +9,7 @@ import ApiHelper from "../helpers/apiHelper";
 
 export default function Project() {
   const { projectId } = useParams();
-  const [selectedProject, setSelectedProject] = useOutletContext();
+  const { selectedProject, setSelectedProject } = useOutletContext();
   const [isCreateInputActive, setIsCreateInputActive] = useState(false);
   const [reloadListId, setReloadListId] = useState(null);
 

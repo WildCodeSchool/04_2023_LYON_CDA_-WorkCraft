@@ -1,6 +1,6 @@
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { SnackbarProvider } from "notistack";
 // eslint-disable-next-line import/no-extraneous-dependencies
@@ -10,6 +10,7 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import { blue, grey, green } from "@mui/material/colors";
 import Sidebar1 from "../components/Sidebar1";
 import Sidebar2 from "../components/Sidebar2";
+import loadData from "../helpers/loadData";
 import img6 from "../assets/backgroundImg/Light/img6.jpg";
 import img2 from "../assets/backgroundImg/Dark/img2.jpg";
 import img8 from "../assets/backgroundImg/Light/img8.webp";
@@ -114,19 +115,30 @@ export default function Root() {
 
   const [selectedProject, setSelectedProject] = useState({});
 
+  const location = useLocation();
+
+  const navigate = useNavigate();
+
   useEffect(() => {
-    if (Object.keys(selectedProject).length === 0) {
+    if (location.pathname === "/") navigate("/home");
+  }, [location.pathname]);
+
+  useEffect(() => {
+    const mode = darkMode ? "dark" : "light";
+    if (location.pathname === "/home") {
       if (darkMode) {
         setBgImage(img2);
       } else {
         setBgImage(img6);
       }
     } else {
-      const mode = darkMode ? "dark" : "light";
       const imageArray = images[mode];
       setBgImage(imageArray[selectedProject.id % imageArray.length]);
     }
-  }, [darkMode, selectedProject]);
+  }, [darkMode, selectedProject, location.pathname]);
+
+  const [projects, setProjects] = useState([]);
+  useEffect(() => loadData("projects", setProjects), []);
 
   return (
     <DndProvider backend={HTML5Backend}>
@@ -148,6 +160,8 @@ export default function Root() {
             isDrawerOpen={isDrawerOpen}
             setSelectedProject={setSelectedProject}
             selectedProject={selectedProject}
+            projects={projects}
+            setProjects={setProjects}
           />
           <main
             style={{
@@ -158,7 +172,15 @@ export default function Root() {
               width: "300vh",
             }}
           >
-            <Outlet context={[selectedProject, setSelectedProject]} />
+            <Outlet
+              context={{
+                selectedProject,
+                setSelectedProject,
+                projects,
+                images,
+                darkMode,
+              }}
+            />
           </main>
         </SnackbarProvider>
       </ThemeProvider>

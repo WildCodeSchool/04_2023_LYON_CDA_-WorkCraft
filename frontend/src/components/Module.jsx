@@ -42,7 +42,7 @@ export default function Module({ moduleId, setLoadingModal }) {
       });
   };
 
-  const editModule = (newModuleName) => {
+  const handleEditModule = (newModuleName) => {
     ApiHelper(
       `modules/${moduleId}`,
       "patch",
@@ -79,7 +79,7 @@ export default function Module({ moduleId, setLoadingModal }) {
   const handleCloseEdit = () => {
     setIsEditActive(false);
     setNewName("");
-    editModule(newName);
+    handleEditModule(newName);
   };
 
   return (

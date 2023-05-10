@@ -1,31 +1,33 @@
 import { useState } from "react";
-import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogTitle from "@mui/material/DialogTitle";
+import {
+  Button,
+  TextField,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+} from "@mui/material";
 import PropTypes from "prop-types";
 
 export default function ProjectModal({ open, setOpen, createProject }) {
   const [projectName, setProjectName] = useState("");
-  const [isProjectEmpty, setIsProjectEmpty] = useState(false);
+  const [displayError, setDisplayError] = useState(false);
 
   const handleProjectNameChange = (event) => {
     setProjectName(event.target.value);
-    setIsProjectEmpty(false);
   };
 
   const resetForm = () => {
     setProjectName("");
-    setIsProjectEmpty(false);
+    setDisplayError(false);
   };
 
   const handleSubscribe = (e) => {
     console.info("CLICK");
     e.preventDefault();
-    if (!projectName) {
-      setIsProjectEmpty(true);
+    if (projectName === "") {
+      setDisplayError(true);
+
       return;
     }
     createProject(projectName);
@@ -35,6 +37,7 @@ export default function ProjectModal({ open, setOpen, createProject }) {
 
   const handleCancel = () => {
     resetForm();
+    setDisplayError(false);
     setOpen(false);
   };
 
@@ -55,8 +58,18 @@ export default function ProjectModal({ open, setOpen, createProject }) {
             variant="standard"
             value={projectName}
             onChange={handleProjectNameChange}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                if (projectName === "") {
+                  setDisplayError(true);
+                  setOpen(false);
+                } else {
+                  handleSubscribe(e);
+                }
+              }
+            }}
           />
-          {isProjectEmpty && (
+          {displayError && (
             <p style={{ color: "red" }}>Please fill the project name</p>
           )}
         </DialogContent>
